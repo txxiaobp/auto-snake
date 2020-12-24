@@ -13,7 +13,7 @@ private:
 public:
     Seed(ScreenData& data) : data(data) { set(true); }
     void set(bool initial = false);
-    int get_node();
+    int getNode();
 };
 
 #endif

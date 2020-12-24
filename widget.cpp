@@ -67,6 +67,7 @@ void Widget::timerEvent(QTimerEvent*)
     if (snake.move())
     {
         update();
+        qDebug() << "eaten: " << snake.getEatenCount() << " , walked: " << snake.getWalkedCount();
     }
     else
     {
@@ -87,7 +88,7 @@ void Widget::paintEvent(QPaintEvent*)
         for (int c = 0; c < col; c++)
         {
             ScreenPainter* p = nullptr;
-            switch(data.get_type(r, c))
+            switch(data.getType(r, c))
             {
             case Screen_snake_body:
                 p = painterMap[Screen_snake_body];

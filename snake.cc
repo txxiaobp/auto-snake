@@ -40,12 +40,12 @@ void Snake::push(int row, int col, Node_t node_type, bool initial)
     {
         if (!initial)
         {
-            screenData.set_type(headRow, headCol, Node_snake_body);
+            screenData.setType(headRow, headCol, Node_snake_body);
         }
         headRow = row;
         headCol = col;
     }
-	screenData.set_type(row, col, node_type);
+    screenData.setType(row, col, node_type);
     snake.push(getNum(row, col));
 }
 
@@ -53,10 +53,10 @@ void Snake::pop()
 {
     int tail = snake.front();
 	snake.pop();
-    screenData.set_type(getRow(tail), getCol(tail), Node_available);
+    screenData.setType(getRow(tail), getCol(tail), Node_available);
 }
 
-std::vector<int> Snake::around_nodes(int node)
+std::vector<int> Snake::aroundNodes(int node)
 {
     std::vector<int> ret;
     int node_row = getRow(node);
@@ -76,21 +76,22 @@ bool Snake::move()
     int col = screenData.col();
     std::vector<int> from(row * col, -1);
 
-    bool has_path = false;
+    bool hasPath = false;
     if (method[cur_method])
-        has_path = method[cur_method]->findNext(from);
+        hasPath = method[cur_method]->findNext(from);
 
-    if (has_path)
+    bool ret = false;
+    if (hasPath)
 	{
-        screenData.set_type(headRow, headCol, Node_snake_body);
-        int node = seed.get_node();
+        screenData.setType(headRow, headCol, Node_snake_body);
+        int node = seed.getNode();
 
         while (from[node] != getNum(headRow, headCol))
 		{
             node = from[node];
 		}
         setDirection(node);
-		if (node == seed.get_node())
+        if (node == seed.getNode())
 		{
 			seed.set();
             push(getRow(node), getCol(node), Node_snake_head);
@@ -101,7 +102,7 @@ bool Snake::move()
 			pop();	
 		}
 
-		return true;
+        ret = true;
 	}
 	else
 	{
@@ -114,11 +115,16 @@ bool Snake::move()
 				last_direction = direction_e(direction);
                 push(getRow(node), getCol(node), Node_snake_head);
                 pop();
-				return true;
+                ret = true;
+                break;
 			}
 		}
-		return false;	
 	}
+    if (ret)
+    {
+        walkedCount++;
+    }
+    return ret;
 }
 
 int Snake::getNum(int nodeX, int nodeY)
@@ -181,7 +187,7 @@ int Snake::move_direction(int direction)
         nodeCol = headCol + 1;
         break;
     }
-    if (screenData.get_type(nodeRow, nodeCol) == Node_available)
+    if (screenData.getType(nodeRow, nodeCol) == Node_available)
     {
         return getNum(nodeRow, nodeCol);
     }
@@ -214,5 +220,21 @@ void Snake::reset()
 
     push(row / 2, col / 2 - 1, Node_snake_body);       //snake end
     push(row / 2, col / 2, Node_snake_head, true);     //snake head
+    walkedCount = 0;
+}
+
+int Snake::getSize()
+{
+    return snake.size();
+}
+
+int Snake::getEatenCount()
+{
+    return getSize() - 2;
+}
+
+int Snake::getWalkedCount()
+{
+    return walkedCount;
 }
 

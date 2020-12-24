@@ -40,10 +40,13 @@ public:
     int getHeadCol() { return headCol; }
 
 public:
-    std::vector<int> around_nodes(int node);
+    std::vector<int> aroundNodes(int node);
     int getNum(int nodeX, int nodeY);
     int getRow(int node);
     int getCol(int node);
+    int getSize();
+    int getEatenCount();
+    int getWalkedCount();
     void setMethod(search_method_e m);
     search_method_e getMethod();
     void reset(); // restart the game
@@ -51,6 +54,7 @@ public:
 private:
     std::queue<int> snake; //蛇尾是队列头，蛇头是队列尾
     ScreenData& screenData;
+    int walkedCount;
     int headRow;
     int headCol;
     Seed& seed;

@@ -28,8 +28,8 @@ public:
 	ScreenData(int row = 10, int col = 10);
 	int row();
 	int col();
-    Node_t get_type(int row, int col);
-	void set_type(int row, int col, Node_t node_type);
+    Node_t getType(int row, int col);
+	void setType(int row, int col, Node_t node_type);
 	
 	friend class Snake;
 	friend class Seed;

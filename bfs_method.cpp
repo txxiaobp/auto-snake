@@ -17,7 +17,7 @@ bool BFSMethod::findNext(std::vector<int>& from)
         int nd = s.front();
         s.pop();
 
-        std::vector<int> nodes = snake.around_nodes(nd);
+        std::vector<int> nodes = snake.aroundNodes(nd);
 
         for (auto node : nodes)
         {
@@ -25,14 +25,14 @@ bool BFSMethod::findNext(std::vector<int>& from)
             int c = snake.getCol(node);
 
             // found goal
-            if (node == seed.get_node())
+            if (node == seed.getNode())
             {
                 from[node] = nd;
                 return true;
             }
 
             // not found goal but empty node
-            if (data.get_type(r, c) == Node_available && from[node] == -1)
+            if (data.getType(r, c) == Node_available && from[node] == -1)
             {
                 from[node] = nd;
                 s.push(node);

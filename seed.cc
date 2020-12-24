@@ -7,7 +7,7 @@ void Seed::set(bool initial)
 {
     if (!initial)
     {
-        data.set_type(nodeRow, nodeCol, Node_snake_head);
+        data.setType(nodeRow, nodeCol, Node_snake_head);
     }
 
 	srand(time(NULL));
@@ -18,12 +18,12 @@ void Seed::set(bool initial)
 	{
         nodeRow = rand() % row_bound;
         nodeCol = rand() % col_bound;
-    } while(data.get_type(nodeRow, nodeCol) != Node_available);
+    } while(data.getType(nodeRow, nodeCol) != Node_available);
 	
-    data.set_type(nodeRow, nodeCol, Node_seed);
+    data.setType(nodeRow, nodeCol, Node_seed);
 }
 
-int Seed::get_node()
+int Seed::getNode()
 {
     return nodeRow * data.col() + nodeCol;
 }

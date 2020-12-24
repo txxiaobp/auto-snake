@@ -20,7 +20,7 @@ bool DijkstraMethod::findNext(std::vector<int>& from)
         heap.pop();
         marked[nd] = true;
 
-        std::vector<int> nodes = snake.around_nodes(nd);
+        std::vector<int> nodes = snake.aroundNodes(nd);
 
         for (auto node : nodes)
         {
@@ -28,14 +28,14 @@ bool DijkstraMethod::findNext(std::vector<int>& from)
             int c = snake.getCol(node);
 
             // found goal
-            if (node == seed.get_node())
+            if (node == seed.getNode())
             {
                 from[node] = nd;
                 return true;
             }
 
             // found empty node
-            if (data.get_type(r, c) == Node_available)
+            if (data.getType(r, c) == Node_available)
             {
                 if (marked[node])
                 {
