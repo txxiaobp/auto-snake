@@ -3,12 +3,20 @@
 #include <ctime>
 #include <cassert>
 #include "seed.h"
+#include <iostream>
 
 ScreenData::ScreenData(int r, int c) :
     data(std::vector<std::vector<Node_t> >(r, std::vector<Node_t>(c, Node_available)))
 {
 	assert(r > 0 && c > 0);	
-	set_wall();
+    set_wall();
+}
+
+void ScreenData::reset(int newRow, int newCol)
+{
+    data = std::vector<std::vector<Node_t> >(newRow, std::vector<Node_t>(newCol, Node_available));
+
+    set_wall();
 }
 
 void ScreenData::set_wall()

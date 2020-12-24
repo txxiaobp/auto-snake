@@ -8,6 +8,7 @@
 #include "head_painter.h"
 #include "wall_painter.h"
 #include "seed_painter.h"
+#include "data_recorder.h"
 
 enum
 {
@@ -24,18 +25,24 @@ enum
     Screen_seed
 };
 
-Widget::Widget(ScreenData& data, Snake& snake, int radius, QWidget *parent)
+Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, bool isReplay, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
     , data(data)
+    , dataRecorder(dataRecorder)
     , snake(snake)
     , radius(radius)
     , timeInterval(default_snake_speed)
     , isPause(false)
+    , isReplay(isReplay)
 {
     int height = data.row() * 2 * radius;
     int width = data.col() * 2 * radius;
     resize(width, height);
+    if (isReplay)
+    {
+        snake.replay(true);
+    }
     painter = new QPainter(this);
     painter->setRenderHint(QPainter::HighQualityAntialiasing);
     setPainterMap(radius);
@@ -56,6 +63,11 @@ Widget::~Widget()
 
 void Widget::changeAlgorithm(search_method_e method)
 {
+    if (isReplay)
+    {
+        qDebug() << "Replay the game, cannot change the algorithm";
+        return;
+    }
     if (method == METHOD_MAX)
     {
         int method = int(snake.getMethod());
@@ -70,17 +82,21 @@ void Widget::changeAlgorithm(search_method_e method)
 
 void Widget::restartGame()
 {
+    qDebug() << "Restart the game";
     isPause = false;
+    dataRecorder.reset();
     snake.reset();
 }
 
 void Widget::pauseGame()
 {
+    qDebug() << "Pause the game";
     isPause = true;
 }
 
 void Widget::continueGame()
 {
+    qDebug() << "Continue the game";
     isPause = false;
 }
 
@@ -108,12 +124,16 @@ void Widget::timerEvent(QTimerEvent*)
     if (snake.move())
     {
         update();
-        qDebug() << "eaten: " << snake.getEatenCount() << " , walked: " << snake.getWalkedCount();
     }
     else
     {
         //exit
-        qDebug() << "game over";
+        if (!isReplay)
+        {
+            dataRecorder.exportToFile("data.txt");
+        }
+        qDebug() << "Game Over!";
+        exit(0);
     }
 }
 
@@ -162,13 +182,21 @@ void Widget::paintEvent(QPaintEvent*)
 void Widget::wheelEvent(QWheelEvent *event)
 {
     killTimer(timerId);
-    if(event->delta()>0)
+    if(event->delta() < 0)
     {
-        timeInterval = std::min(timeInterval + 10, 200);
+        if (timeInterval < 200)
+        {
+            timeInterval = std::min(timeInterval + 10, 200);
+            qDebug() << "Speed Down";
+        }
     }
     else
     {
-        timeInterval = std::max(timeInterval - 10, 10);
+        if (timeInterval > 10)
+        {
+           timeInterval = std::max(timeInterval - 10, 10);
+           qDebug() << "Speed Up";
+        }
     }
     timerId = startTimer(timeInterval);
 }

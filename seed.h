@@ -1,19 +1,34 @@
 #ifndef SEED_H
 #define SEED_H
 
+
 class ScreenData;
+class DataRecorder;
+
+const int INVALID_ROW_OR_COL = -1;
 
 class Seed
 {
-private:
-	ScreenData& data;
-    int nodeRow;
-    int nodeCol;
-
 public:
-    Seed(ScreenData& data) : data(data) { set(true); }
+    Seed(ScreenData& data, DataRecorder& dataRecorder, bool isReplay)
+        : data(data)
+        , dataRecorder(dataRecorder)
+        , nodeRow(INVALID_ROW_OR_COL)
+        , nodeCol(INVALID_ROW_OR_COL)
+        , isReplay(isReplay)
+            { set(true); }
+
     void set(bool initial = false);
     int getNode();
+    void setData();
+    void setFromRecorder();
+
+private:
+    ScreenData& data;
+    DataRecorder& dataRecorder;
+    int nodeRow;
+    int nodeCol;
+    bool isReplay;
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include <QDebug>
 #include "bfs_method.h"
 #include "dijkstra_method.h"
+#include "data_recorder.h"
 #include "snake.h"
 #include <string>
 
@@ -13,13 +14,20 @@ std::string method_name_map[METHOD_MAX] = {
 };
 
 
-Snake::Snake(Seed& seed, ScreenData& screenData) :
-	screenData(screenData),
-	seed(seed),
-    last_direction(DIRECTION_MAX),
-    cur_method(BFS_METHOD)
+Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder) :
+    screenData(screenData)
+    , dataRecorder(dataRecorder)
+    , seed(seed)
+    , last_direction(DIRECTION_MAX)
+    , cur_method(BFS_METHOD)
+    , isReplay(false)
 {
-    reset();
+    int row = screenData.row();
+    int col = screenData.col();
+
+    push(row / 2, col / 2 - 1, Node_snake_body);       //snake end
+    push(row / 2, col / 2, Node_snake_head, true);     //snake head
+    walkedCount = 0;
 
     method[BFS_METHOD] = new BFSMethod(*this, screenData, seed);
     method[DIJKSTRA_METHOD] = new DijkstraMethod(*this, screenData, seed);
@@ -38,6 +46,11 @@ void Snake::push(int row, int col, Node_t node_type, bool initial)
 {
     if (node_type == Node_snake_head)
     {
+        if (!initial)
+        {
+            setData(getNum(row, col));
+        }
+
         if (!initial)
         {
             screenData.setType(headRow, headCol, Node_snake_body);
@@ -76,6 +89,16 @@ bool Snake::move()
     int col = screenData.col();
     std::vector<int> from(row * col, -1);
 
+    if (isReplay)
+    {
+        if (!dataRecorder.empty())
+        {
+            toNextNode(dataRecorder.popSnakeData());
+            return true;
+        }
+        return false;
+    }
+
     bool hasPath = false;
     if (method[cur_method])
         hasPath = method[cur_method]->findNext(from);
@@ -91,17 +114,7 @@ bool Snake::move()
             node = from[node];
 		}
         setDirection(node);
-        if (node == seed.getNode())
-		{
-			seed.set();
-            push(getRow(node), getCol(node), Node_snake_head);
-		}
-		else
-		{
-            push(getRow(node), getCol(node), Node_snake_head);
-			pop();	
-		}
-
+        toNextNode(node);
         ret = true;
 	}
 	else
@@ -109,7 +122,7 @@ bool Snake::move()
         int direction = last_direction;
         for (int i = 0; i < DIRECTION_MAX; i++, direction = (direction + 1) % DIRECTION_MAX)
 		{
-            int node = move_direction(direction);
+            int node = moveDirection(direction);
             if (node != -1)
 			{
 				last_direction = direction_e(direction);
@@ -165,7 +178,7 @@ void Snake::setDirection(int node)
     }
 }
 
-int Snake::move_direction(int direction)
+int Snake::moveDirection(int direction)
 {
     int nodeRow = 0, nodeCol = 0;
     switch(direction)
@@ -221,6 +234,15 @@ void Snake::reset()
     push(row / 2, col / 2 - 1, Node_snake_body);       //snake end
     push(row / 2, col / 2, Node_snake_head, true);     //snake head
     walkedCount = 0;
+
+    if (!isReplay)
+    {
+        seed.setData();
+    }
+    else
+    {
+        seed.setFromRecorder();
+    }
 }
 
 int Snake::getSize()
@@ -238,3 +260,26 @@ int Snake::getWalkedCount()
     return walkedCount;
 }
 
+void Snake::setData(int node)
+{
+    dataRecorder.pushSnakeData(node);
+}
+
+void Snake::replay(bool replay)
+{
+    isReplay = replay;
+}
+
+void Snake::toNextNode(int nextNode)
+{
+    if (nextNode == seed.getNode())
+    {
+        seed.set();
+        push(getRow(nextNode), getCol(nextNode), Node_snake_head);
+    }
+    else
+    {
+        push(getRow(nextNode), getCol(nextNode), Node_snake_head);
+        pop();
+    }
+}

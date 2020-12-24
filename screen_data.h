@@ -18,14 +18,9 @@ typedef enum
 
 class ScreenData
 {	
-private:
-    std::vector<std::vector<Node_t>> data;
-	
-private:
-	void set_wall();
-	
 public:
 	ScreenData(int row = 10, int col = 10);
+    void reset(int newRow, int newCol);
 	int row();
 	int col();
     Node_t getType(int row, int col);
@@ -33,6 +28,12 @@ public:
 	
 	friend class Snake;
 	friend class Seed;
+
+private:
+    std::vector<std::vector<Node_t>> data;
+
+private:
+    void set_wall();
 };
 
 #endif

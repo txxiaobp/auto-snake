@@ -11,12 +11,16 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
 QT_END_NAMESPACE
 
+
+class DataRecorder;
+
+
 class Widget : public QWidget
 {
     Q_OBJECT
 
 public:
-    Widget(ScreenData& data, Snake& snake, int radius, QWidget *parent = nullptr);
+    Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, bool relay = false, QWidget *parent = nullptr);
     ~Widget();
 
     void changeAlgorithm(search_method_e method = METHOD_MAX);
@@ -36,6 +40,7 @@ private:
 private:
     Ui::Widget *ui;
     ScreenData& data;
+    DataRecorder& dataRecorder;
     Snake& snake;
     std::unordered_map<int, ScreenPainter*> painterMap;
     int radius;
@@ -43,5 +48,6 @@ private:
     int timerId;
     int timeInterval;
     bool isPause;
+    bool isReplay;
 };
 #endif // WIDGET_H

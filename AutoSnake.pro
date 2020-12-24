@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     bfs_method.cpp \
     body_painter.cpp \
+    data_recorder.cpp \
     dijkstra_method.cpp \
     head_painter.cpp \
     main.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
 HEADERS += \
     bfs_method.h \
     body_painter.h \
+    data_recorder.h \
     dijkstra_method.h \
     head_painter.h \
     index_heap.h \

@@ -7,14 +7,15 @@
 #include "seed.h"
 
 class RouteMethod;
+class DataRecorder;
 
 typedef enum 
 {
-	UP,
-	DOWN,
-	LEFT, 
-	RIGHT,
-	DIRECTION_MAX
+    UP     = 0,
+    DOWN   = 1,
+    LEFT   = 2,
+    RIGHT  = 3,
+    DIRECTION_MAX
 }direction_e;
 
 typedef enum
@@ -27,10 +28,10 @@ typedef enum
 class Snake
 {
 public:
-	Snake(Seed& seed, ScreenData& screenData);
+    Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder);
     ~Snake();
     void setDirection(int node);
-    int move_direction(int direction);
+    int moveDirection(int direction);
     bool move();
     void push(int row, int col, Node_t node_type, bool initial = false);
 	void pop();
@@ -50,10 +51,16 @@ public:
     void setMethod(search_method_e m);
     search_method_e getMethod();
     void reset(); // restart the game
+    void replay(bool replay);
+
+private:
+    void setData(int node);
+    void toNextNode(int nextNode);
 
 private:
     std::queue<int> snake; //蛇尾是队列头，蛇头是队列尾
     ScreenData& screenData;
+    DataRecorder& dataRecorder;
     int walkedCount;
     int headRow;
     int headCol;
@@ -61,6 +68,7 @@ private:
     direction_e last_direction;
     RouteMethod* method[METHOD_MAX];
     search_method_e cur_method;
+    bool isReplay;
 };
 
 #endif
