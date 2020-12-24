@@ -140,5 +140,10 @@ void Widget::keyPressEvent(QKeyEvent *ev)
         snake.setMethod(search_method_e(nextMethod));
         return;
     }
+    if(ev->key() == Qt::Key_R)
+    {
+        snake.reset();
+        return;
+    }
 }
 

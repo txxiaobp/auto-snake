@@ -19,11 +19,7 @@ Snake::Snake(Seed& seed, ScreenData& screenData) :
     last_direction(DIRECTION_MAX),
     cur_method(BFS_METHOD)
 {
-	int row = screenData.row();
-	int col = screenData.col();
-
-    push(row / 2, col / 2 - 1, Node_snake_body);       //snake end
-    push(row / 2, col / 2, Node_snake_head, true);     //snake head
+    reset();
 
     method[BFS_METHOD] = new BFSMethod(*this, screenData, seed);
     method[DIJKSTRA_METHOD] = new DijkstraMethod(*this, screenData, seed);
@@ -204,5 +200,19 @@ void Snake::setMethod(search_method_e m)
 search_method_e Snake::getMethod()
 {
     return cur_method;
+}
+
+void Snake::reset()
+{
+    while (!snake.empty())
+    {
+        pop();
+    }
+
+    int row = screenData.row();
+    int col = screenData.col();
+
+    push(row / 2, col / 2 - 1, Node_snake_body);       //snake end
+    push(row / 2, col / 2, Node_snake_head, true);     //snake head
 }
 

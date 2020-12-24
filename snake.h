@@ -46,6 +46,7 @@ public:
     int getCol(int node);
     void setMethod(search_method_e m);
     search_method_e getMethod();
+    void reset(); // restart the game
 
 private:
     std::queue<int> snake; //蛇尾是队列头，蛇头是队列尾
