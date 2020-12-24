@@ -31,6 +31,7 @@ Widget::Widget(ScreenData& data, Snake& snake, int radius, QWidget *parent)
     , snake(snake)
     , radius(radius)
     , timeInterval(default_snake_speed)
+    , isPause(false)
 {
     int height = data.row() * 2 * radius;
     int width = data.col() * 2 * radius;
@@ -53,6 +54,41 @@ Widget::~Widget()
     delete painterMap[Screen_seed];
 }
 
+void Widget::changeAlgorithm(search_method_e method)
+{
+    if (method == METHOD_MAX)
+    {
+        int method = int(snake.getMethod());
+        int nextMethod = (method + 1) % METHOD_MAX;
+        snake.setMethod(search_method_e(nextMethod));
+    }
+    else
+    {
+        snake.setMethod(method);
+    }
+}
+
+void Widget::restartGame()
+{
+    isPause = false;
+    snake.reset();
+}
+
+void Widget::pauseGame()
+{
+    isPause = true;
+}
+
+void Widget::continueGame()
+{
+    isPause = false;
+}
+
+bool Widget::isGamePause()
+{
+    return isPause;
+}
+
 void Widget::setPainterMap(int radius)
 {
     painterMap[Screen_available] = nullptr;
@@ -64,6 +100,11 @@ void Widget::setPainterMap(int radius)
 
 void Widget::timerEvent(QTimerEvent*)
 {
+    if (isPause)
+    {
+        return;
+    }
+
     if (snake.move())
     {
         update();
@@ -136,14 +177,25 @@ void Widget::keyPressEvent(QKeyEvent *ev)
 {
     if(ev->key() == Qt::Key_C)
     {
-        int method = int(snake.getMethod());
-        int nextMethod = (method + 1) % METHOD_MAX;
-        snake.setMethod(search_method_e(nextMethod));
+        changeAlgorithm();
         return;
     }
     if(ev->key() == Qt::Key_R)
     {
-        snake.reset();
+        restartGame();
+        return;
+    }
+    if(ev->key() == Qt::Key_P)
+    {
+        if (isGamePause())
+        {
+            continueGame();
+        }
+        else
+        {
+            pauseGame();
+        }
+
         return;
     }
 }

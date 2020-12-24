@@ -19,6 +19,12 @@ public:
     Widget(ScreenData& data, Snake& snake, int radius, QWidget *parent = nullptr);
     ~Widget();
 
+    void changeAlgorithm(search_method_e method = METHOD_MAX);
+    void restartGame();
+    void pauseGame();
+    void continueGame();
+    bool isGamePause();
+
     void timerEvent(QTimerEvent* ev);
     void paintEvent(QPaintEvent* ev);
     void wheelEvent(QWheelEvent *event);
@@ -36,5 +42,6 @@ private:
     QPainter* painter;
     int timerId;
     int timeInterval;
+    bool isPause;
 };
 #endif // WIDGET_H
