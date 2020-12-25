@@ -154,7 +154,7 @@ void Widget::timerEvent(QTimerEvent*)
     else
     {
         //exit
-        if (modeSelection.getMode() == MODE_REPLAY)
+        if (modeSelection.getMode() != MODE_REPLAY)
         {
             dataRecorder.exportToFile("data.txt");
         }

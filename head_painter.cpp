@@ -17,6 +17,5 @@ void HeadPainter::draw(QPainter& painter, int x, int y)
 {
     QRect target(x - radius, y - radius, 2 * radius, 2 * radius);
     QRect source(0.0, 0.0, 105, 106);
-
     painter.drawImage(target, imgMap[snake.getDirection()], source);
 }

@@ -25,7 +25,7 @@ Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, Mod
     int row = screenData.row();
     int col = screenData.col();
 
-    if (modeSelection.getMode() == MODE_MANUAL)
+    if (modeSelection.getMode() != MODE_MANUAL)
     {
         last_direction = DIRECTION_RIGHT;
     }
@@ -98,7 +98,9 @@ bool Snake::move()
     {
         if (!dataRecorder.empty())
         {
-            toNextNode(dataRecorder.popSnakeData());
+            int nextNode = dataRecorder.popSnakeData();
+            setDirection(nextNode);
+            toNextNode(nextNode);
             return true;
         }
         return false;

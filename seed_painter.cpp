@@ -35,7 +35,6 @@ void SeedPainter::draw(QPainter& painter, int x, int y)
     {
         srand(time(NULL));
         curIndex = rand() % imgs.size();
-        std::cout << curIndex << std::endl;
         posX = x;
         posY = y;
     }
