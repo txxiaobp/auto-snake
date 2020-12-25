@@ -50,4 +50,23 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    head.jpg
+    back.jpg \
+    body.jpg \
+    head_down.jpg \
+    head_left.jpg \
+    head_right.jpg \
+    head_up.jpg \
+    seed1.jpg \
+    seed10.jpg \
+    seed11.jpg \
+    seed12.jpg \
+    seed13.jpg \
+    seed2.jpg \
+    seed3.jpg \
+    seed4.jpg \
+    seed5.jpg \
+    seed6.jpg \
+    seed7.jpg \
+    seed8.jpg \
+    seed9.jpg \
+    wall.jpg
