@@ -6,10 +6,9 @@ BodyPainter::BodyPainter(int radius) : ScreenPainter(radius) {}
 
 void BodyPainter::draw(QPainter& painter, int x, int y)
 {
-    QPen pen(Qt::black);
-    QBrush brush(Qt::black);
-    painter.setPen(pen);
-    painter.setBrush(brush);
+    QRect target(x - radius, y - radius, 2 * radius, 2 * radius);
+    QRect source(0.0, 0.0, 82, 82);
+    QImage image("body.jpg");
 
-    painter.drawEllipse(QPoint(x, y), radius, radius);
+    painter.drawImage(target, image, source);
 }

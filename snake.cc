@@ -210,6 +210,11 @@ void Snake::setDirection(Direction_e direction)
     last_direction = direction;
 }
 
+Direction_e Snake::getDirection()
+{
+    return last_direction;
+}
+
 int Snake::moveDirection(int direction)
 {
     int nodeRow = 0, nodeCol = 0;

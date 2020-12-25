@@ -9,10 +9,11 @@
 #include "wall_painter.h"
 #include "seed_painter.h"
 #include "data_recorder.h"
+#include "back_painter.h"
 
 enum
 {
-    DEFAULT_AUTO_SNAKE_SPEED = 30,
+    DEFAULT_AUTO_SNAKE_SPEED = 100,
     DEFAULT_MANUAL_SNAKE_SPEED = 200
 };
 
@@ -132,9 +133,9 @@ void Widget::changeAutoMode()
 
 void Widget::setPainterMap(int radius)
 {
-    painterMap[SCREEN_AVAILABLE] = nullptr;
+    painterMap[SCREEN_AVAILABLE] = new BackPainter(radius);
     painterMap[SCREEN_SNAKE_BODY] = new BodyPainter(radius);
-    painterMap[SCREEN_SNAKE_HEAD] = new HeadPainter(radius);
+    painterMap[SCREEN_SNAKE_HEAD] = new HeadPainter(radius, snake);
     painterMap[SCREEN_WALL] = new WallPainter(radius);
     painterMap[SCREEN_SEED] = new SeedPainter(radius);
 }
@@ -174,27 +175,7 @@ void Widget::paintEvent(QPaintEvent*)
         for (int c = 0; c < col; c++)
         {
             ScreenPainter* p = nullptr;
-            switch(data.getType(r, c))
-            {
-            case SCREEN_SNAKE_BODY:
-                p = painterMap[SCREEN_SNAKE_BODY];
-                break;
-
-            case SCREEN_SNAKE_HEAD:
-                p = painterMap[SCREEN_SNAKE_HEAD];
-                break;
-
-            case SCREEN_WALL:
-                p = painterMap[SCREEN_WALL];
-                break;
-
-            case SCREEN_SEED:
-                p = painterMap[SCREEN_SEED];
-                break;
-
-            default:
-                break;
-            }
+            p = painterMap[data.getType(r, c)];
 
             if (p)
             {

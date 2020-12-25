@@ -9,11 +9,11 @@
 
 int main(int argc, char *argv[])
 {
-    int row = 30;
-    int col = 30;
-    int radius = 8;
-    //Mode_e mode = AUTO_MODE;
-    Mode_e mode = MODE_MANUAL;
+    int row = 18;
+    int col = 18;
+    int radius = 18;
+    Mode_e mode = MODE_AUTO;
+    //Mode_e mode = MODE_MANUAL;
     //Mode_e mode = MODE_REPLAY;
 
     QApplication a(argc, argv);

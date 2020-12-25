@@ -33,6 +33,7 @@ public:
     ~Snake();
     void setDirection(int node);
     void setDirection(Direction_e direction);
+    Direction_e getDirection();
     int moveDirection(int direction);
     bool move();
     void push(int row, int col, Node_t node_type, bool initial = false);

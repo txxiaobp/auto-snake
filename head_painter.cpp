@@ -1,15 +1,22 @@
 #include "head_painter.h"
 #include <QBrush>
 #include <QPen>
+#include <cassert>
 
-HeadPainter::HeadPainter(int radius) : ScreenPainter(radius) {}
+HeadPainter::HeadPainter(int radius, Snake& snake)
+    : ScreenPainter(radius)
+    , snake(snake)
+{
+    imgMap[DIRECTION_UP] = QImage("head_up.jpg");
+    imgMap[DIRECTION_DOWN] = QImage("head_down.jpg");
+    imgMap[DIRECTION_LEFT] = QImage("head_left.jpg");
+    imgMap[DIRECTION_RIGHT] = QImage("head_right.jpg");
+}
 
 void HeadPainter::draw(QPainter& painter, int x, int y)
 {
-    QPen pen(Qt::red);
-    QBrush brush(Qt::red);
-    painter.setPen(pen);
-    painter.setBrush(brush);
+    QRect target(x - radius, y - radius, 2 * radius, 2 * radius);
+    QRect source(0.0, 0.0, 105, 106);
 
-    painter.drawEllipse(QPoint(x, y), radius, radius);
+    painter.drawImage(target, imgMap[snake.getDirection()], source);
 }
