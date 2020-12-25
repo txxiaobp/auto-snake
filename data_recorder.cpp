@@ -3,15 +3,15 @@
 #include <cassert>
 #include <iostream>
 
-DataRecorder::DataRecorder(ScreenData& screenData, bool isReplay)
-    : row(screenData.row())
+DataRecorder::DataRecorder(ScreenData& screenData, ModeSelection& modeSelection)
+    : modeSelection(modeSelection)
+    , row(screenData.row())
     , col(screenData.col())
     , snakeIndex(0)
     , goalIndex(0)
-    , isReplay(isReplay)
 {
     reset();
-    if (isReplay)
+    if (modeSelection.getMode() == REPLAY_MODE)
     {
         importFromFile("data.txt");
         screenData.reset(row, col);
@@ -28,7 +28,7 @@ void DataRecorder::reset()
 
 void DataRecorder::pushSnakeData(int directionData)
 {
-    if (isReplay)
+    if (modeSelection.getMode() == REPLAY_MODE)
     {
         return;
     }
@@ -37,7 +37,7 @@ void DataRecorder::pushSnakeData(int directionData)
 
 void DataRecorder::pushGoalData(int goal)
 {
-    if (isReplay)
+    if (modeSelection.getMode() == REPLAY_MODE)
     {
         return;
     }
@@ -89,7 +89,7 @@ void DataRecorder::importFromFile(const char *fileName)
 
 int DataRecorder::popSnakeData()
 {
-    if (!isReplay)
+    if (modeSelection.getMode() != REPLAY_MODE)
     {
         return -1;
     }
@@ -99,7 +99,7 @@ int DataRecorder::popSnakeData()
 
 int DataRecorder::popGoalData()
 {
-    if (!isReplay)
+    if (modeSelection.getMode() != REPLAY_MODE)
     {
         return -1;
     }

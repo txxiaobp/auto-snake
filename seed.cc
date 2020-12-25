@@ -12,7 +12,7 @@ void Seed::set(bool initial)
         data.setType(nodeRow, nodeCol, Node_snake_head);
     }
 
-    if (isReplay)
+    if (modeSelection.getMode() == REPLAY_MODE)
     {
         setFromRecorder();
         return;

@@ -25,7 +25,7 @@ enum
     Screen_seed
 };
 
-Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, bool isReplay, QWidget *parent)
+Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
     , data(data)
@@ -34,15 +34,11 @@ Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRec
     , radius(radius)
     , timeInterval(default_snake_speed)
     , isPause(false)
-    , isReplay(isReplay)
+    , modeSelection(modeSelection)
 {
     int height = data.row() * 2 * radius;
     int width = data.col() * 2 * radius;
     resize(width, height);
-    if (isReplay)
-    {
-        snake.replay(true);
-    }
     painter = new QPainter(this);
     painter->setRenderHint(QPainter::HighQualityAntialiasing);
     setPainterMap(radius);
@@ -63,7 +59,7 @@ Widget::~Widget()
 
 void Widget::changeAlgorithm(search_method_e method)
 {
-    if (isReplay)
+    if (modeSelection.getMode() == REPLAY_MODE)
     {
         qDebug() << "Replay the game, cannot change the algorithm";
         return;
@@ -128,7 +124,7 @@ void Widget::timerEvent(QTimerEvent*)
     else
     {
         //exit
-        if (!isReplay)
+        if (modeSelection.getMode() == REPLAY_MODE)
         {
             dataRecorder.exportToFile("data.txt");
         }

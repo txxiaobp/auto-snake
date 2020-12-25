@@ -5,6 +5,7 @@
 #include <queue>
 #include "screen_data.h"
 #include "seed.h"
+#include "mode_selection.h"
 
 class RouteMethod;
 class DataRecorder;
@@ -28,7 +29,7 @@ typedef enum
 class Snake
 {
 public:
-    Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder);
+    Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection);
     ~Snake();
     void setDirection(int node);
     int moveDirection(int direction);
@@ -51,7 +52,6 @@ public:
     void setMethod(search_method_e m);
     search_method_e getMethod();
     void reset(); // restart the game
-    void replay(bool replay);
 
 private:
     void setData(int node);
@@ -61,6 +61,7 @@ private:
     std::queue<int> snake; //蛇尾是队列头，蛇头是队列尾
     ScreenData& screenData;
     DataRecorder& dataRecorder;
+    ModeSelection& modeSelection;
     int walkedCount;
     int headRow;
     int headCol;
@@ -68,7 +69,6 @@ private:
     direction_e last_direction;
     RouteMethod* method[METHOD_MAX];
     search_method_e cur_method;
-    bool isReplay;
 };
 
 #endif

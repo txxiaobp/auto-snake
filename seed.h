@@ -1,6 +1,7 @@
 #ifndef SEED_H
 #define SEED_H
 
+#include "mode_selection.h"
 
 class ScreenData;
 class DataRecorder;
@@ -10,12 +11,12 @@ const int INVALID_ROW_OR_COL = -1;
 class Seed
 {
 public:
-    Seed(ScreenData& data, DataRecorder& dataRecorder, bool isReplay)
+    Seed(ScreenData& data, DataRecorder& dataRecorder, ModeSelection& modeSelection)
         : data(data)
         , dataRecorder(dataRecorder)
         , nodeRow(INVALID_ROW_OR_COL)
         , nodeCol(INVALID_ROW_OR_COL)
-        , isReplay(isReplay)
+        , modeSelection(modeSelection)
             { set(true); }
 
     void set(bool initial = false);
@@ -28,7 +29,7 @@ private:
     DataRecorder& dataRecorder;
     int nodeRow;
     int nodeCol;
-    bool isReplay;
+    ModeSelection& modeSelection;
 };
 
 #endif

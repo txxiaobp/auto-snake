@@ -29,6 +29,7 @@ HEADERS += \
     dijkstra_method.h \
     head_painter.h \
     index_heap.h \
+    mode_selection.h \
     route_method.h \
     screen_data.h \
     screen_painter.h \

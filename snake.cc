@@ -14,13 +14,13 @@ std::string method_name_map[METHOD_MAX] = {
 };
 
 
-Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder) :
+Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection) :
     screenData(screenData)
     , dataRecorder(dataRecorder)
+    , modeSelection(modeSelection)
     , seed(seed)
     , last_direction(DIRECTION_MAX)
     , cur_method(BFS_METHOD)
-    , isReplay(false)
 {
     int row = screenData.row();
     int col = screenData.col();
@@ -89,7 +89,7 @@ bool Snake::move()
     int col = screenData.col();
     std::vector<int> from(row * col, -1);
 
-    if (isReplay)
+    if (modeSelection.getMode() == REPLAY_MODE)
     {
         if (!dataRecorder.empty())
         {
@@ -235,7 +235,7 @@ void Snake::reset()
     push(row / 2, col / 2, Node_snake_head, true);     //snake head
     walkedCount = 0;
 
-    if (!isReplay)
+    if (modeSelection.getMode() == REPLAY_MODE)
     {
         seed.setData();
     }
@@ -263,11 +263,6 @@ int Snake::getWalkedCount()
 void Snake::setData(int node)
 {
     dataRecorder.pushSnakeData(node);
-}
-
-void Snake::replay(bool replay)
-{
-    isReplay = replay;
 }
 
 void Snake::toNextNode(int nextNode)

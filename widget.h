@@ -6,6 +6,7 @@
 #include "screen_data.h"
 #include "snake.h"
 #include "screen_painter.h"
+#include "mode_selection.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -20,7 +21,7 @@ class Widget : public QWidget
     Q_OBJECT
 
 public:
-    Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, bool relay = false, QWidget *parent = nullptr);
+    Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent = nullptr);
     ~Widget();
 
     void changeAlgorithm(search_method_e method = METHOD_MAX);
@@ -48,6 +49,6 @@ private:
     int timerId;
     int timeInterval;
     bool isPause;
-    bool isReplay;
+    ModeSelection& modeSelection;
 };
 #endif // WIDGET_H

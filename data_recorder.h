@@ -4,11 +4,12 @@
 #include <vector>
 #include "snake.h"
 #include "screen_data.h"
+#include "mode_selection.h"
 
 class DataRecorder
 {
 public:
-    DataRecorder(ScreenData& screenData, bool isReplay);
+    DataRecorder(ScreenData& screenData, ModeSelection& modeSelection);
     void pushSnakeData(int directionData);
     void pushGoalData(int goal);
     int popSnakeData();
@@ -23,11 +24,11 @@ public:
 private:
     std::vector<int> snakeHeadData;
     std::vector<int> goalData;
+    ModeSelection& modeSelection;
     int row;
     int col;
     int snakeIndex;
     int goalIndex;
-    bool isReplay;
 };
 
 #endif // DATARECORDER_H
