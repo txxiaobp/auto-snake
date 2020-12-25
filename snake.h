@@ -12,19 +12,19 @@ class DataRecorder;
 
 typedef enum 
 {
-    UP     = 0,
-    DOWN   = 1,
-    LEFT   = 2,
-    RIGHT  = 3,
+    DIRECTION_UP     = 0,
+    DIRECTION_DOWN   = 1,
+    DIRECTION_LEFT   = 2,
+    DIRECTION_RIGHT  = 3,
     DIRECTION_MAX
-}direction_e;
+}Direction_e;
 
 typedef enum
 {
     BFS_METHOD = 0,
     DIJKSTRA_METHOD,
     METHOD_MAX
-}search_method_e;
+}Search_method_e;
 
 class Snake
 {
@@ -32,6 +32,7 @@ public:
     Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection);
     ~Snake();
     void setDirection(int node);
+    void setDirection(Direction_e direction);
     int moveDirection(int direction);
     bool move();
     void push(int row, int col, Node_t node_type, bool initial = false);
@@ -49,8 +50,8 @@ public:
     int getSize();
     int getEatenCount();
     int getWalkedCount();
-    void setMethod(search_method_e m);
-    search_method_e getMethod();
+    void setMethod(Search_method_e m);
+    Search_method_e getMethod();
     void reset(); // restart the game
 
 private:
@@ -66,9 +67,9 @@ private:
     int headRow;
     int headCol;
     Seed& seed;
-    direction_e last_direction;
+    Direction_e last_direction;
     RouteMethod* method[METHOD_MAX];
-    search_method_e cur_method;
+    Search_method_e cur_method;
 };
 
 #endif

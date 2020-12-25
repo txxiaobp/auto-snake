@@ -3,9 +3,10 @@
 
 typedef enum
 {
-    MANUAL_MODE,
-    AUTO_MODE,
-    REPLAY_MODE
+    MODE_MANUAL,
+    MODE_AUTO,
+    MODE_REPLAY,
+    MODE_MAX
 }Mode_e;
 
 

@@ -56,6 +56,16 @@ Node_t ScreenData::getType(int r, int c)
     return data[r][c];
 }
 
+Node_t ScreenData::getType(int node)
+{
+    int r = node / col();
+    int c = node % col();
+    assert(r >= 0 && r < row());
+    assert(c >= 0 && c < col());
+
+    return data[r][c];
+}
+
 void ScreenData::setType(int r, int c, Node_t node_type)
 {
 	assert(r >= 0 && r < row());

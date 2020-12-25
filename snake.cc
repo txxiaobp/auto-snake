@@ -25,6 +25,11 @@ Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, Mod
     int row = screenData.row();
     int col = screenData.col();
 
+    if (modeSelection.getMode() == MODE_MANUAL)
+    {
+        last_direction = DIRECTION_RIGHT;
+    }
+
     push(row / 2, col / 2 - 1, Node_snake_body);       //snake end
     push(row / 2, col / 2, Node_snake_head, true);     //snake head
     walkedCount = 0;
@@ -89,7 +94,7 @@ bool Snake::move()
     int col = screenData.col();
     std::vector<int> from(row * col, -1);
 
-    if (modeSelection.getMode() == REPLAY_MODE)
+    if (modeSelection.getMode() == MODE_REPLAY)
     {
         if (!dataRecorder.empty())
         {
@@ -97,6 +102,16 @@ bool Snake::move()
             return true;
         }
         return false;
+    }
+    if (modeSelection.getMode() == MODE_MANUAL)
+    {
+        int nextNode = moveDirection(last_direction);
+        if (-1 == nextNode)
+        {
+            return false;
+        }
+        toNextNode(nextNode);
+        return true;
     }
 
     bool hasPath = false;
@@ -125,7 +140,7 @@ bool Snake::move()
             int node = moveDirection(direction);
             if (node != -1)
 			{
-				last_direction = direction_e(direction);
+                last_direction = Direction_e(direction);
                 push(getRow(node), getCol(node), Node_snake_head);
                 pop();
                 ret = true;
@@ -162,20 +177,37 @@ void Snake::setDirection(int node)
 
     if (headRow + 1 == nodeRow && headCol == nodeCol)
     {
-        last_direction = DOWN;
+        last_direction = DIRECTION_DOWN;
     }
     else if (headRow - 1 == nodeRow && headCol == nodeCol)
     {
-        last_direction = UP;
+        last_direction = DIRECTION_UP;
     }
     else if (headRow == nodeRow && headCol == nodeCol + 1)
     {
-        last_direction = LEFT;
+        last_direction = DIRECTION_LEFT;
     }
     else if (headRow== nodeRow && headCol == nodeCol - 1)
     {
-        last_direction = RIGHT;
+        last_direction = DIRECTION_RIGHT;
     }
+}
+
+void Snake::setDirection(Direction_e direction)
+{
+    if (modeSelection.getMode() != MODE_MANUAL)
+    {
+        return;
+    }
+    if ((last_direction == DIRECTION_UP && direction == DIRECTION_DOWN) ||
+            (last_direction == DIRECTION_DOWN && direction == DIRECTION_UP) ||
+            (last_direction == DIRECTION_LEFT && direction == DIRECTION_RIGHT) ||
+            (last_direction == DIRECTION_RIGHT && direction == DIRECTION_LEFT))
+    {
+        return;
+    }
+
+    last_direction = direction;
 }
 
 int Snake::moveDirection(int direction)
@@ -183,24 +215,24 @@ int Snake::moveDirection(int direction)
     int nodeRow = 0, nodeCol = 0;
     switch(direction)
     {
-    case UP:
+    case DIRECTION_UP:
         nodeRow = headRow - 1;
         nodeCol = headCol;
         break;
-    case DOWN:
+    case DIRECTION_DOWN:
         nodeRow = headRow + 1;
         nodeCol = headCol;
         break;
-    case LEFT:
+    case DIRECTION_LEFT:
         nodeRow = headRow;
         nodeCol = headCol - 1;
         break;
-    case RIGHT:
+    case DIRECTION_RIGHT:
         nodeRow = headRow;
         nodeCol = headCol + 1;
         break;
     }
-    if (screenData.getType(nodeRow, nodeCol) == Node_available)
+    if (screenData.getType(nodeRow, nodeCol) == Node_available || screenData.getType(nodeRow, nodeCol) == Node_seed)
     {
         return getNum(nodeRow, nodeCol);
     }
@@ -210,13 +242,13 @@ int Snake::moveDirection(int direction)
     }
 }
 
-void Snake::setMethod(search_method_e m)
+void Snake::setMethod(Search_method_e m)
 {
     cur_method = m;
     std::cout << "set method to " << method_name_map[cur_method] << std::endl;
 }
 
-search_method_e Snake::getMethod()
+Search_method_e Snake::getMethod()
 {
     return cur_method;
 }
@@ -235,7 +267,7 @@ void Snake::reset()
     push(row / 2, col / 2, Node_snake_head, true);     //snake head
     walkedCount = 0;
 
-    if (modeSelection.getMode() == REPLAY_MODE)
+    if (modeSelection.getMode() == MODE_REPLAY)
     {
         seed.setData();
     }

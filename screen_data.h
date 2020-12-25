@@ -24,6 +24,7 @@ public:
 	int row();
 	int col();
     Node_t getType(int row, int col);
+    Node_t getType(int node);
 	void setType(int row, int col, Node_t node_type);
 	
 	friend class Snake;

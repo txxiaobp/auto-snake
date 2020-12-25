@@ -24,11 +24,13 @@ public:
     Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent = nullptr);
     ~Widget();
 
-    void changeAlgorithm(search_method_e method = METHOD_MAX);
+    void changeAlgorithm(Search_method_e method = METHOD_MAX);
     void restartGame();
     void pauseGame();
     void continueGame();
     bool isGamePause();
+    void changeManualMode();
+    void changeAutoMode();
 
     void timerEvent(QTimerEvent* ev);
     void paintEvent(QPaintEvent* ev);

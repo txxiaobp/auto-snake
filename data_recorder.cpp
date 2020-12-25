@@ -11,7 +11,7 @@ DataRecorder::DataRecorder(ScreenData& screenData, ModeSelection& modeSelection)
     , goalIndex(0)
 {
     reset();
-    if (modeSelection.getMode() == REPLAY_MODE)
+    if (modeSelection.getMode() == MODE_REPLAY)
     {
         importFromFile("data.txt");
         screenData.reset(row, col);
@@ -28,7 +28,7 @@ void DataRecorder::reset()
 
 void DataRecorder::pushSnakeData(int directionData)
 {
-    if (modeSelection.getMode() == REPLAY_MODE)
+    if (modeSelection.getMode() == MODE_REPLAY)
     {
         return;
     }
@@ -37,7 +37,7 @@ void DataRecorder::pushSnakeData(int directionData)
 
 void DataRecorder::pushGoalData(int goal)
 {
-    if (modeSelection.getMode() == REPLAY_MODE)
+    if (modeSelection.getMode() == MODE_REPLAY)
     {
         return;
     }
@@ -89,7 +89,7 @@ void DataRecorder::importFromFile(const char *fileName)
 
 int DataRecorder::popSnakeData()
 {
-    if (modeSelection.getMode() != REPLAY_MODE)
+    if (modeSelection.getMode() != MODE_REPLAY)
     {
         return -1;
     }
@@ -99,7 +99,7 @@ int DataRecorder::popSnakeData()
 
 int DataRecorder::popGoalData()
 {
-    if (modeSelection.getMode() != REPLAY_MODE)
+    if (modeSelection.getMode() != MODE_REPLAY)
     {
         return -1;
     }

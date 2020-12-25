@@ -12,17 +12,18 @@
 
 enum
 {
-    default_snake_speed = 50
+    DEFAULT_AUTO_SNAKE_SPEED = 30,
+    DEFAULT_MANUAL_SNAKE_SPEED = 200
 };
 
 enum
 {
-    Screen_undefined = 0,
-    Screen_available,
-    Screen_snake_body,
-    Screen_snake_head,
-    Screen_wall,
-    Screen_seed
+    SCREEN_UNDEFINED = 0,
+    SCREEN_AVAILABLE,
+    SCREEN_SNAKE_BODY,
+    SCREEN_SNAKE_HEAD,
+    SCREEN_WALL,
+    SCREEN_SEED
 };
 
 Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent)
@@ -32,7 +33,6 @@ Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRec
     , dataRecorder(dataRecorder)
     , snake(snake)
     , radius(radius)
-    , timeInterval(default_snake_speed)
     , isPause(false)
     , modeSelection(modeSelection)
 {
@@ -43,6 +43,21 @@ Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRec
     painter->setRenderHint(QPainter::HighQualityAntialiasing);
     setPainterMap(radius);
 
+    switch (modeSelection.getMode())
+    {
+    case MODE_AUTO:
+        timeInterval = DEFAULT_AUTO_SNAKE_SPEED;
+        break;
+    case MODE_MANUAL:
+        timeInterval = DEFAULT_MANUAL_SNAKE_SPEED;
+        break;
+    case MODE_REPLAY:
+        timeInterval = DEFAULT_MANUAL_SNAKE_SPEED;
+        break;
+    default:
+        break;
+    }
+
     ui->setupUi(this);   
     timerId = startTimer(timeInterval);
 }
@@ -51,15 +66,15 @@ Widget::~Widget()
 {
     delete ui;
     delete painter;
-    delete painterMap[Screen_snake_body];
-    delete painterMap[Screen_snake_head];
-    delete painterMap[Screen_wall];
-    delete painterMap[Screen_seed];
+    delete painterMap[SCREEN_SNAKE_BODY];
+    delete painterMap[SCREEN_SNAKE_HEAD];
+    delete painterMap[SCREEN_WALL];
+    delete painterMap[SCREEN_SEED];
 }
 
-void Widget::changeAlgorithm(search_method_e method)
+void Widget::changeAlgorithm(Search_method_e method)
 {
-    if (modeSelection.getMode() == REPLAY_MODE)
+    if (modeSelection.getMode() == MODE_REPLAY)
     {
         qDebug() << "Replay the game, cannot change the algorithm";
         return;
@@ -68,7 +83,7 @@ void Widget::changeAlgorithm(search_method_e method)
     {
         int method = int(snake.getMethod());
         int nextMethod = (method + 1) % METHOD_MAX;
-        snake.setMethod(search_method_e(nextMethod));
+        snake.setMethod(Search_method_e(nextMethod));
     }
     else
     {
@@ -101,13 +116,27 @@ bool Widget::isGamePause()
     return isPause;
 }
 
+void Widget::changeManualMode()
+{
+    timeInterval = DEFAULT_MANUAL_SNAKE_SPEED;
+    modeSelection.setMode(MODE_MANUAL);
+    qDebug() << "Change mode to manual";
+}
+
+void Widget::changeAutoMode()
+{
+    timeInterval = DEFAULT_AUTO_SNAKE_SPEED;
+    modeSelection.setMode(MODE_AUTO);
+    qDebug() << "Change mode to auto";
+}
+
 void Widget::setPainterMap(int radius)
 {
-    painterMap[Screen_available] = nullptr;
-    painterMap[Screen_snake_body] = new BodyPainter(radius);
-    painterMap[Screen_snake_head] = new HeadPainter(radius);
-    painterMap[Screen_wall] = new WallPainter(radius);
-    painterMap[Screen_seed] = new SeedPainter(radius);
+    painterMap[SCREEN_AVAILABLE] = nullptr;
+    painterMap[SCREEN_SNAKE_BODY] = new BodyPainter(radius);
+    painterMap[SCREEN_SNAKE_HEAD] = new HeadPainter(radius);
+    painterMap[SCREEN_WALL] = new WallPainter(radius);
+    painterMap[SCREEN_SEED] = new SeedPainter(radius);
 }
 
 void Widget::timerEvent(QTimerEvent*)
@@ -124,7 +153,7 @@ void Widget::timerEvent(QTimerEvent*)
     else
     {
         //exit
-        if (modeSelection.getMode() == REPLAY_MODE)
+        if (modeSelection.getMode() == MODE_REPLAY)
         {
             dataRecorder.exportToFile("data.txt");
         }
@@ -147,20 +176,20 @@ void Widget::paintEvent(QPaintEvent*)
             ScreenPainter* p = nullptr;
             switch(data.getType(r, c))
             {
-            case Screen_snake_body:
-                p = painterMap[Screen_snake_body];
+            case SCREEN_SNAKE_BODY:
+                p = painterMap[SCREEN_SNAKE_BODY];
                 break;
 
-            case Screen_snake_head:
-                p = painterMap[Screen_snake_head];
+            case SCREEN_SNAKE_HEAD:
+                p = painterMap[SCREEN_SNAKE_HEAD];
                 break;
 
-            case Screen_wall:
-                p = painterMap[Screen_wall];
+            case SCREEN_WALL:
+                p = painterMap[SCREEN_WALL];
                 break;
 
-            case Screen_seed:
-                p = painterMap[Screen_seed];
+            case SCREEN_SEED:
+                p = painterMap[SCREEN_SEED];
                 break;
 
             default:
@@ -169,7 +198,7 @@ void Widget::paintEvent(QPaintEvent*)
 
             if (p)
             {
-                p->draw(qp, radius + 2 * radius * r, radius + 2 * radius * c);
+                p->draw(qp, radius + 2 * radius * c, radius + 2 * radius * r);
             }
         }
     }
@@ -199,6 +228,43 @@ void Widget::wheelEvent(QWheelEvent *event)
 
 void Widget::keyPressEvent(QKeyEvent *ev)
 {
+    if(ev->key() == Qt::Key_Up)
+    {
+        if (modeSelection.getMode() != MODE_MANUAL)
+        {
+            return;
+        }
+        snake.setDirection(DIRECTION_UP);
+        return;
+    }
+    if(ev->key() == Qt::Key_Down)
+    {
+        if (modeSelection.getMode() != MODE_MANUAL)
+        {
+            return;
+        }
+        snake.setDirection(DIRECTION_DOWN);
+        return;
+    }
+    if(ev->key() == Qt::Key_Left)
+    {
+        if (modeSelection.getMode() != MODE_MANUAL)
+        {
+            return;
+        }
+        snake.setDirection(DIRECTION_LEFT);
+        return;
+    }
+    if(ev->key() == Qt::Key_Right)
+    {
+        if (modeSelection.getMode() != MODE_MANUAL)
+        {
+            return;
+        }
+        snake.setDirection(DIRECTION_RIGHT);
+        return;
+    }
+
     if(ev->key() == Qt::Key_C)
     {
         changeAlgorithm();
@@ -207,6 +273,16 @@ void Widget::keyPressEvent(QKeyEvent *ev)
     if(ev->key() == Qt::Key_R)
     {
         restartGame();
+        return;
+    }
+    if(ev->key() == Qt::Key_M)
+    {
+        changeManualMode();
+        return;
+    }
+    if(ev->key() == Qt::Key_A)
+    {
+        changeAutoMode();
         return;
     }
     if(ev->key() == Qt::Key_P)
