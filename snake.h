@@ -7,6 +7,7 @@
 #include "screen_data.h"
 #include "seed.h"
 #include "mode_selection.h"
+#include "algorithm_selection.h"
 
 class RouteMethod;
 class DataRecorder;
@@ -20,18 +21,11 @@ typedef enum
     DIRECTION_MAX
 }Direction_e;
 
-typedef enum
-{
-    BFS_METHOD = 0,
-    DIJKSTRA_METHOD,
-    METHOD_MAX
-}Search_method_e;
-
 class Snake : public QObject
 {
     Q_OBJECT
 public:
-    Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection);
+    Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection, AlgorithmSelection& algorithmSelection);
     ~Snake();
     void setDirection(int node);
     void setDirection(Direction_e direction);
@@ -53,8 +47,6 @@ public:
     int getSize();
     int getEatenCount();
     int getWalkedCount();
-    void setMethod(Search_method_e m);
-    Search_method_e getMethod();
     void reset(); // restart the game
 
 signals:
@@ -70,13 +62,13 @@ private:
     ScreenData& screenData;
     DataRecorder& dataRecorder;
     ModeSelection& modeSelection;
+    AlgorithmSelection& algorithmSelection;
     int walkedCount;
     int headRow;
     int headCol;
     Seed& seed;
     Direction_e last_direction;
-    RouteMethod* method[METHOD_MAX];
-    Search_method_e cur_method;
+    RouteMethod* method[ALGORITHM_MAX];
 };
 
 #endif

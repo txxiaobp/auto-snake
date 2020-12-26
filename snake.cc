@@ -8,19 +8,13 @@
 #include <string>
 
 
-std::string method_name_map[METHOD_MAX] = {
-    "BFS",
-    "Dijkstra"
-};
-
-
-Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection) :
+Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection, AlgorithmSelection& algorithmSelection) :
     screenData(screenData)
     , dataRecorder(dataRecorder)
     , modeSelection(modeSelection)
+    , algorithmSelection(algorithmSelection)
     , seed(seed)
     , last_direction(DIRECTION_MAX)
-    , cur_method(BFS_METHOD)
 {
     int row = screenData.row();
     int col = screenData.col();
@@ -34,13 +28,13 @@ Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, Mod
     push(row / 2, col / 2, Node_snake_head, true);     //snake head
     walkedCount = 0;
 
-    method[BFS_METHOD] = new BFSMethod(*this, screenData, seed);
-    method[DIJKSTRA_METHOD] = new DijkstraMethod(*this, screenData, seed);
+    method[ALGORITHM_BFS] = new BFSMethod(*this, screenData, seed);
+    method[ALGORITHM_DIJKSTRA] = new DijkstraMethod(*this, screenData, seed);
 }
 
 Snake::~Snake()
 {
-    for (int i = 0; i < METHOD_MAX; i++)
+    for (int i = 0; i < ALGORITHM_MAX; i++)
     {
         delete method[i];
         method[i] = nullptr;
@@ -125,8 +119,9 @@ bool Snake::move()
     else
     {
         bool hasPath = false;
-        if (method[cur_method])
-            hasPath = method[cur_method]->findNext(from);
+
+        if (method[algorithmSelection.getAlgo()])
+            hasPath = method[algorithmSelection.getAlgo()]->findNext(from);
 
         if (hasPath)
         {
@@ -257,17 +252,6 @@ int Snake::moveDirection(int direction)
     {
         return -1;
     }
-}
-
-void Snake::setMethod(Search_method_e m)
-{
-    cur_method = m;
-    std::cout << "set method to " << method_name_map[cur_method] << std::endl;
-}
-
-Search_method_e Snake::getMethod()
-{
-    return cur_method;
 }
 
 void Snake::reset()

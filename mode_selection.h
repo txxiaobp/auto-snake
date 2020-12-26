@@ -1,6 +1,9 @@
 #ifndef MODESELECTION_H
 #define MODESELECTION_H
 
+#include <QString>
+#include <QObject>
+
 typedef enum
 {
     MODE_MANUAL,
@@ -10,15 +13,22 @@ typedef enum
 }Mode_e;
 
 
-class ModeSelection
+class ModeSelection : public QObject
 {
+    Q_OBJECT
+
 public:
     ModeSelection(Mode_e mode) : mode(mode) {}
     Mode_e getMode() { return mode; }
-    void setMode(Mode_e mode) { this->mode = mode; }
+    QString getModeString() { return modeString[int(mode)]; }
+    void setMode(Mode_e mode) { this->mode = mode; emit modeChanged(); }
+
+signals:
+    void modeChanged();
 
 private:
     Mode_e mode;
+    QString modeString[MODE_MAX] = { "手动", "自动", "重放" };
 };
 
 #endif // MODESELECTION_H

@@ -14,6 +14,7 @@
 #include "snake.h"
 #include "screen_painter.h"
 #include "mode_selection.h"
+#include "speed_selection.h"
 
 
 class DataRecorder;
@@ -23,10 +24,10 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent = nullptr);
-//    ~MainWindow();
+    MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, AlgorithmSelection& algorithmSelection, QWidget *parent = nullptr);
+    ~MainWindow();
 
-    void changeAlgorithm(Search_method_e method = METHOD_MAX);
+    void changeAlgorithm(Algorithm_e algo = ALGORITHM_MAX);
     void restartGame();
     void pauseGame();
     void continueGame();
@@ -44,6 +45,19 @@ public slots:
     void setSnakeWalkedCount(int count);
 
 private:
+    ScreenData& data;
+    DataRecorder& dataRecorder;
+    Snake& snake;
+    std::unordered_map<int, ScreenPainter*> painterMap;
+    int radius;
+    QPainter* painter;
+    ModeSelection& modeSelection;
+    AlgorithmSelection& algorithmSelection;
+    SpeedSelection speedSelection;
+    int timerId;
+    bool isPause;
+
+private:
     QMenuBar * mBar;
     QMenu *gameMenu;
     QMenu *algoMenu;
@@ -55,21 +69,15 @@ private:
     QStatusBar *sBar;
     QLabel * snakeLengthLabel;
     QLabel * snakeWalkedLabel;
+    QLabel * gameModeLabel;
+    QLabel * algorithmLabel;
+    QLabel * speedLabel;
 
 private:
     void setPainterMap(int radius);
+    void connectSignals();
 
-private:
-    ScreenData& data;
-    DataRecorder& dataRecorder;
-    Snake& snake;
-    std::unordered_map<int, ScreenPainter*> painterMap;
-    int radius;
-    QPainter* painter;
-    int timerId;
-    int timeInterval;
-    bool isPause;
-    ModeSelection& modeSelection;
+
 
 signals:
 

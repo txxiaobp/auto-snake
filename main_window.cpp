@@ -11,11 +11,6 @@
 #include "data_recorder.h"
 #include "back_painter.h"
 
-enum
-{
-    DEFAULT_AUTO_SNAKE_SPEED = 100,
-    DEFAULT_MANUAL_SNAKE_SPEED = 200
-};
 
 enum
 {
@@ -30,26 +25,31 @@ enum
 const int BAR_HEIGHT = 20;
 
 
-MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent)
+MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, AlgorithmSelection& algorithmSelection, QWidget *parent)
     : QMainWindow(parent)
-    , mBar(menuBar())
-    , gameMenu(mBar->addMenu("Game"))
-    , algoMenu(mBar->addMenu("Algorithm"))
-    , startAction(gameMenu->addAction("Start (S)"))
-    , restartAction(gameMenu->addAction("Retart (R)"))
-    , pauseAction(gameMenu->addAction("Pause|Continue (P)"))
-    , bfsAction(algoMenu->addAction("BFS"))
-    , dijkAction(algoMenu->addAction("Dijkstra"))
-    , sBar(statusBar())
-    , snakeLengthLabel(new QLabel("Snake Length: 2"))
-    , snakeWalkedLabel(new QLabel("Walked Counts: 0"))
-
     , data(data)
     , dataRecorder(dataRecorder)
     , snake(snake)
     , radius(radius)
-    , isPause(false)
     , modeSelection(modeSelection)
+    , algorithmSelection(algorithmSelection)
+    , speedSelection(modeSelection)
+    , isPause(false)
+
+    , mBar(menuBar())
+    , gameMenu(mBar->addMenu("游戏"))
+    , algoMenu(mBar->addMenu("寻路算法"))
+    , startAction(gameMenu->addAction("开始 (S)"))
+    , restartAction(gameMenu->addAction("重新开始 (R)"))
+    , pauseAction(gameMenu->addAction("暂停|继续 (P)"))
+    , bfsAction(algoMenu->addAction("广度优先搜索"))
+    , dijkAction(algoMenu->addAction("Dijkstra"))
+    , sBar(statusBar())
+    , snakeLengthLabel(new QLabel("蛇身长度: 2"))
+    , snakeWalkedLabel(new QLabel("走过的距离: 0"))
+    , gameModeLabel(new QLabel("模式: " + modeSelection.getModeString()))
+    , algorithmLabel(new QLabel("寻路算法: " + algorithmSelection.getAlgoString()))
+    , speedLabel(new QLabel("速度: " + speedSelection.getSpeedString()))
 {
     int height = data.row() * 2 * radius;
     int width = data.col() * 2 * radius;
@@ -69,7 +69,37 @@ MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder&
     setStatusBar(sBar);
     sBar->addWidget(snakeLengthLabel);
     sBar->addWidget(snakeWalkedLabel);
+    sBar->addWidget(gameModeLabel);
+    sBar->addWidget(algorithmLabel);
+    sBar->addWidget(speedLabel);
 
+    snakeLengthLabel->setFixedSize(80, BAR_HEIGHT);
+    snakeWalkedLabel->setFixedSize(100, BAR_HEIGHT);
+    gameModeLabel->setFixedSize(80, BAR_HEIGHT);
+    algorithmLabel->setFixedSize(150, BAR_HEIGHT);
+    speedLabel->setFixedSize(80, BAR_HEIGHT);
+
+    connectSignals();
+
+    painter = new QPainter(this);
+    painter->setRenderHint(QPainter::HighQualityAntialiasing);
+    setPainterMap(radius);
+
+    timerId = startTimer(speedSelection.getSpeed());
+}
+
+
+MainWindow::~MainWindow()
+{
+    delete painter;
+    delete painterMap[SCREEN_SNAKE_BODY];
+    delete painterMap[SCREEN_SNAKE_HEAD];
+    delete painterMap[SCREEN_WALL];
+    delete painterMap[SCREEN_SEED];
+}
+
+void MainWindow::connectSignals()
+{
     void (Snake:: *lengthIncrease)(int) = &Snake::snakeLengthIncrease;
     void (MainWindow:: *snakeLength)(int) = &MainWindow::setSnakeLength;
     connect(&snake, lengthIncrease, this, snakeLength);
@@ -77,72 +107,38 @@ MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder&
     void (Snake:: *walkedIncrease)(int) = &Snake::snakeWalkedIncrease;
     void (MainWindow:: *walkedCount)(int) = &MainWindow::setSnakeWalkedCount;
     connect(&snake, walkedIncrease, this, walkedCount);
-
-    painter = new QPainter(this);
-    painter->setRenderHint(QPainter::HighQualityAntialiasing);
-    setPainterMap(radius);
-
-    switch (modeSelection.getMode())
-    {
-    case MODE_AUTO:
-        timeInterval = DEFAULT_AUTO_SNAKE_SPEED;
-        break;
-    case MODE_MANUAL:
-        timeInterval = DEFAULT_MANUAL_SNAKE_SPEED;
-        break;
-    case MODE_REPLAY:
-        timeInterval = DEFAULT_MANUAL_SNAKE_SPEED;
-        break;
-    default:
-        break;
-    }
-
-    timerId = startTimer(timeInterval);
 }
-
-
-//MainWindow::~MainWindow()
-//{
-//    delete painter;
-//    delete painterMap[SCREEN_SNAKE_BODY];
-//    delete painterMap[SCREEN_SNAKE_HEAD];
-//    delete painterMap[SCREEN_WALL];
-//    delete painterMap[SCREEN_SEED];
-//}
-
-void MainWindow::changeAlgorithm(Search_method_e method)
+void MainWindow::changeAlgorithm(Algorithm_e algo)
 {
     if (modeSelection.getMode() == MODE_REPLAY)
     {
         qDebug() << "Replay the game, cannot change the algorithm";
         return;
     }
-    if (method == METHOD_MAX)
+    if (algo == ALGORITHM_MAX)
     {
-        int method = int(snake.getMethod());
-        int nextMethod = (method + 1) % METHOD_MAX;
-        snake.setMethod(Search_method_e(nextMethod));
+        algo = algorithmSelection.getAlgo();
+        algo = Algorithm_e((algo + 1) % ALGORITHM_MAX);
     }
-    else
-    {
-        snake.setMethod(method);
-    }
+    algorithmSelection.setAlgo(algo);
+
+    QString str = "寻路算法: ";
+    str += algorithmSelection.getAlgoString();
+    algorithmLabel->setText(str);
 }
 
 void MainWindow::setSnakeLength(int length)
 {
-    std::string str = "Snake Length: ";
-    str += std::to_string(length);
-    snakeLengthLabel->setText(str.data());
-    snakeLengthLabel->setBaseSize(50, BAR_HEIGHT);
+    QString str = "蛇身长度: ";
+    str += QString(std::to_string(length).data());
+    snakeLengthLabel->setText(str);
 }
 
 void MainWindow::setSnakeWalkedCount(int count)
 {
-    std::string str = "Walked Counts: ";
-    str += std::to_string(count);
-    snakeWalkedLabel->setText(str.data());
-    snakeWalkedLabel->setBaseSize(50, BAR_HEIGHT);
+    QString str = "走过的距离: ";
+    str += QString(std::to_string(count).data());
+    snakeWalkedLabel->setText(str);
 }
 
 void MainWindow::restartGame()
@@ -172,16 +168,14 @@ bool MainWindow::isGamePause()
 
 void MainWindow::changeManualMode()
 {
-    timeInterval = DEFAULT_MANUAL_SNAKE_SPEED;
     modeSelection.setMode(MODE_MANUAL);
-    qDebug() << "Change mode to manual";
+    gameModeLabel->setText("模式： " + modeSelection.getModeString());
 }
 
 void MainWindow::changeAutoMode()
 {
-    timeInterval = DEFAULT_AUTO_SNAKE_SPEED;
     modeSelection.setMode(MODE_AUTO);
-    qDebug() << "Change mode to auto";
+    gameModeLabel->setText("模式： " + modeSelection.getModeString());
 }
 
 void MainWindow::setPainterMap(int radius)
@@ -241,12 +235,12 @@ void MainWindow::paintEvent(QPaintEvent*)
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
     killTimer(timerId);
+    int timeInterval = speedSelection.getSpeed();
     if(event->delta() < 0)
     {
         if (timeInterval < 200)
         {
             timeInterval = std::min(timeInterval + 10, 200);
-            qDebug() << "Speed Down";
         }
     }
     else
@@ -254,9 +248,10 @@ void MainWindow::wheelEvent(QWheelEvent *event)
         if (timeInterval > 10)
         {
            timeInterval = std::max(timeInterval - 10, 10);
-           qDebug() << "Speed Up";
         }
     }
+    speedLabel->setText("速度: " + speedSelection.getSpeedString());
+    speedSelection.setSpeed(timeInterval);
     timerId = startTimer(timeInterval);
 }
 

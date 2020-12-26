@@ -24,6 +24,7 @@ SOURCES += \
     wall_painter.cpp
 
 HEADERS += \
+    algorithm_selection.h \
     back_painter.h \
     bfs_method.h \
     body_painter.h \
@@ -39,6 +40,7 @@ HEADERS += \
     seed.h \
     seed_painter.h \
     snake.h \
+    speed_selection.h \
     wall_painter.h
 
 FORMS +=
