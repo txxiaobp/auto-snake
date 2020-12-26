@@ -2,6 +2,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QWheelEvent>
+#include <QString>
 
 #include "body_painter.h"
 #include "head_painter.h"
@@ -40,7 +41,8 @@ MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder&
     , bfsAction(algoMenu->addAction("BFS"))
     , dijkAction(algoMenu->addAction("Dijkstra"))
     , sBar(statusBar())
-    , snakeLengthLabel(new QLabel("Snake Length: "))
+    , snakeLengthLabel(new QLabel("Snake Length: 2"))
+    , snakeWalkedLabel(new QLabel("Walked Counts: 0"))
 
     , data(data)
     , dataRecorder(dataRecorder)
@@ -66,8 +68,15 @@ MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder&
 
     setStatusBar(sBar);
     sBar->addWidget(snakeLengthLabel);
+    sBar->addWidget(snakeWalkedLabel);
 
+    void (Snake:: *lengthIncrease)(int) = &Snake::snakeLengthIncrease;
+    void (MainWindow:: *snakeLength)(int) = &MainWindow::setSnakeLength;
+    connect(&snake, lengthIncrease, this, snakeLength);
 
+    void (Snake:: *walkedIncrease)(int) = &Snake::snakeWalkedIncrease;
+    void (MainWindow:: *walkedCount)(int) = &MainWindow::setSnakeWalkedCount;
+    connect(&snake, walkedIncrease, this, walkedCount);
 
     painter = new QPainter(this);
     painter->setRenderHint(QPainter::HighQualityAntialiasing);
@@ -118,6 +127,22 @@ void MainWindow::changeAlgorithm(Search_method_e method)
     {
         snake.setMethod(method);
     }
+}
+
+void MainWindow::setSnakeLength(int length)
+{
+    std::string str = "Snake Length: ";
+    str += std::to_string(length);
+    snakeLengthLabel->setText(str.data());
+    snakeLengthLabel->setBaseSize(50, BAR_HEIGHT);
+}
+
+void MainWindow::setSnakeWalkedCount(int count)
+{
+    std::string str = "Walked Counts: ";
+    str += std::to_string(count);
+    snakeWalkedLabel->setText(str.data());
+    snakeWalkedLabel->setBaseSize(50, BAR_HEIGHT);
 }
 
 void MainWindow::restartGame()

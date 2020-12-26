@@ -39,6 +39,10 @@ public:
     void wheelEvent(QWheelEvent *event);
     virtual void keyPressEvent(QKeyEvent *ev);
 
+public slots:
+    void setSnakeLength(int length);
+    void setSnakeWalkedCount(int count);
+
 private:
     QMenuBar * mBar;
     QMenu *gameMenu;
@@ -50,6 +54,7 @@ private:
     QAction *dijkAction;
     QStatusBar *sBar;
     QLabel * snakeLengthLabel;
+    QLabel * snakeWalkedLabel;
 
 private:
     void setPainterMap(int radius);

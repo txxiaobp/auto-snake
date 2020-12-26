@@ -90,6 +90,7 @@ std::vector<int> Snake::aroundNodes(int node)
 
 bool Snake::move()
 {
+    bool ret = false;
     int row = screenData.row();
     int col = screenData.col();
     std::vector<int> from(row * col, -1);
@@ -101,58 +102,67 @@ bool Snake::move()
             int nextNode = dataRecorder.popSnakeData();
             setDirection(nextNode);
             toNextNode(nextNode);
-            return true;
+            ret = true;
         }
-        return false;
+        else
+        {
+            ret = false;
+        }
     }
-    if (modeSelection.getMode() == MODE_MANUAL)
+    else if (modeSelection.getMode() == MODE_MANUAL)
     {
         int nextNode = moveDirection(last_direction);
         if (-1 == nextNode)
         {
-            return false;
+            ret = false;
         }
-        toNextNode(nextNode);
-        return true;
+        else
+        {
+            toNextNode(nextNode);
+            ret = true;
+        }
+    }
+    else
+    {
+        bool hasPath = false;
+        if (method[cur_method])
+            hasPath = method[cur_method]->findNext(from);
+
+        if (hasPath)
+        {
+            screenData.setType(headRow, headCol, Node_snake_body);
+            int node = seed.getNode();
+
+            while (from[node] != getNum(headRow, headCol))
+            {
+                node = from[node];
+            }
+            setDirection(node);
+            toNextNode(node);
+            ret = true;
+        }
+        else
+        {
+            int direction = last_direction;
+            for (int i = 0; i < DIRECTION_MAX; i++, direction = (direction + 1) % DIRECTION_MAX)
+            {
+                int node = moveDirection(direction);
+                if (node != -1)
+                {
+                    last_direction = Direction_e(direction);
+                    push(getRow(node), getCol(node), Node_snake_head);
+                    pop();
+                    ret = true;
+                    break;
+                }
+            }
+        }
     }
 
-    bool hasPath = false;
-    if (method[cur_method])
-        hasPath = method[cur_method]->findNext(from);
-
-    bool ret = false;
-    if (hasPath)
-	{
-        screenData.setType(headRow, headCol, Node_snake_body);
-        int node = seed.getNode();
-
-        while (from[node] != getNum(headRow, headCol))
-		{
-            node = from[node];
-		}
-        setDirection(node);
-        toNextNode(node);
-        ret = true;
-	}
-	else
-	{
-        int direction = last_direction;
-        for (int i = 0; i < DIRECTION_MAX; i++, direction = (direction + 1) % DIRECTION_MAX)
-		{
-            int node = moveDirection(direction);
-            if (node != -1)
-			{
-                last_direction = Direction_e(direction);
-                push(getRow(node), getCol(node), Node_snake_head);
-                pop();
-                ret = true;
-                break;
-			}
-		}
-	}
     if (ret)
     {
         walkedCount++;
+        emit snakeWalkedIncrease(walkedCount);
     }
     return ret;
 }
@@ -308,8 +318,9 @@ void Snake::toNextNode(int nextNode)
 {
     if (nextNode == seed.getNode())
     {
-        seed.set();
+        seed.set();     
         push(getRow(nextNode), getCol(nextNode), Node_snake_head);
+        emit this->snakeLengthIncrease(snake.size());
     }
     else
     {

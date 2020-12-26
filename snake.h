@@ -1,6 +1,7 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
+#include <QObject>
 #include <vector>
 #include <queue>
 #include "screen_data.h"
@@ -26,8 +27,9 @@ typedef enum
     METHOD_MAX
 }Search_method_e;
 
-class Snake
+class Snake : public QObject
 {
+    Q_OBJECT
 public:
     Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection);
     ~Snake();
@@ -54,6 +56,10 @@ public:
     void setMethod(Search_method_e m);
     Search_method_e getMethod();
     void reset(); // restart the game
+
+signals:
+    void snakeLengthIncrease(int length);
+    void snakeWalkedIncrease(int length);
 
 private:
     void setData(int node);
