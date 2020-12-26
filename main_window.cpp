@@ -55,6 +55,9 @@ MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder&
     int width = data.col() * 2 * radius;
     resize(width, height + 2 * BAR_HEIGHT);
 
+    this->setWindowTitle("贪吃蛇");
+    this->setWindowIcon(QIcon("title.jpg"));
+
     setMenuBar(mBar);
     mBar->addMenu(gameMenu);
     mBar->addMenu(algoMenu);
