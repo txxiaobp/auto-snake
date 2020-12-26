@@ -1,5 +1,4 @@
-#include "widget.h"
-#include "ui_widget.h"
+#include "main_window.h"
 #include <QTimer>
 #include <QDebug>
 #include <QWheelEvent>
@@ -27,9 +26,22 @@ enum
     SCREEN_SEED
 };
 
-Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent)
-    : QWidget(parent)
-    , ui(new Ui::Widget)
+const int BAR_HEIGHT = 20;
+
+
+MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent)
+    : QMainWindow(parent)
+    , mBar(menuBar())
+    , gameMenu(mBar->addMenu("Game"))
+    , algoMenu(mBar->addMenu("Algorithm"))
+    , startAction(gameMenu->addAction("Start (S)"))
+    , restartAction(gameMenu->addAction("Retart (R)"))
+    , pauseAction(gameMenu->addAction("Pause|Continue (P)"))
+    , bfsAction(algoMenu->addAction("BFS"))
+    , dijkAction(algoMenu->addAction("Dijkstra"))
+    , sBar(statusBar())
+    , snakeLengthLabel(new QLabel("Snake Length: "))
+
     , data(data)
     , dataRecorder(dataRecorder)
     , snake(snake)
@@ -39,7 +51,24 @@ Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRec
 {
     int height = data.row() * 2 * radius;
     int width = data.col() * 2 * radius;
-    resize(width, height);
+    resize(width, height + 2 * BAR_HEIGHT);
+
+    setMenuBar(mBar);
+    mBar->addMenu(gameMenu);
+    mBar->addMenu(algoMenu);
+
+    gameMenu->addAction(startAction);
+    gameMenu->addAction(restartAction);
+    gameMenu->addAction(pauseAction);
+
+    algoMenu->addAction(bfsAction);
+    algoMenu->addAction(dijkAction);
+
+    setStatusBar(sBar);
+    sBar->addWidget(snakeLengthLabel);
+
+
+
     painter = new QPainter(this);
     painter->setRenderHint(QPainter::HighQualityAntialiasing);
     setPainterMap(radius);
@@ -59,21 +88,20 @@ Widget::Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRec
         break;
     }
 
-    ui->setupUi(this);   
     timerId = startTimer(timeInterval);
 }
 
-Widget::~Widget()
-{
-    delete ui;
-    delete painter;
-    delete painterMap[SCREEN_SNAKE_BODY];
-    delete painterMap[SCREEN_SNAKE_HEAD];
-    delete painterMap[SCREEN_WALL];
-    delete painterMap[SCREEN_SEED];
-}
 
-void Widget::changeAlgorithm(Search_method_e method)
+//MainWindow::~MainWindow()
+//{
+//    delete painter;
+//    delete painterMap[SCREEN_SNAKE_BODY];
+//    delete painterMap[SCREEN_SNAKE_HEAD];
+//    delete painterMap[SCREEN_WALL];
+//    delete painterMap[SCREEN_SEED];
+//}
+
+void MainWindow::changeAlgorithm(Search_method_e method)
 {
     if (modeSelection.getMode() == MODE_REPLAY)
     {
@@ -92,7 +120,7 @@ void Widget::changeAlgorithm(Search_method_e method)
     }
 }
 
-void Widget::restartGame()
+void MainWindow::restartGame()
 {
     qDebug() << "Restart the game";
     isPause = false;
@@ -100,38 +128,38 @@ void Widget::restartGame()
     snake.reset();
 }
 
-void Widget::pauseGame()
+void MainWindow::pauseGame()
 {
     qDebug() << "Pause the game";
     isPause = true;
 }
 
-void Widget::continueGame()
+void MainWindow::continueGame()
 {
     qDebug() << "Continue the game";
     isPause = false;
 }
 
-bool Widget::isGamePause()
+bool MainWindow::isGamePause()
 {
     return isPause;
 }
 
-void Widget::changeManualMode()
+void MainWindow::changeManualMode()
 {
     timeInterval = DEFAULT_MANUAL_SNAKE_SPEED;
     modeSelection.setMode(MODE_MANUAL);
     qDebug() << "Change mode to manual";
 }
 
-void Widget::changeAutoMode()
+void MainWindow::changeAutoMode()
 {
     timeInterval = DEFAULT_AUTO_SNAKE_SPEED;
     modeSelection.setMode(MODE_AUTO);
     qDebug() << "Change mode to auto";
 }
 
-void Widget::setPainterMap(int radius)
+void MainWindow::setPainterMap(int radius)
 {
     painterMap[SCREEN_AVAILABLE] = new BackPainter(radius);
     painterMap[SCREEN_SNAKE_BODY] = new BodyPainter(radius);
@@ -140,7 +168,7 @@ void Widget::setPainterMap(int radius)
     painterMap[SCREEN_SEED] = new SeedPainter(radius);
 }
 
-void Widget::timerEvent(QTimerEvent*)
+void MainWindow::timerEvent(QTimerEvent*)
 {
     if (isPause)
     {
@@ -163,7 +191,7 @@ void Widget::timerEvent(QTimerEvent*)
     }
 }
 
-void Widget::paintEvent(QPaintEvent*)
+void MainWindow::paintEvent(QPaintEvent*)
 {
     QPainter qp(this);
 
@@ -179,13 +207,13 @@ void Widget::paintEvent(QPaintEvent*)
 
             if (p)
             {
-                p->draw(qp, radius + 2 * radius * c, radius + 2 * radius * r);
+                p->draw(qp, radius + 2 * radius * c, BAR_HEIGHT + radius + 2 * radius * r);
             }
         }
     }
 }
 
-void Widget::wheelEvent(QWheelEvent *event)
+void MainWindow::wheelEvent(QWheelEvent *event)
 {
     killTimer(timerId);
     if(event->delta() < 0)
@@ -207,7 +235,7 @@ void Widget::wheelEvent(QWheelEvent *event)
     timerId = startTimer(timeInterval);
 }
 
-void Widget::keyPressEvent(QKeyEvent *ev)
+void MainWindow::keyPressEvent(QKeyEvent *ev)
 {
     if(ev->key() == Qt::Key_Up)
     {

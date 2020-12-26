@@ -16,12 +16,12 @@ SOURCES += \
     dijkstra_method.cpp \
     head_painter.cpp \
     main.cpp \
+    main_window.cpp \
     screen_data.cc \
     seed.cc \
     seed_painter.cpp \
     snake.cc \
-    wall_painter.cpp \
-    widget.cpp
+    wall_painter.cpp
 
 HEADERS += \
     back_painter.h \
@@ -31,6 +31,7 @@ HEADERS += \
     dijkstra_method.h \
     head_painter.h \
     index_heap.h \
+    main_window.h \
     mode_selection.h \
     route_method.h \
     screen_data.h \
@@ -38,11 +39,9 @@ HEADERS += \
     seed.h \
     seed_painter.h \
     snake.h \
-    wall_painter.h \
-    widget.h
+    wall_painter.h
 
-FORMS += \
-    widget.ui
+FORMS +=
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

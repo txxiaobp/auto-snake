@@ -1,5 +1,12 @@
-#ifndef WIDGET_H
-#define WIDGET_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMenu>
+#include <QMenuBar>
+#include <QAction>
+#include <QStatusBar>
+#include <QLabel>
+#include <QMainWindow>
 
 #include <QWidget>
 #include <unordered_map>
@@ -8,21 +15,16 @@
 #include "screen_painter.h"
 #include "mode_selection.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui { class Widget; }
-QT_END_NAMESPACE
-
 
 class DataRecorder;
 
 
-class Widget : public QWidget
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
-    Widget(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent = nullptr);
-    ~Widget();
+    MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, QWidget *parent = nullptr);
+//    ~MainWindow();
 
     void changeAlgorithm(Search_method_e method = METHOD_MAX);
     void restartGame();
@@ -38,10 +40,21 @@ public:
     virtual void keyPressEvent(QKeyEvent *ev);
 
 private:
+    QMenuBar * mBar;
+    QMenu *gameMenu;
+    QMenu *algoMenu;
+    QAction *startAction;
+    QAction *restartAction;
+    QAction *pauseAction;
+    QAction *bfsAction;
+    QAction *dijkAction;
+    QStatusBar *sBar;
+    QLabel * snakeLengthLabel;
+
+private:
     void setPainterMap(int radius);
 
 private:
-    Ui::Widget *ui;
     ScreenData& data;
     DataRecorder& dataRecorder;
     Snake& snake;
@@ -52,5 +65,9 @@ private:
     int timeInterval;
     bool isPause;
     ModeSelection& modeSelection;
+
+signals:
+
 };
-#endif // WIDGET_H
+
+#endif // MAINWINDOW_H
