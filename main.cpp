@@ -4,6 +4,8 @@
 #include "data_recorder.h"
 #include "mode_selection.h"
 #include "algorithm_selection.h"
+#include "speed_selection.h"
+#include "game_control.h"
 #include "qt_screen.h"
 #include "main_window.h"
 #include <QApplication>
@@ -20,12 +22,14 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     ModeSelection modeSelection(mode);
     AlgorithmSelection algorithmSelection;
+    SpeedSelection speedSelection(modeSelection);
+    GameControl gameControl;
     ScreenData screenData(row, col);
     DataRecorder dataRecorder(screenData, modeSelection);
     Seed seed(screenData, dataRecorder, modeSelection);
     Snake snake(seed, screenData, dataRecorder, modeSelection, algorithmSelection);
 
-    MainWindow mainWindow(screenData, snake, radius, dataRecorder, modeSelection, algorithmSelection);
+    MainWindow mainWindow(screenData, snake, radius, dataRecorder, modeSelection, algorithmSelection, speedSelection, gameControl);
 
     mainWindow.show();
     return a.exec();

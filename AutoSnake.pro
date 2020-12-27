@@ -30,6 +30,7 @@ HEADERS += \
     body_painter.h \
     data_recorder.h \
     dijkstra_method.h \
+    game_control.h \
     head_painter.h \
     index_heap.h \
     main_window.h \

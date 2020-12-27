@@ -15,7 +15,7 @@
 #include "screen_painter.h"
 #include "mode_selection.h"
 #include "speed_selection.h"
-
+#include "game_control.h"
 
 class DataRecorder;
 
@@ -24,7 +24,15 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, AlgorithmSelection& algorithmSelection, QWidget *parent = nullptr);
+    MainWindow(ScreenData& data,
+               Snake& snake,
+               int radius,
+               DataRecorder& dataRecorder,
+               ModeSelection& modeSelection,
+               AlgorithmSelection& algorithmSelection,
+               SpeedSelection& speedSelection,
+               GameControl& gameControl,
+               QWidget *parent = nullptr);
     ~MainWindow();
 
     void changeAlgorithm(Algorithm_e algo = ALGORITHM_MAX);
@@ -53,9 +61,9 @@ private:
     QPainter* painter;
     ModeSelection& modeSelection;
     AlgorithmSelection& algorithmSelection;
-    SpeedSelection speedSelection;
+    SpeedSelection& speedSelection;
+    GameControl& gameControl;
     int timerId;
-    bool isPause;
 
 private:
     QMenuBar * mBar;
@@ -76,8 +84,6 @@ private:
 private:
     void setPainterMap(int radius);
     void connectSignals();
-
-
 
 signals:
 

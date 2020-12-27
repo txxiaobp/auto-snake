@@ -25,7 +25,15 @@ enum
 const int BAR_HEIGHT = 20;
 
 
-MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder& dataRecorder, ModeSelection& modeSelection, AlgorithmSelection& algorithmSelection, QWidget *parent)
+MainWindow::MainWindow(ScreenData& data,
+                       Snake& snake,
+                       int radius,
+                       DataRecorder& dataRecorder,
+                       ModeSelection& modeSelection,
+                       AlgorithmSelection& algorithmSelection,
+                       SpeedSelection& speedSelection,
+                       GameControl& gameControl,
+                       QWidget *parent)
     : QMainWindow(parent)
     , data(data)
     , dataRecorder(dataRecorder)
@@ -33,8 +41,8 @@ MainWindow::MainWindow(ScreenData& data, Snake& snake, int radius, DataRecorder&
     , radius(radius)
     , modeSelection(modeSelection)
     , algorithmSelection(algorithmSelection)
-    , speedSelection(modeSelection)
-    , isPause(false)
+    , speedSelection(speedSelection)
+    , gameControl(gameControl)
 
     , mBar(menuBar())
     , gameMenu(mBar->addMenu("游戏"))
@@ -147,7 +155,7 @@ void MainWindow::setSnakeWalkedCount(int count)
 void MainWindow::restartGame()
 {
     qDebug() << "Restart the game";
-    isPause = false;
+    gameControl.setMode(GAME_PLAY_CONTINUE);
     dataRecorder.reset();
     snake.reset();
 }
@@ -155,18 +163,18 @@ void MainWindow::restartGame()
 void MainWindow::pauseGame()
 {
     qDebug() << "Pause the game";
-    isPause = true;
+    gameControl.setMode(GAME_PLAY_PAUSE);
 }
 
 void MainWindow::continueGame()
 {
     qDebug() << "Continue the game";
-    isPause = false;
+    gameControl.setMode(GAME_PLAY_CONTINUE);
 }
 
 bool MainWindow::isGamePause()
 {
-    return isPause;
+    return gameControl.getMode() == GAME_PLAY_PAUSE;
 }
 
 void MainWindow::changeManualMode()
@@ -192,7 +200,7 @@ void MainWindow::setPainterMap(int radius)
 
 void MainWindow::timerEvent(QTimerEvent*)
 {
-    if (isPause)
+    if (gameControl.getMode() == GAME_PLAY_PAUSE)
     {
         return;
     }
