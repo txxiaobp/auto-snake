@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/images/back.jpg</file>
+        <file>res/images/body.jpg</file>
+        <file>res/images/head_down.jpg</file>
+        <file>res/images/head_left.jpg</file>
+        <file>res/images/head_right.jpg</file>
+        <file>res/images/head_up.jpg</file>
+        <file>res/images/seed1.jpg</file>
+        <file>res/images/seed2.jpg</file>
+        <file>res/images/seed3.jpg</file>
+        <file>res/images/seed4.jpg</file>
+        <file>res/images/seed5.jpg</file>
+        <file>res/images/seed6.jpg</file>
+        <file>res/images/seed7.jpg</file>
+        <file>res/images/seed8.jpg</file>
+        <file>res/images/seed9.jpg</file>
+        <file>res/images/seed10.jpg</file>
+        <file>res/images/seed11.jpg</file>
+        <file>res/images/seed12.jpg</file>
+        <file>res/images/seed13.jpg</file>
+        <file>res/images/title.jpg</file>
+        <file>res/images/wall.jpg</file>
+    </qresource>
+</RCC>
