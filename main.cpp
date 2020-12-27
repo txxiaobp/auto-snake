@@ -6,7 +6,6 @@
 #include "algorithm_selection.h"
 #include "speed_selection.h"
 #include "game_control.h"
-#include "qt_screen.h"
 #include "main_window.h"
 #include <QApplication>
 
@@ -15,12 +14,9 @@ int main(int argc, char *argv[])
     int row = 18;
     int col = 18;
     int radius = 16;
-    Mode_e mode = MODE_AUTO;
-    //Mode_e mode = MODE_MANUAL;
-    //Mode_e mode = MODE_REPLAY;
 
     QApplication a(argc, argv);
-    ModeSelection modeSelection(mode);
+    ModeSelection modeSelection;
     AlgorithmSelection algorithmSelection;
     SpeedSelection speedSelection(modeSelection);
     StatusSelection statusSelection;

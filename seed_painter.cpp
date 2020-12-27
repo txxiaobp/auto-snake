@@ -11,19 +11,19 @@ SeedPainter::SeedPainter(int radius)
     , posX(-1)
     , posY(-1)
 {
-    imgs.push_back(QImage("seed1.jpg"));
-    imgs.push_back(QImage("seed2.jpg"));
-    imgs.push_back(QImage("seed3.jpg"));
-    imgs.push_back(QImage("seed4.jpg"));
-    imgs.push_back(QImage("seed5.jpg"));
-    imgs.push_back(QImage("seed6.jpg"));
-    imgs.push_back(QImage("seed7.jpg"));
-    imgs.push_back(QImage("seed8.jpg"));
-    imgs.push_back(QImage("seed9.jpg"));
-    imgs.push_back(QImage("seed10.jpg"));
-    imgs.push_back(QImage("seed11.jpg"));
-    imgs.push_back(QImage("seed12.jpg"));
-    imgs.push_back(QImage("seed13.jpg"));
+    imgs.push_back(QImage(":/res/images/seed1.jpg"));
+    imgs.push_back(QImage(":/res/images/seed2.jpg"));
+    imgs.push_back(QImage(":/res/images/seed3.jpg"));
+    imgs.push_back(QImage(":/res/images/seed4.jpg"));
+    imgs.push_back(QImage(":/res/images/seed5.jpg"));
+    imgs.push_back(QImage(":/res/images/seed6.jpg"));
+    imgs.push_back(QImage(":/res/images/seed7.jpg"));
+    imgs.push_back(QImage(":/res/images/seed8.jpg"));
+    imgs.push_back(QImage(":/res/images/seed9.jpg"));
+    imgs.push_back(QImage(":/res/images/seed10.jpg"));
+    imgs.push_back(QImage(":/res/images/seed11.jpg"));
+    imgs.push_back(QImage(":/res/images/seed12.jpg"));
+    imgs.push_back(QImage(":/res/images/seed13.jpg"));
 }
 
 void SeedPainter::draw(QPainter& painter, int x, int y)

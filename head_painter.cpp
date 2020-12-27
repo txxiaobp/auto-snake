@@ -7,10 +7,10 @@ HeadPainter::HeadPainter(int radius, Snake& snake)
     : ScreenPainter(radius)
     , snake(snake)
 {
-    imgMap[DIRECTION_UP] = QImage("head_up.jpg");
-    imgMap[DIRECTION_DOWN] = QImage("head_down.jpg");
-    imgMap[DIRECTION_LEFT] = QImage("head_left.jpg");
-    imgMap[DIRECTION_RIGHT] = QImage("head_right.jpg");
+    imgMap[DIRECTION_UP] = QImage(":/res/images/head_up.jpg");
+    imgMap[DIRECTION_DOWN] = QImage(":/res/images/head_down.jpg");
+    imgMap[DIRECTION_LEFT] = QImage(":/res/images/head_left.jpg");
+    imgMap[DIRECTION_RIGHT] = QImage(":/res/images/head_right.jpg");
 }
 
 void HeadPainter::draw(QPainter& painter, int x, int y)

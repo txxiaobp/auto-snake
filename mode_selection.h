@@ -18,7 +18,7 @@ class ModeSelection : public QObject
     Q_OBJECT
 
 public:
-    ModeSelection(Mode_e mode) : mode(mode) {}
+    ModeSelection(Mode_e mode = MODE_AUTO) : mode(mode) {}
     Mode_e getMode() { return mode; }
     QString getModeString() { return modeString[int(mode)]; }
     void setMode(Mode_e mode) { this->mode = mode; emit modeChanged(); }

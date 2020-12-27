@@ -70,7 +70,7 @@ MainWindow::MainWindow(ScreenData& data,
     resize(width, height + 2 * BAR_HEIGHT);
 
     this->setWindowTitle("贪吃蛇");
-    this->setWindowIcon(QIcon("title.jpg"));
+    this->setWindowIcon(QIcon(":/res/images/title.jpg"));
 
     setMenuBar(mBar);
     mBar->addMenu(gameMenu);

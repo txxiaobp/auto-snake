@@ -8,7 +8,7 @@ void WallPainter::draw(QPainter& painter, int x, int y)
 {
     QRect target(x - radius, y - radius, 2 * radius, 2 * radius);
     QRect source(0.0, 0.0, 32, 25);
-    QImage image("wall.jpg");
+    QImage image(":/res/images/wall.jpg");
 
     painter.drawImage(target, image, source);
 }

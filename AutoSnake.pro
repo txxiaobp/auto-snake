@@ -72,3 +72,6 @@ DISTFILES += \
     seed8.jpg \
     seed9.jpg \
     wall.jpg
+
+RESOURCES += \
+    res.qrc

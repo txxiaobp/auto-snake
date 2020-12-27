@@ -8,7 +8,7 @@ void BodyPainter::draw(QPainter& painter, int x, int y)
 {
     QRect target(x - radius, y - radius, 2 * radius, 2 * radius);
     QRect source(0.0, 0.0, 82, 82);
-    QImage image("body.jpg");
+    QImage image(":/res/images/body.jpg");
 
     painter.drawImage(target, image, source);
 }
