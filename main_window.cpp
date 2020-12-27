@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QWheelEvent>
 #include <QString>
-
+#include <QMessageBox>
 #include "body_painter.h"
 #include "head_painter.h"
 #include "wall_painter.h"
@@ -212,7 +212,17 @@ void MainWindow::changeMode(Mode_e mode)
 
 void MainWindow::gameEnd()
 {
+    setStatusMode(GAME_PLAY_DEAD);
+    if (modeSelection.getMode() == MODE_REPLAY)
+    {
+        return;
+    }
 
+    QMessageBox::StandardButton rb = QMessageBox::question(NULL, "保存数据文件", "你想保存本局的数据吗?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    if(rb == QMessageBox::Yes)
+    {
+        dataRecorder.exportToFile("data.txt");
+    }
 }
 
 void MainWindow::setPainterMap(int radius)
@@ -226,7 +236,7 @@ void MainWindow::setPainterMap(int radius)
 
 void MainWindow::timerEvent(QTimerEvent*)
 {
-    if (statusSelection.getMode() == GAME_PLAY_PAUSE)
+    if (statusSelection.getMode() != GAME_PLAY_CONTINUE)
     {
         return;
     }
@@ -238,11 +248,7 @@ void MainWindow::timerEvent(QTimerEvent*)
     else
     {
         //exit
-        if (modeSelection.getMode() != MODE_REPLAY)
-        {
-            dataRecorder.exportToFile("data.txt");
-        }
-        exit(0);
+        gameEnd();
     }
 }
 
