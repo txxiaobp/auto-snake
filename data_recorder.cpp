@@ -27,10 +27,14 @@ void DataRecorder::reset(const char *fileName)
 
 void DataRecorder::reset()
 {
-//    snakeHeadData.clear();
-//    goalData.clear();
     snakeIndex = 0;
     goalIndex = 0;
+}
+
+void DataRecorder::clearData()
+{
+    snakeHeadData.clear();
+    goalData.clear();
 }
 
 void DataRecorder::pushSnakeData(int directionData)

@@ -18,6 +18,7 @@ public:
     void importFromFile(const char *fileName);
     void reset(const char *fileName);
     void reset();
+    void clearData();
     bool empty();
     int getRow() { return row; };
     int getCol() { return col; };

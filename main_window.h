@@ -52,6 +52,13 @@ public slots:
     void setSnakeWalkedCount(int count);
 
 private:
+    void setPainterMap(int radius);
+    void connectSignals();
+    void gameEnd();
+    void speedUp();
+    void speedDown();
+
+private:
     ScreenData& data;
     DataRecorder& dataRecorder;
     Snake& snake;
@@ -69,6 +76,7 @@ private:
     QMenu *gameMenu;
     QMenu *modeMenu;
     QMenu *algoMenu;
+    QMenu *speedMenu;
     QAction *startAction;
     QAction *restartAction;
     QAction *pauseAction;
@@ -78,6 +86,8 @@ private:
     QAction *replayAction;
     QAction *bfsAction;
     QAction *dijkstraAction;
+    QAction *speedUpAction;
+    QAction *speedDownAction;
     QStatusBar *sBar;
     QLabel * snakeLengthLabel;
     QLabel * snakeWalkedLabel;
@@ -85,11 +95,6 @@ private:
     QLabel * gameStatusLabel;
     QLabel * algorithmLabel;
     QLabel * speedLabel;
-
-private:
-    void setPainterMap(int radius);
-    void connectSignals();
-    void gameEnd();
 };
 
 #endif // MAINWINDOW_H

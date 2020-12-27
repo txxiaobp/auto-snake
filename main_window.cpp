@@ -49,6 +49,7 @@ MainWindow::MainWindow(ScreenData& data,
     , gameMenu(mBar->addMenu("游戏"))
     , modeMenu(mBar->addMenu("模式"))
     , algoMenu(mBar->addMenu("寻路算法"))
+    , speedMenu(mBar->addMenu("速度控制"))
     , startAction(gameMenu->addAction("开始 (S)"))
     , restartAction(gameMenu->addAction("重新开始 (R)"))
     , pauseAction(gameMenu->addAction("暂停 (P)"))
@@ -58,6 +59,8 @@ MainWindow::MainWindow(ScreenData& data,
     , replayAction(modeMenu->addAction("重放"))
     , bfsAction(algoMenu->addAction("广度优先搜索"))
     , dijkstraAction(algoMenu->addAction("Dijkstra"))
+    , speedUpAction(speedMenu->addAction("加速"))
+    , speedDownAction(speedMenu->addAction("减速"))
     , sBar(statusBar())
     , snakeLengthLabel(new QLabel("蛇身长度: 2"))
     , snakeWalkedLabel(new QLabel("走过的距离: 0"))
@@ -148,6 +151,12 @@ void MainWindow::connectSignals()
     connect(dijkstraAction, &QAction::triggered, [&](){
         changeAlgorithm(ALGORITHM_DIJKSTRA);
     });
+    connect(speedUpAction, &QAction::triggered, [&](){
+        speedUp();
+    });
+    connect(speedDownAction, &QAction::triggered, [&](){
+        speedDown();
+    });
 }
 
 void MainWindow::changeAlgorithm(Algorithm_e algo)
@@ -222,9 +231,13 @@ void MainWindow::setStatusMode(Game_Mode_e mode)
 
 void MainWindow::changeMode(Mode_e mode)
 {
-    if (modeSelection.getMode() == MODE_REPLAY)
+    if (modeSelection.getMode() == MODE_REPLAY || modeSelection.getMode() == mode)
     {
         return;
+    }
+    if (mode == MODE_REPLAY)
+    {
+
     }
     modeSelection.setMode(mode);
     gameModeLabel->setText("模式: " + modeSelection.getModeString());
@@ -307,27 +320,43 @@ void MainWindow::paintEvent(QPaintEvent*)
     }
 }
 
-void MainWindow::wheelEvent(QWheelEvent *event)
+void MainWindow::speedDown()
 {
     killTimer(timerId);
     int timeInterval = speedSelection.getSpeed();
-    if(event->delta() < 0)
+    if (timeInterval < 5000)
     {
-        if (timeInterval < 200)
-        {
-            timeInterval = std::min(timeInterval + 10, 200);
-        }
-    }
-    else
-    {
-        if (timeInterval > 10)
-        {
-           timeInterval = std::max(timeInterval - 10, 10);
-        }
+        timeInterval = std::min(timeInterval + 10, 5000);
     }
     speedLabel->setText("速度: " + speedSelection.getSpeedString());
     speedSelection.setSpeed(timeInterval);
     timerId = startTimer(timeInterval);
+}
+
+void MainWindow::speedUp()
+{
+    killTimer(timerId);
+    int timeInterval = speedSelection.getSpeed();
+    if (timeInterval > 1)
+    {
+       timeInterval = std::max(timeInterval - 10, 1);
+    }
+    speedLabel->setText("速度: " + speedSelection.getSpeedString());
+    speedSelection.setSpeed(timeInterval);
+    timerId = startTimer(timeInterval);
+}
+
+void MainWindow::wheelEvent(QWheelEvent *event)
+{
+    if(event->delta() < 0)
+    {
+        speedDown();
+
+    }
+    else
+    {
+        speedUp();
+    }
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ev)
