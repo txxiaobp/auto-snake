@@ -7,6 +7,7 @@
 #include <QStatusBar>
 #include <QLabel>
 #include <QMainWindow>
+#include <vector>
 
 #include <QWidget>
 #include <unordered_map>
@@ -36,6 +37,7 @@ public:
     ~MainWindow();
 
     void changeAlgorithm(Algorithm_e algo = ALGORITHM_MAX);
+    void startGame();
     void restartGame();
     void setStatusMode(Game_Mode_e mode);
     void changeMode(Mode_e mode);
@@ -74,8 +76,7 @@ private:
     QAction *autoAction;
     QAction *manualAction;
     QAction *replayAction;
-    QAction *bfsAction;
-    QAction *dijkAction;
+    std::vector<QAction *> actionVec;
     QStatusBar *sBar;
     QLabel * snakeLengthLabel;
     QLabel * snakeWalkedLabel;

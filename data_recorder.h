@@ -16,6 +16,7 @@ public:
     int popGoalData();
     void exportToFile(const char *fileName);
     void importFromFile(const char *fileName);
+    void reset(const char *fileName);
     void reset();
     bool empty();
     int getRow() { return row; };

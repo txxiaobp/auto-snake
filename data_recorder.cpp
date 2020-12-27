@@ -18,10 +18,17 @@ DataRecorder::DataRecorder(ScreenData& screenData, ModeSelection& modeSelection)
     }
 }
 
-void DataRecorder::reset()
+void DataRecorder::reset(const char *fileName)
 {
     snakeHeadData.clear();
     goalData.clear();
+    importFromFile(fileName);
+}
+
+void DataRecorder::reset()
+{
+//    snakeHeadData.clear();
+//    goalData.clear();
     snakeIndex = 0;
     goalIndex = 0;
 }

@@ -268,7 +268,7 @@ void Snake::reset()
     push(row / 2, col / 2, Node_snake_head, true);     //snake head
     walkedCount = 0;
 
-    if (modeSelection.getMode() == MODE_REPLAY)
+    if (modeSelection.getMode() != MODE_REPLAY)
     {
         seed.setData();
     }

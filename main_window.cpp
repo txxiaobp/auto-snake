@@ -4,6 +4,7 @@
 #include <QWheelEvent>
 #include <QString>
 #include <QMessageBox>
+#include <QFileDialog>
 #include "body_painter.h"
 #include "head_painter.h"
 #include "wall_painter.h"
@@ -55,8 +56,7 @@ MainWindow::MainWindow(ScreenData& data,
     , autoAction(modeMenu->addAction("自动 (A)"))
     , manualAction(modeMenu->addAction("手动 (M)"))
     , replayAction(modeMenu->addAction("重放"))
-    , bfsAction(algoMenu->addAction("广度优先搜索"))
-    , dijkAction(algoMenu->addAction("Dijkstra"))
+
     , sBar(statusBar())
     , snakeLengthLabel(new QLabel("蛇身长度: 2"))
     , snakeWalkedLabel(new QLabel("走过的距离: 0"))
@@ -86,8 +86,16 @@ MainWindow::MainWindow(ScreenData& data,
     modeMenu->addAction(manualAction);
     modeMenu->addAction(replayAction);
 
-    algoMenu->addAction(bfsAction);
-    algoMenu->addAction(dijkAction);
+    std::map<Algorithm_e, QString> algoStringMap = algorithmSelection.getAlgoStringMap();
+    for (auto& pair : algoStringMap)
+    {
+        QAction *algoAction = algoMenu->addAction(pair.second);
+        actionVec.push_back(algoAction);
+        algoMenu->addAction(algoAction);
+        connect(algoAction, &QAction::triggered, [&](){
+            changeAlgorithm(pair.first);
+        });
+    }
 
     setStatusBar(sBar);
     sBar->addWidget(snakeLengthLabel);
@@ -135,7 +143,7 @@ void MainWindow::connectSignals()
 
 
     connect(startAction, &QAction::triggered, [&](){
-        setStatusMode(GAME_PLAY_CONTINUE);
+        startGame();
     });
     connect(restartAction, &QAction::triggered, [&](){
         restartGame();
@@ -155,14 +163,15 @@ void MainWindow::connectSignals()
         changeMode(MODE_MANUAL);
     });
     connect(replayAction, &QAction::triggered, [&](){
-        modeSelection.setMode(MODE_REPLAY);
+        changeMode(MODE_REPLAY);
     });
+
 }
+
 void MainWindow::changeAlgorithm(Algorithm_e algo)
 {
     if (modeSelection.getMode() == MODE_REPLAY)
     {
-        qDebug() << "Replay the game, cannot change the algorithm";
         return;
     }
     if (algo == ALGORITHM_MAX)
@@ -191,6 +200,31 @@ void MainWindow::setSnakeWalkedCount(int count)
     snakeWalkedLabel->setText(str);
 }
 
+void MainWindow::startGame()
+{
+    if (statusSelection.getMode() == GAME_PLAY_DEAD)
+    {
+        restartGame();
+        return;
+    }
+    if (modeSelection.getMode() == MODE_REPLAY)
+    {
+        QString fileName = QFileDialog::getOpenFileName(this,
+                tr("请选择要读取的数据文件"),
+                "",
+                tr(""));
+
+        if (!fileName.isNull())
+        {
+             dataRecorder.reset(fileName.toUtf8().data());
+             snake.reset();
+             setStatusMode(GAME_PLAY_CONTINUE);
+        }
+        return;
+    }
+
+    setStatusMode(GAME_PLAY_CONTINUE);
+}
 void MainWindow::restartGame()
 {
     dataRecorder.reset();
@@ -206,6 +240,10 @@ void MainWindow::setStatusMode(Game_Mode_e mode)
 
 void MainWindow::changeMode(Mode_e mode)
 {
+    if (modeSelection.getMode() == MODE_REPLAY)
+    {
+        return;
+    }
     modeSelection.setMode(mode);
     gameModeLabel->setText("模式: " + modeSelection.getModeString());
 }
@@ -215,13 +253,26 @@ void MainWindow::gameEnd()
     setStatusMode(GAME_PLAY_DEAD);
     if (modeSelection.getMode() == MODE_REPLAY)
     {
+        QMessageBox::StandardButton rb = QMessageBox::question(NULL, "播放完毕", "播放完毕，是否重放?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        if(rb == QMessageBox::Yes)
+        {
+            restartGame();
+        }
         return;
     }
 
-    QMessageBox::StandardButton rb = QMessageBox::question(NULL, "保存数据文件", "你想保存本局的数据吗?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    QMessageBox::StandardButton rb = QMessageBox::question(NULL, "本局结束", "你想保存本局的数据吗?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     if(rb == QMessageBox::Yes)
     {
-        dataRecorder.exportToFile("data.txt");
+        QString fileName = QFileDialog::getSaveFileName(this,
+                tr("请选择本局数据的保存路径"),
+                "",
+                tr(""));
+
+            if (!fileName.isNull())
+            {
+                 dataRecorder.exportToFile(fileName.toUtf8().data());
+            }
     }
 }
 
@@ -343,7 +394,7 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
     }
     if(ev->key() == Qt::Key_S)
     {
-        setStatusMode(GAME_PLAY_CONTINUE);
+        startGame();
         return;
     }
     if(ev->key() == Qt::Key_R)
