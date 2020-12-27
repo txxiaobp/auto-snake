@@ -31,17 +31,14 @@ public:
                ModeSelection& modeSelection,
                AlgorithmSelection& algorithmSelection,
                SpeedSelection& speedSelection,
-               GameControl& gameControl,
+               StatusSelection& statusSelection,
                QWidget *parent = nullptr);
     ~MainWindow();
 
     void changeAlgorithm(Algorithm_e algo = ALGORITHM_MAX);
     void restartGame();
-    void pauseGame();
-    void continueGame();
-    bool isGamePause();
-    void changeManualMode();
-    void changeAutoMode();
+    void setStatusMode(Game_Mode_e mode);
+    void changeMode(Mode_e mode);
 
     void timerEvent(QTimerEvent* ev);
     void paintEvent(QPaintEvent* ev);
@@ -62,28 +59,35 @@ private:
     ModeSelection& modeSelection;
     AlgorithmSelection& algorithmSelection;
     SpeedSelection& speedSelection;
-    GameControl& gameControl;
+    StatusSelection& statusSelection;
     int timerId;
 
 private:
     QMenuBar * mBar;
     QMenu *gameMenu;
+    QMenu *modeMenu;
     QMenu *algoMenu;
     QAction *startAction;
     QAction *restartAction;
     QAction *pauseAction;
+    QAction *exitAction;
+    QAction *autoAction;
+    QAction *manualAction;
+    QAction *replayAction;
     QAction *bfsAction;
     QAction *dijkAction;
     QStatusBar *sBar;
     QLabel * snakeLengthLabel;
     QLabel * snakeWalkedLabel;
     QLabel * gameModeLabel;
+    QLabel * gameStatusLabel;
     QLabel * algorithmLabel;
     QLabel * speedLabel;
 
 private:
     void setPainterMap(int radius);
     void connectSignals();
+    void gameEnd();
 
 signals:
 

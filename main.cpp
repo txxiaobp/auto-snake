@@ -23,13 +23,13 @@ int main(int argc, char *argv[])
     ModeSelection modeSelection(mode);
     AlgorithmSelection algorithmSelection;
     SpeedSelection speedSelection(modeSelection);
-    GameControl gameControl;
+    StatusSelection statusSelection;
     ScreenData screenData(row, col);
     DataRecorder dataRecorder(screenData, modeSelection);
     Seed seed(screenData, dataRecorder, modeSelection);
     Snake snake(seed, screenData, dataRecorder, modeSelection, algorithmSelection);
 
-    MainWindow mainWindow(screenData, snake, radius, dataRecorder, modeSelection, algorithmSelection, speedSelection, gameControl);
+    MainWindow mainWindow(screenData, snake, radius, dataRecorder, modeSelection, algorithmSelection, speedSelection, statusSelection);
 
     mainWindow.show();
     return a.exec();

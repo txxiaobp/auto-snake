@@ -6,8 +6,8 @@
 
 typedef enum
 {
-    MODE_MANUAL,
     MODE_AUTO,
+    MODE_MANUAL,
     MODE_REPLAY,
     MODE_MAX
 }Mode_e;
@@ -28,7 +28,7 @@ signals:
 
 private:
     Mode_e mode;
-    QString modeString[MODE_MAX] = { "手动", "自动", "重放" };
+    QString modeString[MODE_MAX] = { "自动", "手动", "重放" };
 };
 
 #endif // MODESELECTION_H

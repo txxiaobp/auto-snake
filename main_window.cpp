@@ -32,7 +32,7 @@ MainWindow::MainWindow(ScreenData& data,
                        ModeSelection& modeSelection,
                        AlgorithmSelection& algorithmSelection,
                        SpeedSelection& speedSelection,
-                       GameControl& gameControl,
+                       StatusSelection& statusSelection,
                        QWidget *parent)
     : QMainWindow(parent)
     , data(data)
@@ -42,20 +42,26 @@ MainWindow::MainWindow(ScreenData& data,
     , modeSelection(modeSelection)
     , algorithmSelection(algorithmSelection)
     , speedSelection(speedSelection)
-    , gameControl(gameControl)
+    , statusSelection(statusSelection)
 
     , mBar(menuBar())
     , gameMenu(mBar->addMenu("游戏"))
+    , modeMenu(mBar->addMenu("模式"))
     , algoMenu(mBar->addMenu("寻路算法"))
     , startAction(gameMenu->addAction("开始 (S)"))
     , restartAction(gameMenu->addAction("重新开始 (R)"))
-    , pauseAction(gameMenu->addAction("暂停|继续 (P)"))
+    , pauseAction(gameMenu->addAction("暂停 (P)"))
+    , exitAction(gameMenu->addAction("退出 (E)"))
+    , autoAction(modeMenu->addAction("自动 (A)"))
+    , manualAction(modeMenu->addAction("手动 (M)"))
+    , replayAction(modeMenu->addAction("重放"))
     , bfsAction(algoMenu->addAction("广度优先搜索"))
     , dijkAction(algoMenu->addAction("Dijkstra"))
     , sBar(statusBar())
     , snakeLengthLabel(new QLabel("蛇身长度: 2"))
     , snakeWalkedLabel(new QLabel("走过的距离: 0"))
     , gameModeLabel(new QLabel("模式: " + modeSelection.getModeString()))
+    , gameStatusLabel(new QLabel("状态: " + statusSelection.getStatusString()))
     , algorithmLabel(new QLabel("寻路算法: " + algorithmSelection.getAlgoString()))
     , speedLabel(new QLabel("速度: " + speedSelection.getSpeedString()))
 {
@@ -68,11 +74,17 @@ MainWindow::MainWindow(ScreenData& data,
 
     setMenuBar(mBar);
     mBar->addMenu(gameMenu);
+    mBar->addMenu(modeMenu);
     mBar->addMenu(algoMenu);
 
     gameMenu->addAction(startAction);
     gameMenu->addAction(restartAction);
     gameMenu->addAction(pauseAction);
+    gameMenu->addAction(exitAction);
+
+    modeMenu->addAction(autoAction);
+    modeMenu->addAction(manualAction);
+    modeMenu->addAction(replayAction);
 
     algoMenu->addAction(bfsAction);
     algoMenu->addAction(dijkAction);
@@ -81,14 +93,16 @@ MainWindow::MainWindow(ScreenData& data,
     sBar->addWidget(snakeLengthLabel);
     sBar->addWidget(snakeWalkedLabel);
     sBar->addWidget(gameModeLabel);
+    sBar->addWidget(gameStatusLabel);
     sBar->addWidget(algorithmLabel);
     sBar->addWidget(speedLabel);
 
     snakeLengthLabel->setFixedSize(80, BAR_HEIGHT);
     snakeWalkedLabel->setFixedSize(100, BAR_HEIGHT);
-    gameModeLabel->setFixedSize(80, BAR_HEIGHT);
-    algorithmLabel->setFixedSize(150, BAR_HEIGHT);
-    speedLabel->setFixedSize(80, BAR_HEIGHT);
+    gameModeLabel->setFixedSize(65, BAR_HEIGHT);
+    gameStatusLabel->setFixedSize(70, BAR_HEIGHT);
+    algorithmLabel->setFixedSize(135, BAR_HEIGHT);
+    speedLabel->setFixedSize(60, BAR_HEIGHT);
 
     connectSignals();
 
@@ -118,6 +132,31 @@ void MainWindow::connectSignals()
     void (Snake:: *walkedIncrease)(int) = &Snake::snakeWalkedIncrease;
     void (MainWindow:: *walkedCount)(int) = &MainWindow::setSnakeWalkedCount;
     connect(&snake, walkedIncrease, this, walkedCount);
+
+
+    connect(startAction, &QAction::triggered, [&](){
+        setStatusMode(GAME_PLAY_CONTINUE);
+    });
+    connect(restartAction, &QAction::triggered, [&](){
+        restartGame();
+    });
+    connect(exitAction, &QAction::triggered, [&](){
+        exit(0);
+    });
+
+    connect(pauseAction, &QAction::triggered, [&](){
+        setStatusMode(GAME_PLAY_PAUSE);
+    });
+
+    connect(autoAction, &QAction::triggered, [&](){
+        changeMode(MODE_AUTO);
+    });
+    connect(manualAction, &QAction::triggered, [&](){
+        changeMode(MODE_MANUAL);
+    });
+    connect(replayAction, &QAction::triggered, [&](){
+        modeSelection.setMode(MODE_REPLAY);
+    });
 }
 void MainWindow::changeAlgorithm(Algorithm_e algo)
 {
@@ -154,39 +193,26 @@ void MainWindow::setSnakeWalkedCount(int count)
 
 void MainWindow::restartGame()
 {
-    qDebug() << "Restart the game";
-    gameControl.setMode(GAME_PLAY_CONTINUE);
     dataRecorder.reset();
     snake.reset();
+    setStatusMode(GAME_PLAY_CONTINUE);
 }
 
-void MainWindow::pauseGame()
+void MainWindow::setStatusMode(Game_Mode_e mode)
 {
-    qDebug() << "Pause the game";
-    gameControl.setMode(GAME_PLAY_PAUSE);
+    statusSelection.setMode(mode);
+    gameStatusLabel->setText("状态: " + statusSelection.getStatusString());
 }
 
-void MainWindow::continueGame()
+void MainWindow::changeMode(Mode_e mode)
 {
-    qDebug() << "Continue the game";
-    gameControl.setMode(GAME_PLAY_CONTINUE);
+    modeSelection.setMode(mode);
+    gameModeLabel->setText("模式: " + modeSelection.getModeString());
 }
 
-bool MainWindow::isGamePause()
+void MainWindow::gameEnd()
 {
-    return gameControl.getMode() == GAME_PLAY_PAUSE;
-}
 
-void MainWindow::changeManualMode()
-{
-    modeSelection.setMode(MODE_MANUAL);
-    gameModeLabel->setText("模式： " + modeSelection.getModeString());
-}
-
-void MainWindow::changeAutoMode()
-{
-    modeSelection.setMode(MODE_AUTO);
-    gameModeLabel->setText("模式： " + modeSelection.getModeString());
 }
 
 void MainWindow::setPainterMap(int radius)
@@ -200,7 +226,7 @@ void MainWindow::setPainterMap(int radius)
 
 void MainWindow::timerEvent(QTimerEvent*)
 {
-    if (gameControl.getMode() == GAME_PLAY_PAUSE)
+    if (statusSelection.getMode() == GAME_PLAY_PAUSE)
     {
         return;
     }
@@ -216,7 +242,6 @@ void MainWindow::timerEvent(QTimerEvent*)
         {
             dataRecorder.exportToFile("data.txt");
         }
-        qDebug() << "Game Over!";
         exit(0);
     }
 }
@@ -310,6 +335,11 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
         changeAlgorithm();
         return;
     }
+    if(ev->key() == Qt::Key_S)
+    {
+        setStatusMode(GAME_PLAY_CONTINUE);
+        return;
+    }
     if(ev->key() == Qt::Key_R)
     {
         restartGame();
@@ -317,25 +347,17 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
     }
     if(ev->key() == Qt::Key_M)
     {
-        changeManualMode();
+        changeMode(MODE_MANUAL);
         return;
     }
     if(ev->key() == Qt::Key_A)
     {
-        changeAutoMode();
+        changeMode(MODE_AUTO);
         return;
     }
     if(ev->key() == Qt::Key_P)
     {
-        if (isGamePause())
-        {
-            continueGame();
-        }
-        else
-        {
-            pauseGame();
-        }
-
+        setStatusMode(GAME_PLAY_PAUSE);
         return;
     }
 }
