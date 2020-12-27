@@ -56,7 +56,8 @@ MainWindow::MainWindow(ScreenData& data,
     , autoAction(modeMenu->addAction("自动 (A)"))
     , manualAction(modeMenu->addAction("手动 (M)"))
     , replayAction(modeMenu->addAction("重放"))
-
+    , bfsAction(algoMenu->addAction("广度优先搜索"))
+    , dijkstraAction(algoMenu->addAction("Dijkstra"))
     , sBar(statusBar())
     , snakeLengthLabel(new QLabel("蛇身长度: 2"))
     , snakeWalkedLabel(new QLabel("走过的距离: 0"))
@@ -73,30 +74,6 @@ MainWindow::MainWindow(ScreenData& data,
     this->setWindowIcon(QIcon(":/res/images/title.jpg"));
 
     setMenuBar(mBar);
-    mBar->addMenu(gameMenu);
-    mBar->addMenu(modeMenu);
-    mBar->addMenu(algoMenu);
-
-    gameMenu->addAction(startAction);
-    gameMenu->addAction(restartAction);
-    gameMenu->addAction(pauseAction);
-    gameMenu->addAction(exitAction);
-
-    modeMenu->addAction(autoAction);
-    modeMenu->addAction(manualAction);
-    modeMenu->addAction(replayAction);
-
-    std::map<Algorithm_e, QString> algoStringMap = algorithmSelection.getAlgoStringMap();
-    for (auto& pair : algoStringMap)
-    {
-        QAction *algoAction = algoMenu->addAction(pair.second);
-        actionVec.push_back(algoAction);
-        algoMenu->addAction(algoAction);
-        connect(algoAction, &QAction::triggered, [&](){
-            changeAlgorithm(pair.first);
-        });
-    }
-
     setStatusBar(sBar);
     sBar->addWidget(snakeLengthLabel);
     sBar->addWidget(snakeWalkedLabel);
@@ -165,7 +142,12 @@ void MainWindow::connectSignals()
     connect(replayAction, &QAction::triggered, [&](){
         changeMode(MODE_REPLAY);
     });
-
+    connect(bfsAction, &QAction::triggered, [&](){
+        changeAlgorithm(ALGORITHM_BFS);
+    });
+    connect(dijkstraAction, &QAction::triggered, [&](){
+        changeAlgorithm(ALGORITHM_DIJKSTRA);
+    });
 }
 
 void MainWindow::changeAlgorithm(Algorithm_e algo)

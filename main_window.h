@@ -76,7 +76,8 @@ private:
     QAction *autoAction;
     QAction *manualAction;
     QAction *replayAction;
-    std::vector<QAction *> actionVec;
+    QAction *bfsAction;
+    QAction *dijkstraAction;
     QStatusBar *sBar;
     QLabel * snakeLengthLabel;
     QLabel * snakeWalkedLabel;
@@ -89,9 +90,6 @@ private:
     void setPainterMap(int radius);
     void connectSignals();
     void gameEnd();
-
-signals:
-
 };
 
 #endif // MAINWINDOW_H
