@@ -2,6 +2,7 @@
 #define ASTARMETHOD_H
 
 #include "route_method.h"
+#include <map>
 
 class AStarMethod : public RouteMethod
 {
@@ -10,7 +11,7 @@ public:
     bool findNext(std::vector<int>& from);
 
 private:
-    int calDistance(int nextNode, int curNode);
+    std::pair<int,int> calDistance(int nextNode, int curNode);
 };
 
 #endif // ASTARMETHOD_H

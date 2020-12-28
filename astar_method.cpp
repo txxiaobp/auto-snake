@@ -10,6 +10,7 @@ bool AStarMethod::findNext(std::vector<int>& from)
 {
     int snakeHead = snake.getHead();
     std::vector<int> marked(from.size(), false);
+    std::vector<int> disances(from.size(), -1);
     IndexHeap<int> heap(from.size());
     heap.push(snakeHead, 0);
     from[snakeHead] = -2;
@@ -45,17 +46,19 @@ bool AStarMethod::findNext(std::vector<int>& from)
                 continue;
             }
 
-            int nextDis = calDistance(node, nd);
+            std::pair<int,int> disPair = calDistance(node, nd);
             if (from[node] == -1)
             {
                 assert(!heap.in_heap(node));
-                heap.push(node, heap.get(nd) + nextDis);
+                disances[node] = disances[nd] + disPair.first;
+                heap.push(node, disances[node] + disPair.second);
                 from[node] = nd;
             }
-            else if (heap.get(nd) + nextDis < heap.get(node))
+            else if (heap.get(nd) + disPair.first < heap.get(node))
             {
-               heap.change(node, heap.get(nd) + nextDis);
-               from[node] = nd;
+                disances[node] = disances[nd] + disPair.first;
+                heap.change(node, disances[node] + disPair.second);
+                from[node] = nd;
             }
         }
     }
@@ -63,7 +66,7 @@ bool AStarMethod::findNext(std::vector<int>& from)
     return false;
 }
 
-int AStarMethod::calDistance(int nextNode, int curNode)
+std::pair<int,int> AStarMethod::calDistance(int nextNode, int curNode)
 {
     int seedNode = seed.getNode();
     int seedRow = snake.getRow(seedNode);
@@ -78,14 +81,17 @@ int AStarMethod::calDistance(int nextNode, int curNode)
     int nextDis = std::abs(seedRow - nextRow) + std::abs(seedCol - nextCol);
     int curDis = std::abs(seedRow - curRow) + std::abs(seedCol - curCol);
 
+    int dis = 0;
     // 若下一节点到的目标点的曼哈顿距离更近，则当前节点到下一阶段的距离更小
     if (nextDis < curDis)
     {
-        return 10;
+        dis = 1;
     }
     else
     {
         assert(nextDis > curDis);
-        return 20;
+        dis = 2;
     }
+
+    return std::make_pair(dis, nextDis);
 }
