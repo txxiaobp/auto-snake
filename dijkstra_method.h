@@ -9,6 +9,9 @@ class DijkstraMethod : public RouteMethod
 public:
     DijkstraMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) {}
     bool findNext(std::vector<int>& from);
+
+private:
+    int calDistance(int nextNode, int curNode);
 };
 
 #endif // DIJSTRAMETHOD_H

@@ -13,7 +13,6 @@ bool DijkstraMethod::findNext(std::vector<int>& from)
     heap.push(snakeHead, 0);
     from[snakeHead] = -2;
 
-    int i = 0;
     while (!heap.empty())
     {
         int nd = heap.top_index();
@@ -34,30 +33,60 @@ bool DijkstraMethod::findNext(std::vector<int>& from)
                 return true;
             }
 
-            // found empty node
-            if (data.getType(r, c) == Node_available)
+            if (data.getType(r, c) != Node_available)
             {
-                if (marked[node])
-                {
-                    continue;
-                }
-                if (from[node] == -1)
-                {
-                    assert(!heap.in_heap(node));
-                    heap.push(node, heap.get(nd) + 1);
-                    from[node] = nd;
-                }
-                else if (heap.get(nd) + 1 < heap.get(node))
-                {
-                   heap.change(node, heap.get(nd) + 1);
-                   from[node] = nd;
-                }
+                continue;
+            }
+
+            // found empty node
+            if (marked[node])
+            {
+                continue;
+            }
+
+            int nextDis = calDistance(node, nd);
+            if (from[node] == -1)
+            {
+                assert(!heap.in_heap(node));
+                heap.push(node, heap.get(nd) + nextDis);
+                from[node] = nd;
+            }
+            else if (heap.get(nd) + nextDis < heap.get(node))
+            {
+               heap.change(node, heap.get(nd) + nextDis);
+               from[node] = nd;
             }
         }
-        i++;
     }
 
     return false;
+}
+
+int DijkstraMethod::calDistance(int nextNode, int curNode)
+{
+    int seedNode = seed.getNode();
+    int seedRow = snake.getRow(seedNode);
+    int seedCol = snake.getCol(seedNode);
+
+    int nextRow = snake.getRow(nextNode);
+    int nextCol = snake.getCol(nextNode);
+
+    int curRow = snake.getRow(curNode);
+    int curCol = snake.getCol(curNode);
+
+    int nextDis = std::abs(seedRow - nextRow) + std::abs(seedCol - nextCol);
+    int curDis = std::abs(seedRow - curRow) + std::abs(seedCol - curCol);
+
+    // 若下一节点到的目标点的曼哈顿距离更近，则当前节点到下一阶段的距离更小
+    if (nextDis < curDis)
+    {
+        return 10;
+    }
+    else
+    {
+        assert(nextDis > curDis);
+        return 20;
+    }
 }
 
 
