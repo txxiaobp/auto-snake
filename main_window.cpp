@@ -60,6 +60,8 @@ MainWindow::MainWindow(ScreenData& data,
     , bfsAction(algoMenu->addAction("广度优先搜索"))
     , dijkstraAction(algoMenu->addAction("Dijkstra"))
     , aStarAction(algoMenu->addAction("A*"))
+    , dStarAction(algoMenu->addAction("D*"))
+    , dStarLiteAction(algoMenu->addAction("D* Lite"))
     , speedUpAction(speedMenu->addAction("加速"))
     , speedDownAction(speedMenu->addAction("减速"))
     , sBar(statusBar())
@@ -154,6 +156,12 @@ void MainWindow::connectSignals()
     });
     connect(aStarAction, &QAction::triggered, [&](){
         changeAlgorithm(ALGORITHM_ASTAR);
+    }); 
+    connect(dStarAction, &QAction::triggered, [&](){
+        changeAlgorithm(ALGORITHM_DSTAR);
+    });
+    connect(dStarLiteAction, &QAction::triggered, [&](){
+        changeAlgorithm(ALGORITHM_DSTAR_LITE);
     });
     connect(speedUpAction, &QAction::triggered, [&](){
         speedUp();

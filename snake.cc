@@ -4,6 +4,8 @@
 #include "bfs_method.h"
 #include "dijkstra_method.h"
 #include "astar_method.h"
+#include "dstar_lite_method.h"
+#include "dstar_method.h"
 #include "data_recorder.h"
 #include "snake.h"
 #include <string>
@@ -32,6 +34,8 @@ Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, Mod
     method[ALGORITHM_BFS] = new BFSMethod(*this, screenData, seed);
     method[ALGORITHM_DIJKSTRA] = new DijkstraMethod(*this, screenData, seed);
     method[ALGORITHM_ASTAR] = new AStarMethod(*this, screenData, seed);
+    method[ALGORITHM_DSTAR] = new DStarMethod(*this, screenData, seed);
+    method[ALGORITHM_DSTAR_LITE] = new DStarLiteMethod(*this, screenData, seed);
 }
 
 Snake::~Snake()

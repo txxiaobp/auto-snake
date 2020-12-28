@@ -2,10 +2,14 @@
 #define DSTARMETHOD_H
 
 
-class DStarMethod
+#include "route_method.h"
+
+
+class DStarMethod : public RouteMethod
 {
 public:
-    DStarMethod();
+    DStarMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) {}
+    bool findNext(std::vector<int>& from);
 };
 
 #endif // DSTARMETHOD_H

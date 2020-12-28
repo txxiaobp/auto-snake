@@ -1,6 +1,7 @@
 #include "dstar_method.h"
 
-DStarMethod::DStarMethod()
+
+bool DStarMethod::findNext(std::vector<int>& from)
 {
 
 }

@@ -1,6 +1,7 @@
 #include "dstar_lite_method.h"
 
-DStarLiteMethod::DStarLiteMethod()
+
+bool DStarLiteMethod::findNext(std::vector<int>& from)
 {
 
 }
