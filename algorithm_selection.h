@@ -10,6 +10,7 @@ typedef enum
 {
     ALGORITHM_BFS = 0,
     ALGORITHM_DIJKSTRA,
+    ALGORITHM_ASTAR,
     ALGORITHM_MAX
 }Algorithm_e;
 
@@ -22,6 +23,7 @@ public:
     {
         algoStringMap[ALGORITHM_BFS] = "广度优先搜索";
         algoStringMap[ALGORITHM_DIJKSTRA] = "Dijkstra";
+        algoStringMap[ALGORITHM_ASTAR] = "A*";
     }
 
     Algorithm_e getAlgo() { return algo; }

@@ -214,51 +214,51 @@ void IndexHeap<T>::pop()
     shift_down(0);
 }
 
-void IndexHeapTest::test()
-{
-    int size = 1000;
-    int bound = 10 * size;
-    IndexHeap<int> heap(size);
-    int test_times = 1000;
-    int test_change_times = 10 * size;
+//void IndexHeapTest::test()
+//{
+//    int size = 1000;
+//    int bound = 10 * size;
+//    IndexHeap<int> heap(size);
+//    int test_times = 1000;
+//    int test_change_times = 10 * size;
 
-    srand(time(NULL));
-    for (int t = 0; t < test_times; t++)
-    {
-        for (int i = 0; i < size; i++)
-        {
-            heap.push(i, rand() % bound);
-        }
-        for (int i = 0; i < test_change_times; i++)
-        {
-            heap.change(rand() % size, rand() % bound);
-        }
-        std::vector<int> nums;
-        while (!heap.empty())
-        {
-            nums.push_back(heap.top());
-            heap.pop();
-        }
-        if (!sort(nums))
-        {
-            std::cout << "test error" << std::endl;
-            assert(false);
-        }
-        std::cout << "test " << t << " ok" << std::endl;
-    }
-    std::cout << "all test ok" << std::endl;
-}
+//    srand(time(NULL));
+//    for (int t = 0; t < test_times; t++)
+//    {
+//        for (int i = 0; i < size; i++)
+//        {
+//            heap.push(i, rand() % bound);
+//        }
+//        for (int i = 0; i < test_change_times; i++)
+//        {
+//            heap.change(rand() % size, rand() % bound);
+//        }
+//        std::vector<int> nums;
+//        while (!heap.empty())
+//        {
+//            nums.push_back(heap.top());
+//            heap.pop();
+//        }
+//        if (!sort(nums))
+//        {
+//            std::cout << "test error" << std::endl;
+//            assert(false);
+//        }
+//        std::cout << "test " << t << " ok" << std::endl;
+//    }
+//    std::cout << "all test ok" << std::endl;
+//}
 
-bool IndexHeapTest::sort(std::vector<int> &nums)
-{
-    int size = nums.size();
-    for (int i = 0; i < size - 1; i++)
-    {
-        if (nums[i] > nums[i + 1])
-        {
-            return false;
-        }
-    }
-    return true;
-}
+//bool IndexHeapTest::sort(std::vector<int> &nums)
+//{
+//    int size = nums.size();
+//    for (int i = 0; i < size - 1; i++)
+//    {
+//        if (nums[i] > nums[i + 1])
+//        {
+//            return false;
+//        }
+//    }
+//    return true;
+//}
 #endif // INDEX_HEAP_H

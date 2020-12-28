@@ -59,6 +59,7 @@ MainWindow::MainWindow(ScreenData& data,
     , replayAction(modeMenu->addAction("重放"))
     , bfsAction(algoMenu->addAction("广度优先搜索"))
     , dijkstraAction(algoMenu->addAction("Dijkstra"))
+    , aStarAction(algoMenu->addAction("A*"))
     , speedUpAction(speedMenu->addAction("加速"))
     , speedDownAction(speedMenu->addAction("减速"))
     , sBar(statusBar())
@@ -150,6 +151,9 @@ void MainWindow::connectSignals()
     });
     connect(dijkstraAction, &QAction::triggered, [&](){
         changeAlgorithm(ALGORITHM_DIJKSTRA);
+    });
+    connect(aStarAction, &QAction::triggered, [&](){
+        changeAlgorithm(ALGORITHM_ASTAR);
     });
     connect(speedUpAction, &QAction::triggered, [&](){
         speedUp();

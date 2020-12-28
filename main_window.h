@@ -86,6 +86,7 @@ private:
     QAction *replayAction;
     QAction *bfsAction;
     QAction *dijkstraAction;
+    QAction *aStarAction;
     QAction *speedUpAction;
     QAction *speedDownAction;
     QStatusBar *sBar;
