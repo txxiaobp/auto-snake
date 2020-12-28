@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    astar_method.cpp \
     back_painter.cpp \
     bfs_method.cpp \
     body_painter.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     algorithm_selection.h \
+    astar_method.h \
     back_painter.h \
     bfs_method.h \
     body_painter.h \
