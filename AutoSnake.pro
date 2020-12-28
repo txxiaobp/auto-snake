@@ -15,6 +15,8 @@ SOURCES += \
     body_painter.cpp \
     data_recorder.cpp \
     dijkstra_method.cpp \
+    dstar_lite_method.cpp \
+    dstar_method.cpp \
     head_painter.cpp \
     main.cpp \
     main_window.cpp \
@@ -32,6 +34,8 @@ HEADERS += \
     body_painter.h \
     data_recorder.h \
     dijkstra_method.h \
+    dstar_lite_method.h \
+    dstar_method.h \
     game_control.h \
     head_painter.h \
     index_heap.h \
