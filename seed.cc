@@ -10,7 +10,7 @@ void Seed::set(bool initial)
 {
     if (!initial)
     {
-        data.setType(nodeRow, nodeCol, Node_snake_head);
+        data.setType(nodeRow, nodeCol, NODE_SNAKE_HEAD);
     }
 
     if (modeSelection.getMode() == MODE_REPLAY)
@@ -27,10 +27,10 @@ void Seed::set(bool initial)
 	{
         nodeRow = rand() % row_bound;
         nodeCol = rand() % col_bound;
-    } while(data.getType(nodeRow, nodeCol) != Node_available);
+    } while(data.getType(nodeRow, nodeCol) != NODE_AVAILABLE);
 	
 
-    data.setType(nodeRow, nodeCol, Node_seed);
+    data.setType(nodeRow, nodeCol, NODE_SEED);
     setData();
 }
 
@@ -60,13 +60,13 @@ void Seed::setFromRecorder()
 {
     if (nodeRow != INVALID_ROW_OR_COL && nodeCol != INVALID_ROW_OR_COL)
     {
-        data.setType(nodeRow, nodeCol, Node_available);
+        data.setType(nodeRow, nodeCol, NODE_AVAILABLE);
     }
 
     int nextGoal = dataRecorder.popGoalData();
     nodeRow = nextGoal / data.getCol();
     nodeCol = nextGoal % data.getCol();
-    data.setType(nodeRow, nodeCol, Node_seed);
+    data.setType(nodeRow, nodeCol, NODE_SEED);
 }
 
 

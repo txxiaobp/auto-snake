@@ -32,7 +32,7 @@ bool BFSMethod::findNext(std::vector<int>& from)
             }
 
             // not found goal but empty node
-            if (screenData.getType(r, c) == Node_available && from[node] == -1)
+            if (screenData.getType(r, c) == NODE_AVAILABLE && from[node] == -1)
             {
                 from[node] = nd;
                 s.push(node);

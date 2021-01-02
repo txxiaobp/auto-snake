@@ -14,17 +14,6 @@
 #include "obstacle_painter.h"
 
 
-enum
-{
-    SCREEN_UNDEFINED = 0,
-    SCREEN_AVAILABLE,
-    SCREEN_SNAKE_BODY,
-    SCREEN_SNAKE_HEAD,
-    SCREEN_WALL,
-    SCREEN_SEED,
-    SCREEN_OBSTACLE
-};
-
 const int BAR_HEIGHT = 20;
 
 
@@ -115,10 +104,10 @@ MainWindow::MainWindow(ScreenData& data,
 MainWindow::~MainWindow()
 {
     delete painter;
-    delete painterMap[SCREEN_SNAKE_BODY];
-    delete painterMap[SCREEN_SNAKE_HEAD];
-    delete painterMap[SCREEN_WALL];
-    delete painterMap[SCREEN_SEED];
+    delete painterMap[NODE_SNAKE_BODY];
+    delete painterMap[NODE_SNAKE_HEAD];
+    delete painterMap[NODE_WALL];
+    delete painterMap[NODE_SEED];
 }
 
 void MainWindow::connectSignals()
@@ -301,12 +290,12 @@ void MainWindow::gameEnd()
 
 void MainWindow::setPainterMap(int radius)
 {
-    painterMap[SCREEN_AVAILABLE] = new BackPainter(radius);
-    painterMap[SCREEN_SNAKE_BODY] = new BodyPainter(radius);
-    painterMap[SCREEN_SNAKE_HEAD] = new HeadPainter(radius, snake);
-    painterMap[SCREEN_WALL] = new WallPainter(radius);
-    painterMap[SCREEN_SEED] = new SeedPainter(radius);
-    painterMap[SCREEN_OBSTACLE] = new ObstaclePainter(radius);
+    painterMap[NODE_AVAILABLE] = new BackPainter(radius);
+    painterMap[NODE_SNAKE_BODY] = new BodyPainter(radius);
+    painterMap[NODE_SNAKE_HEAD] = new HeadPainter(radius, snake);
+    painterMap[NODE_WALL] = new WallPainter(radius);
+    painterMap[NODE_SEED] = new SeedPainter(radius);
+    painterMap[NODE_OBSTACLE] = new ObstaclePainter(radius);
 }
 
 void MainWindow::timerEvent(QTimerEvent*)

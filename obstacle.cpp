@@ -38,9 +38,9 @@ void Obstacle::clearObstacle()
     {
         for (int j = 1; j < col - 1; j++)
         {
-            if (screenData.getType(i, j) == Node_obstacle)
+            if (screenData.getType(i, j) == NODE_OBSTACLE)
             {
-                screenData.setType(i, j, Node_available);
+                screenData.setType(i, j, NODE_AVAILABLE);
             }
         }
     }
@@ -75,7 +75,7 @@ void Obstacle::setObstacle()
         int directionCount = 1;
         for (i = 0; i < randNum; i++, directionCount++)
         {
-            if (directionCount >= OBSTACLE_NUM_IN_DIRECTION || screenData.getType(nextRow, nextCol) != Node_available)
+            if (directionCount >= OBSTACLE_NUM_IN_DIRECTION || screenData.getType(nextRow, nextCol) != NODE_AVAILABLE)
             {
                 int j;
                 for (j = 0; j < 3; j++)
@@ -83,7 +83,7 @@ void Obstacle::setObstacle()
                     nextDirection = (nextDirection + 1) % 4;
                     nextRow += directions[nextDirection][0];
                     nextCol += directions[nextDirection][1];
-                    if (screenData.getType(nextRow, nextCol) == Node_available)
+                    if (screenData.getType(nextRow, nextCol) == NODE_AVAILABLE)
                     {
                         break;
                     }
@@ -94,7 +94,7 @@ void Obstacle::setObstacle()
                 }
                 directionCount = 0;
             }
-            screenData.setType(nextRow, nextCol, Node_obstacle);
+            screenData.setType(nextRow, nextCol, NODE_OBSTACLE);
             nextRow += directions[nextDirection][0];
             nextCol += directions[nextDirection][1];
         }
@@ -114,10 +114,10 @@ std::pair<int,int> Obstacle::randSetObstacle()
     {
         row = rand() % row_bound;
         col = rand() % col_bound;
-    } while(screenData.getType(row, col) != Node_available);
+    } while(screenData.getType(row, col) != NODE_AVAILABLE);
 
 
-    screenData.setType(row, col, Node_obstacle);
+    screenData.setType(row, col, NODE_OBSTACLE);
     return std::make_pair(row, col);
 }
 
@@ -130,7 +130,7 @@ void Obstacle::getObstacleData(std::vector<int>& obstacleNode)
     {
         for (int j = 1; j < col - 1; j++)
         {
-            if (screenData.getType(i, j) == Node_obstacle)
+            if (screenData.getType(i, j) == NODE_OBSTACLE)
             {
                 obstacleNode.push_back(col * i + j);
             }
@@ -147,7 +147,7 @@ bool Obstacle::isAllAvailableNodesConnected()
     {
         for (int col = 1; col < screenData.getCol() - 1; col++)
         {
-            if (screenData.getType(row, col) == Node_obstacle || screenData.getType(row, col) == Node_wall)
+            if (screenData.getType(row, col) == NODE_OBSTACLE || screenData.getType(row, col) == NODE_WALL)
             {
                 continue;
             }
@@ -178,8 +178,8 @@ bool Obstacle::isAllAvailableNodesConnected()
                         int nextNode = nextRow * screenData.getCol() + nextCol;
 
                         if (screenData.inArea(nextRow, nextCol)
-                                && screenData.getType(nextNode) != Node_wall
-                                && screenData.getType(nextRow, nextCol) != Node_obstacle
+                                && screenData.getType(nextNode) != NODE_WALL
+                                && screenData.getType(nextRow, nextCol) != NODE_OBSTACLE
                                 && !visited[nextNode])
                         {
                             visited[nextNode] = true;

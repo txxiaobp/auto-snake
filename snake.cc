@@ -28,8 +28,8 @@ Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, Mod
         last_direction = DIRECTION_RIGHT;
     }
 
-    push(row / 2, col / 2 - 1, Node_snake_body);       //snake end
-    push(row / 2, col / 2, Node_snake_head, true);     //snake head
+    push(row / 2, col / 2 - 1, NODE_SNAKE_BODY);       //snake end
+    push(row / 2, col / 2, NODE_SNAKE_HEAD, true);     //snake head
     walkedCount = 0;
 
     method[ALGORITHM_BFS] = new BFSMethod(*this, screenData, seed);
@@ -53,7 +53,7 @@ Snake::~Snake()
 
 void Snake::push(int row, int col, Node_t node_type, bool initial)
 {
-    if (node_type == Node_snake_head)
+    if (node_type == NODE_SNAKE_HEAD)
     {
         if (!initial)
         {
@@ -62,7 +62,7 @@ void Snake::push(int row, int col, Node_t node_type, bool initial)
 
         if (!initial)
         {
-            screenData.setType(headRow, headCol, Node_snake_body);
+            screenData.setType(headRow, headCol, NODE_SNAKE_BODY);
         }
         headRow = row;
         headCol = col;
@@ -75,7 +75,7 @@ void Snake::pop()
 {
     int tail = snake.front();
 	snake.pop();
-    screenData.setType(getRow(tail), getCol(tail), Node_available);
+    screenData.setType(getRow(tail), getCol(tail), NODE_AVAILABLE);
 }
 
 std::vector<int> Snake::aroundNodes(int node)
@@ -136,7 +136,7 @@ bool Snake::move()
 
         if (hasPath)
         {
-            screenData.setType(headRow, headCol, Node_snake_body);
+            screenData.setType(headRow, headCol, NODE_SNAKE_BODY);
             setDirection(nextNode);
             toNextNode(nextNode);
             ret = true;
@@ -150,7 +150,7 @@ bool Snake::move()
                 if (node != -1)
                 {
                     last_direction = Direction_e(direction);
-                    push(getRow(node), getCol(node), Node_snake_head);
+                    push(getRow(node), getCol(node), NODE_SNAKE_HEAD);
                     pop();
                     ret = true;
                     break;
@@ -249,7 +249,7 @@ int Snake::moveDirection(int direction)
         nodeCol = headCol + 1;
         break;
     }
-    if (screenData.getType(nodeRow, nodeCol) == Node_available || screenData.getType(nodeRow, nodeCol) == Node_seed)
+    if (screenData.getType(nodeRow, nodeCol) == NODE_AVAILABLE || screenData.getType(nodeRow, nodeCol) == NODE_SEED)
     {
         return getNum(nodeRow, nodeCol);
     }
@@ -269,8 +269,8 @@ void Snake::reset()
     int row = screenData.getRow();
     int col = screenData.getCol();
 
-    push(row / 2, col / 2 - 1, Node_snake_body);       //snake end
-    push(row / 2, col / 2, Node_snake_head, true);     //snake head
+    push(row / 2, col / 2 - 1, NODE_SNAKE_BODY);       //snake end
+    push(row / 2, col / 2, NODE_SNAKE_HEAD, true);     //snake head
     walkedCount = 0;
 
     if (modeSelection.getMode() != MODE_REPLAY)
@@ -308,12 +308,12 @@ void Snake::toNextNode(int nextNode)
     if (nextNode == seed.getNode())
     {
         seed.set();     
-        push(getRow(nextNode), getCol(nextNode), Node_snake_head);
+        push(getRow(nextNode), getCol(nextNode), NODE_SNAKE_HEAD);
         emit this->snakeLengthIncrease(snake.size());
     }
     else
     {
-        push(getRow(nextNode), getCol(nextNode), Node_snake_head);
+        push(getRow(nextNode), getCol(nextNode), NODE_SNAKE_HEAD);
         pop();
     }
 }

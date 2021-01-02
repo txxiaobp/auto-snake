@@ -6,7 +6,7 @@
 #include <QDebug>
 
 ScreenData::ScreenData(int r, int c) :
-    data(std::vector<std::vector<Node_t> >(r, std::vector<Node_t>(c, Node_available)))
+    data(std::vector<std::vector<Node_t> >(r, std::vector<Node_t>(c, NODE_AVAILABLE)))
 {
 	assert(r > 0 && c > 0);	
     set_wall();
@@ -14,7 +14,7 @@ ScreenData::ScreenData(int r, int c) :
 
 void ScreenData::reset(int newRow, int newCol)
 {
-    data = std::vector<std::vector<Node_t> >(newRow, std::vector<Node_t>(newCol, Node_available));
+    data = std::vector<std::vector<Node_t> >(newRow, std::vector<Node_t>(newCol, NODE_AVAILABLE));
 
     set_wall();
 }
@@ -28,11 +28,11 @@ void ScreenData::set_wall()
 		{
 			if (i == 0 || i == r - 1 || j == 0 || j == c - 1)
 			{
-                data[i][j] = Node_wall;
+                data[i][j] = NODE_WALL;
 			}
 			else
 			{
-                data[i][j] = Node_available;
+                data[i][j] = NODE_AVAILABLE;
 			}
 		}
 	}

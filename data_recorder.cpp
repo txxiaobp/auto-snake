@@ -97,7 +97,7 @@ void DataRecorder::importFromFile(const char *fileName)
     for (int i = 0; i < obstacleCount; i++)
     {
         inf >> val;
-        screenData.setType(val, Node_obstacle);
+        screenData.setType(val, NODE_OBSTACLE);
     }
 
     for (int i = 0; i < snakeDataSize; i++)

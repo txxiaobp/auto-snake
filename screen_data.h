@@ -8,13 +8,12 @@ class Seed;
 
 typedef enum
 {
-    Node_undefined,
-    Node_available,
-    Node_snake_body,
-    Node_snake_head,
-    Node_wall,
-    Node_seed,
-    Node_obstacle
+    NODE_AVAILABLE,
+    NODE_SNAKE_BODY,
+    NODE_SNAKE_HEAD,
+    NODE_WALL,
+    NODE_SEED,
+    NODE_OBSTACLE
 } Node_t;
 
 class ScreenData
