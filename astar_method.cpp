@@ -35,7 +35,7 @@ bool AStarMethod::findNext(std::vector<int>& from)
                 return true;
             }
 
-            if (data.getType(r, c) != Node_available)
+            if (screenData.getType(r, c) != Node_available)
             {
                 continue;
             }
@@ -89,7 +89,7 @@ std::pair<int,int> AStarMethod::calDistance(int nextNode, int curNode)
     }
     else
     {
-        assert(nextDis > curDis);
+        assert(nextDis >= curDis);
         dis = 2;
     }
 

@@ -11,6 +11,7 @@
 #include <string>
 
 
+
 Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection, AlgorithmSelection& algorithmSelection) :
     screenData(screenData)
     , dataRecorder(dataRecorder)
@@ -77,13 +78,16 @@ void Snake::pop()
 std::vector<int> Snake::aroundNodes(int node)
 {
     std::vector<int> ret;
-    int node_row = getRow(node);
-    int node_col = getCol(node);
+    ret.clear();
+    int nodeRow = getRow(node);
+    int nodeCol = getCol(node);
 	
-    ret.push_back(getNum(node_row + 1, node_col));
-    ret.push_back(getNum(node_row - 1, node_col));
-    ret.push_back(getNum(node_row, node_col + 1));
-    ret.push_back(getNum(node_row, node_col - 1));
+    for (int i = 0; i < DIRECTION_COUNT; i++)
+    {
+        int nextRow = nodeRow + directions[i][0];
+        int nextCol = nodeCol + directions[i][1];
+        ret.push_back(getNum(nextRow, nextCol));
+    }
 	
 	return ret;
 }
@@ -91,9 +95,6 @@ std::vector<int> Snake::aroundNodes(int node)
 bool Snake::move()
 {
     bool ret = false;
-    int row = screenData.getRow();
-    int col = screenData.getCol();
-    std::vector<int> from(row * col, -1);
 
     if (modeSelection.getMode() == MODE_REPLAY)
     {
@@ -125,21 +126,16 @@ bool Snake::move()
     else
     {
         bool hasPath = false;
+        int nextNode = 0;
 
         if (method[algorithmSelection.getAlgo()])
-            hasPath = method[algorithmSelection.getAlgo()]->findNext(from);
+            hasPath = method[algorithmSelection.getAlgo()]->getNext(nextNode);
 
         if (hasPath)
         {
             screenData.setType(headRow, headCol, Node_snake_body);
-            int node = seed.getNode();
-
-            while (from[node] != getNum(headRow, headCol))
-            {
-                node = from[node];
-            }
-            setDirection(node);
-            toNextNode(node);
+            setDirection(nextNode);
+            toNextNode(nextNode);
             ret = true;
         }
         else

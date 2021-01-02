@@ -7,7 +7,9 @@
 class AStarMethod : public RouteMethod
 {
 public:
-    AStarMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) {}
+    AStarMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) { RouteMethod::findNext(); }
+
+private:
     bool findNext(std::vector<int>& from);
 
 private:

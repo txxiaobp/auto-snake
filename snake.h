@@ -6,20 +6,13 @@
 #include <queue>
 #include "screen_data.h"
 #include "seed.h"
+#include "direction.h"
 #include "mode_selection.h"
 #include "algorithm_selection.h"
 
 class RouteMethod;
 class DataRecorder;
 
-typedef enum 
-{
-    DIRECTION_UP     = 0,
-    DIRECTION_DOWN   = 1,
-    DIRECTION_LEFT   = 2,
-    DIRECTION_RIGHT  = 3,
-    DIRECTION_MAX
-}Direction_e;
 
 class Snake : public QObject
 {

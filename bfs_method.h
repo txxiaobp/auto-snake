@@ -6,7 +6,9 @@
 class BFSMethod : public RouteMethod
 {
 public:
-    BFSMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) {}
+    BFSMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) { RouteMethod::findNext(); }
+
+private:
     bool findNext(std::vector<int>& from);
 };
 

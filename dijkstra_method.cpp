@@ -33,7 +33,7 @@ bool DijkstraMethod::findNext(std::vector<int>& from)
                 return true;
             }
 
-            if (data.getType(r, c) != Node_available)
+            if (screenData.getType(r, c) != Node_available)
             {
                 continue;
             }

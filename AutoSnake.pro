@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,6 +22,7 @@ SOURCES += \
     main_window.cpp \
     obstacle.cpp \
     obstacle_painter.cpp \
+    route_method.cpp \
     screen_data.cc \
     seed.cc \
     seed_painter.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     body_painter.h \
     data_recorder.h \
     dijkstra_method.h \
+    direction.h \
     dstar_lite_method.h \
     dstar_method.h \
     game_control.h \

@@ -1,7 +1,7 @@
 #include "obstacle.h"
 #include <cstdlib>
 #include <ctime>
-
+#include "direction.h"
 #include <QDebug>
 
 const float NUM_PERCENT = 0.05;
@@ -45,17 +45,9 @@ void Obstacle::setObstacle()
 
     int obstacleNum = int(NUM_PERCENT * row * col);
 
-    int directions[4][2] = {
-        {-1, 0},
-        {1, 0},
-        {0, -1},
-        {0, 1}
-    };
-
     srand(time(NULL));
     while (obstacleNum > 0)
     {
-//        int randNum = std::max(rand() % obstacleNum, 1);
         int randNum;
 
         if (obstacleNum > OBSTACLE_NUM_A_TIME)

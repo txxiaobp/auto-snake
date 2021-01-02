@@ -2,6 +2,9 @@
 #define ROUTEMETHOD_H
 
 #include <vector>
+#include <map>
+#include <QMutex>
+#include <QtConcurrent/QtConcurrent>
 
 class Snake;
 class ScreenData;
@@ -10,14 +13,24 @@ class Seed;
 class RouteMethod
 {
 public:
-    RouteMethod(Snake& snake, ScreenData& data, Seed& seed) : snake(snake), data(data), seed(seed) {}
+    RouteMethod(Snake& snake, ScreenData& data, Seed& seed);
     virtual ~RouteMethod() {}
+    bool getNext(int& nextNode);
+
+protected:
+    void findNext();
     virtual bool findNext(std::vector<int>& from) = 0;
 
 protected:
     Snake& snake;
-    ScreenData& data;
-    Seed& seed;
+    ScreenData& screenData;
+    Seed& seed;  
+
+private:
+    QMutex mutex;
+    std::pair<bool,int> nextNodeData;
+    bool nextNodeReady;
+    bool isInit;
 };
 
 #endif // ROUTEMETHOD_H
