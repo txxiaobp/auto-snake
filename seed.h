@@ -24,6 +24,8 @@ public:
     int getNode();
     void setData();
     void setFromRecorder();
+    int getNodeRow();
+    int getNodeCol();
 
 private:
     ScreenData& data;

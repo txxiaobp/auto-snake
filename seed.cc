@@ -3,6 +3,7 @@
 #include "data_recorder.h"
 #include <cstdlib>
 #include <ctime>
+#include <QDebug>
 
 
 void Seed::set(bool initial)
@@ -37,6 +38,18 @@ int Seed::getNode()
 {
     return nodeRow * data.getCol() + nodeCol;
 }
+
+int Seed::getNodeRow()
+{
+    return nodeRow;
+}
+
+int Seed::getNodeCol()
+{
+    return nodeCol;
+}
+
+
 
 void Seed::setData()
 {

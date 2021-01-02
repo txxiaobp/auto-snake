@@ -6,6 +6,12 @@
 #include <QMutex>
 #include <QtConcurrent/QtConcurrent>
 
+
+//#define FIND_NEXT_MULTI_THREAD
+#define FIND_NEXT_SINGLE_THREAD
+
+
+
 class Snake;
 class ScreenData;
 class Seed;
@@ -27,10 +33,14 @@ protected:
     Seed& seed;  
 
 private:
+
+#ifdef FIND_NEXT_MULTI_THREAD
     QMutex mutex;
-    std::pair<bool,int> nextNodeData;
     bool nextNodeReady;
     bool isInit;
+#endif
+
+    std::pair<bool,int> nextNodeData;
 };
 
 #endif // ROUTEMETHOD_H
