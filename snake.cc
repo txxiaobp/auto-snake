@@ -43,8 +43,11 @@ Snake::~Snake()
 {
     for (int i = 0; i < ALGORITHM_MAX; i++)
     {
-        delete method[i];
-        method[i] = nullptr;
+        if (method[i])
+        {
+            delete method[i];
+            method[i] = nullptr;
+        }
     }
 }
 

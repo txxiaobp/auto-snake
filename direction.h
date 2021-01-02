@@ -13,6 +13,8 @@ typedef enum
 
 
 #define FOUR_DIRECTIONS
+//#define EIGHT_DIRECTIONS
+
 
 #ifdef FOUR_DIRECTIONS
 const int DIRECTION_COUNT = 4;
