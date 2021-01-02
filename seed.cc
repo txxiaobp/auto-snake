@@ -45,11 +45,6 @@ void Seed::setData()
 
 void Seed::setFromRecorder()
 {
-    if (modeSelection.getMode() != MODE_REPLAY)
-    {
-        return;
-    }
-
     if (nodeRow != INVALID_ROW_OR_COL && nodeCol != INVALID_ROW_OR_COL)
     {
         data.setType(nodeRow, nodeCol, Node_available);

@@ -3,8 +3,10 @@
 #include <cassert>
 #include <iostream>
 
-DataRecorder::DataRecorder(ScreenData& screenData, ModeSelection& modeSelection)
-    : modeSelection(modeSelection)
+DataRecorder::DataRecorder(ScreenData& screenData, Obstacle& obstacle, ModeSelection& modeSelection)
+    : obstacle(obstacle)
+    , screenData(screenData)
+    , modeSelection(modeSelection)
     , row(screenData.getRow())
     , col(screenData.getCol())
     , snakeIndex(0)
@@ -22,6 +24,7 @@ void DataRecorder::reset(const char *fileName)
 {
     snakeHeadData.clear();
     goalData.clear();
+    obstacle.clearObstacle();
     importFromFile(fileName);
 }
 
@@ -57,19 +60,26 @@ void DataRecorder::pushGoalData(int goal)
 
 void DataRecorder::exportToFile(const char *fileName)
 {
+    std::vector<int> obstacleNode;
+    obstacle.getObstacleData(obstacleNode);
     std::ofstream of(fileName);
     assert(of.is_open());
-    of << row << " " << col << " " << snakeHeadData.size() << " " << goalData.size() << std::endl;
+
+    of << row << " " << col << " " << snakeHeadData.size() << " " << goalData.size() << " " << obstacleNode.size() << " ";
+
+    for (int node : obstacleNode)
+    {
+        of << node << " ";
+    }
+
     for (int d : snakeHeadData)
     {
         of << d << " ";
     }
-    of << std::endl;
     for (int g : goalData)
     {
         of << g << " ";
     }
-    of << std::endl;
     of.close();
 }
 
@@ -80,10 +90,16 @@ void DataRecorder::importFromFile(const char *fileName)
     std::ifstream inf(fileName);
     assert(inf.is_open());
 
-    int snakeDataSize = 0, goalDataSize = 0;
-    inf >> row >> col >> snakeDataSize >> goalDataSize;
+    int snakeDataSize = 0, goalDataSize = 0, obstacleCount = 0;
+    inf >> row >> col >> snakeDataSize >> goalDataSize >> obstacleCount;
 
     int val = 0;
+    for (int i = 0; i < obstacleCount; i++)
+    {
+        inf >> val;
+        screenData.setType(val, Node_obstacle);
+    }
+
     for (int i = 0; i < snakeDataSize; i++)
     {
         inf >> val;
@@ -110,20 +126,11 @@ int DataRecorder::popSnakeData()
 
 int DataRecorder::popGoalData()
 {
-    if (modeSelection.getMode() != MODE_REPLAY)
-    {
-        return -1;
-    }
     assert(goalIndex >= 0 && goalIndex < int(goalData.size()));
     return goalData[goalIndex++];
 }
 
 bool DataRecorder::empty()
 {
-    if (snakeIndex == int(snakeHeadData.size()))
-    {
-        assert(goalIndex == int(goalData.size()));
-    }
-
     return snakeIndex == int(snakeHeadData.size());
 }

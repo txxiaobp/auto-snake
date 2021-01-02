@@ -3,7 +3,7 @@
 #include <ctime>
 #include <cassert>
 #include "seed.h"
-#include <iostream>
+#include <QDebug>
 
 ScreenData::ScreenData(int r, int c) :
     data(std::vector<std::vector<Node_t> >(r, std::vector<Node_t>(c, Node_available)))
@@ -64,6 +64,13 @@ Node_t ScreenData::getType(int node)
     assert(c >= 0 && c < getCol());
 
     return data[r][c];
+}
+
+void ScreenData::setType(int node, Node_t node_type)
+{
+    int row = node / getCol();
+    int col = node % getCol();
+    setType(row, col, node_type);
 }
 
 void ScreenData::setType(int r, int c, Node_t node_type)

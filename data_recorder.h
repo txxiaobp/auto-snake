@@ -5,11 +5,12 @@
 #include "snake.h"
 #include "screen_data.h"
 #include "mode_selection.h"
+#include "obstacle.h"
 
 class DataRecorder
 {
 public:
-    DataRecorder(ScreenData& screenData, ModeSelection& modeSelection);
+    DataRecorder(ScreenData& screenData, Obstacle& obstacle, ModeSelection& modeSelection);
     void pushSnakeData(int directionData);
     void pushGoalData(int goal);
     int popSnakeData();
@@ -26,6 +27,8 @@ public:
 private:
     std::vector<int> snakeHeadData;
     std::vector<int> goalData;
+    Obstacle& obstacle;
+    ScreenData& screenData;
     ModeSelection& modeSelection;
     int row;
     int col;

@@ -30,8 +30,10 @@ const int BAR_HEIGHT = 20;
 
 MainWindow::MainWindow(ScreenData& data,
                        Snake& snake,
+                       Seed& seed,
                        int radius,
                        DataRecorder& dataRecorder,
+                       Obstacle& obstacle,
                        ModeSelection& modeSelection,
                        AlgorithmSelection& algorithmSelection,
                        SpeedSelection& speedSelection,
@@ -41,6 +43,8 @@ MainWindow::MainWindow(ScreenData& data,
     , data(data)
     , dataRecorder(dataRecorder)
     , snake(snake)
+    , seed(seed)
+    , obstacle(obstacle)
     , radius(radius)
     , modeSelection(modeSelection)
     , algorithmSelection(algorithmSelection)
@@ -55,6 +59,7 @@ MainWindow::MainWindow(ScreenData& data,
     , startAction(gameMenu->addAction("开始 (S)"))
     , restartAction(gameMenu->addAction("重新开始 (R)"))
     , pauseAction(gameMenu->addAction("暂停 (P)"))
+    , resetObstacleAction(gameMenu->addAction("重新设置障碍物"))
     , exitAction(gameMenu->addAction("退出 (E)"))
     , autoAction(modeMenu->addAction("自动 (A)"))
     , manualAction(modeMenu->addAction("手动 (M)"))
@@ -133,12 +138,14 @@ void MainWindow::connectSignals()
     connect(restartAction, &QAction::triggered, [&](){
         restartGame();
     });
-    connect(exitAction, &QAction::triggered, [&](){
-        exit(0);
-    });
-
     connect(pauseAction, &QAction::triggered, [&](){
         setStatusMode(GAME_PLAY_PAUSE);
+    });
+    connect(resetObstacleAction, &QAction::triggered, [&](){
+        resetObstacle();
+    });
+    connect(exitAction, &QAction::triggered, [&](){
+        exit(0);
     });
 
     connect(autoAction, &QAction::triggered, [&](){
@@ -171,6 +178,16 @@ void MainWindow::connectSignals()
     connect(speedDownAction, &QAction::triggered, [&](){
         speedDown();
     });
+}
+
+void MainWindow::resetObstacle()
+{
+    if (statusSelection.getMode() == GAME_PLAY_CONTINUE)
+    {
+        return;
+    }
+    obstacle.resetObstacle();
+    update();
 }
 
 void MainWindow::changeAlgorithm(Algorithm_e algo)
@@ -212,21 +229,6 @@ void MainWindow::startGame()
         restartGame();
         return;
     }
-    if (modeSelection.getMode() == MODE_REPLAY)
-    {
-        QString fileName = QFileDialog::getOpenFileName(this,
-                tr("请选择要读取的数据文件"),
-                "",
-                tr(""));
-
-        if (!fileName.isNull())
-        {
-             dataRecorder.reset(fileName.toUtf8().data());
-             snake.reset();
-             setStatusMode(GAME_PLAY_CONTINUE);
-        }
-        return;
-    }
 
     setStatusMode(GAME_PLAY_CONTINUE);
 }
@@ -245,16 +247,28 @@ void MainWindow::setStatusMode(Game_Mode_e mode)
 
 void MainWindow::changeMode(Mode_e mode)
 {
-    if (modeSelection.getMode() == MODE_REPLAY || modeSelection.getMode() == mode)
+    if (statusSelection.getMode() == GAME_PLAY_CONTINUE)
     {
         return;
     }
+
     if (mode == MODE_REPLAY)
     {
+        QString fileName = QFileDialog::getOpenFileName(this,
+                tr("请选择要读取的数据文件"),
+                "",
+                tr(""));
 
+        if (!fileName.isNull())
+        {
+             dataRecorder.reset(fileName.toUtf8().data());
+             snake.reset();
+             seed.setFromRecorder();
+        }
     }
     modeSelection.setMode(mode);
     gameModeLabel->setText("模式: " + modeSelection.getModeString());
+    update();
 }
 
 void MainWindow::gameEnd()

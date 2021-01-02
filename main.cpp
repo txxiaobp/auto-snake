@@ -22,11 +22,12 @@ int main(int argc, char *argv[])
     SpeedSelection speedSelection(modeSelection);
     StatusSelection statusSelection;
     ScreenData screenData(row, col);
-    DataRecorder dataRecorder(screenData, modeSelection);
+    Obstacle obstacle(screenData);
+    DataRecorder dataRecorder(screenData, obstacle, modeSelection);
     Seed seed(screenData, dataRecorder, modeSelection);
     Snake snake(seed, screenData, dataRecorder, modeSelection, algorithmSelection);
-    Obstacle obstacle(screenData);
-    MainWindow mainWindow(screenData, snake, radius, dataRecorder, modeSelection, algorithmSelection, speedSelection, statusSelection);
+
+    MainWindow mainWindow(screenData, snake, seed, radius, dataRecorder, obstacle, modeSelection, algorithmSelection, speedSelection, statusSelection);
 
     mainWindow.show();
     return a.exec();

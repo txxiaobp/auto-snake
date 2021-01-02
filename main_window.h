@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include "screen_data.h"
 #include "snake.h"
+#include "obstacle.h"
 #include "screen_painter.h"
 #include "mode_selection.h"
 #include "speed_selection.h"
@@ -27,8 +28,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(ScreenData& data,
                Snake& snake,
+               Seed& seed,
                int radius,
                DataRecorder& dataRecorder,
+               Obstacle& obstacle,
                ModeSelection& modeSelection,
                AlgorithmSelection& algorithmSelection,
                SpeedSelection& speedSelection,
@@ -57,11 +60,14 @@ private:
     void gameEnd();
     void speedUp();
     void speedDown();
+    void resetObstacle();
 
 private:
     ScreenData& data;
     DataRecorder& dataRecorder;
     Snake& snake;
+    Seed& seed;
+    Obstacle& obstacle;
     std::unordered_map<int, ScreenPainter*> painterMap;
     int radius;
     QPainter* painter;
@@ -80,6 +86,7 @@ private:
     QAction *startAction;
     QAction *restartAction;
     QAction *pauseAction;
+    QAction *resetObstacleAction;
     QAction *exitAction;
     QAction *autoAction;
     QAction *manualAction;
