@@ -7,7 +7,7 @@
 class DijkstraMethod : public RouteMethod
 {
 public:
-    DijkstraMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) { RouteMethod::findNext(); }
+    DijkstraMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) { }
 
 private:
     bool findNext(std::vector<int>& from);

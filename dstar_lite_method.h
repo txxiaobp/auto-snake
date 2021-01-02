@@ -8,7 +8,7 @@
 class DStarLiteMethod : public RouteMethod
 {
 public:
-    DStarLiteMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) { RouteMethod::findNext(); }
+    DStarLiteMethod(Snake& snake, ScreenData& data, Seed& seed) : RouteMethod(snake, data, seed) { }
 
 private:
     bool findNext(std::vector<int>& from);

@@ -33,10 +33,10 @@ Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, Mod
     walkedCount = 0;
 
     method[ALGORITHM_BFS] = new BFSMethod(*this, screenData, seed);
-    method[ALGORITHM_DIJKSTRA] = new DijkstraMethod(*this, screenData, seed);
-    method[ALGORITHM_ASTAR] = new AStarMethod(*this, screenData, seed);
-    method[ALGORITHM_DSTAR] = new DStarMethod(*this, screenData, seed);
-    method[ALGORITHM_DSTAR_LITE] = new DStarLiteMethod(*this, screenData, seed);
+//    method[ALGORITHM_DIJKSTRA] = new DijkstraMethod(*this, screenData, seed);
+//    method[ALGORITHM_ASTAR] = new AStarMethod(*this, screenData, seed);
+//    method[ALGORITHM_DSTAR] = new DStarMethod(*this, screenData, seed);
+//    method[ALGORITHM_DSTAR_LITE] = new DStarLiteMethod(*this, screenData, seed);
 }
 
 Snake::~Snake()
