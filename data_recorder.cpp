@@ -5,8 +5,8 @@
 
 DataRecorder::DataRecorder(ScreenData& screenData, ModeSelection& modeSelection)
     : modeSelection(modeSelection)
-    , row(screenData.row())
-    , col(screenData.col())
+    , row(screenData.getRow())
+    , col(screenData.getCol())
     , snakeIndex(0)
     , goalIndex(0)
 {

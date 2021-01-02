@@ -20,6 +20,8 @@ SOURCES += \
     head_painter.cpp \
     main.cpp \
     main_window.cpp \
+    obstacle.cpp \
+    obstacle_painter.cpp \
     screen_data.cc \
     seed.cc \
     seed_painter.cpp \
@@ -41,6 +43,8 @@ HEADERS += \
     index_heap.h \
     main_window.h \
     mode_selection.h \
+    obstacle.h \
+    obstacle_painter.h \
     route_method.h \
     screen_data.h \
     screen_painter.h \

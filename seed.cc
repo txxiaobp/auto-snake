@@ -19,8 +19,8 @@ void Seed::set(bool initial)
     }
 
 	srand(time(NULL));
-	int row_bound = data.row();
-	int col_bound = data.col();
+	int row_bound = data.getRow();
+	int col_bound = data.getCol();
 
 	do
 	{
@@ -35,7 +35,7 @@ void Seed::set(bool initial)
 
 int Seed::getNode()
 {
-    return nodeRow * data.col() + nodeCol;
+    return nodeRow * data.getCol() + nodeCol;
 }
 
 void Seed::setData()
@@ -56,8 +56,8 @@ void Seed::setFromRecorder()
     }
 
     int nextGoal = dataRecorder.popGoalData();
-    nodeRow = nextGoal / data.col();
-    nodeCol = nextGoal % data.col();
+    nodeRow = nextGoal / data.getCol();
+    nodeCol = nextGoal % data.getCol();
     data.setType(nodeRow, nodeCol, Node_seed);
 }
 

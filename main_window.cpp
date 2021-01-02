@@ -11,6 +11,7 @@
 #include "seed_painter.h"
 #include "data_recorder.h"
 #include "back_painter.h"
+#include "obstacle_painter.h"
 
 
 enum
@@ -20,7 +21,8 @@ enum
     SCREEN_SNAKE_BODY,
     SCREEN_SNAKE_HEAD,
     SCREEN_WALL,
-    SCREEN_SEED
+    SCREEN_SEED,
+    SCREEN_OBSTACLE
 };
 
 const int BAR_HEIGHT = 20;
@@ -72,8 +74,8 @@ MainWindow::MainWindow(ScreenData& data,
     , algorithmLabel(new QLabel("寻路算法: " + algorithmSelection.getAlgoString()))
     , speedLabel(new QLabel("速度: " + speedSelection.getSpeedString()))
 {
-    int height = data.row() * 2 * radius;
-    int width = data.col() * 2 * radius;
+    int height = data.getRow() * 2 * radius;
+    int width = data.getCol() * 2 * radius;
     resize(width, height + 2 * BAR_HEIGHT);
 
     this->setWindowTitle("贪吃蛇");
@@ -290,6 +292,7 @@ void MainWindow::setPainterMap(int radius)
     painterMap[SCREEN_SNAKE_HEAD] = new HeadPainter(radius, snake);
     painterMap[SCREEN_WALL] = new WallPainter(radius);
     painterMap[SCREEN_SEED] = new SeedPainter(radius);
+    painterMap[SCREEN_OBSTACLE] = new ObstaclePainter(radius);
 }
 
 void MainWindow::timerEvent(QTimerEvent*)
@@ -314,8 +317,8 @@ void MainWindow::paintEvent(QPaintEvent*)
 {
     QPainter qp(this);
 
-    int row = data.row();
-    int col = data.col();
+    int row = data.getRow();
+    int col = data.getCol();
 
     for (int r = 0; r < row; r++)
     {

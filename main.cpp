@@ -5,6 +5,7 @@
 #include "mode_selection.h"
 #include "algorithm_selection.h"
 #include "speed_selection.h"
+#include "obstacle.h"
 #include "game_control.h"
 #include "main_window.h"
 #include <QApplication>
@@ -24,7 +25,7 @@ int main(int argc, char *argv[])
     DataRecorder dataRecorder(screenData, modeSelection);
     Seed seed(screenData, dataRecorder, modeSelection);
     Snake snake(seed, screenData, dataRecorder, modeSelection, algorithmSelection);
-
+    Obstacle obstacle(screenData);
     MainWindow mainWindow(screenData, snake, radius, dataRecorder, modeSelection, algorithmSelection, speedSelection, statusSelection);
 
     mainWindow.show();

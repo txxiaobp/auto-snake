@@ -19,8 +19,8 @@ Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, Mod
     , seed(seed)
     , last_direction(DIRECTION_MAX)
 {
-    int row = screenData.row();
-    int col = screenData.col();
+    int row = screenData.getRow();
+    int col = screenData.getCol();
 
     if (modeSelection.getMode() != MODE_MANUAL)
     {
@@ -91,8 +91,8 @@ std::vector<int> Snake::aroundNodes(int node)
 bool Snake::move()
 {
     bool ret = false;
-    int row = screenData.row();
-    int col = screenData.col();
+    int row = screenData.getRow();
+    int col = screenData.getCol();
     std::vector<int> from(row * col, -1);
 
     if (modeSelection.getMode() == MODE_REPLAY)
@@ -170,17 +170,17 @@ bool Snake::move()
 
 int Snake::getNum(int nodeX, int nodeY)
 {
-    return nodeX * screenData.col() + nodeY;
+    return nodeX * screenData.getCol() + nodeY;
 }
 
 int Snake::getRow(int node)
 {
-    return node / screenData.col();
+    return node / screenData.getCol();
 }
 
 int Snake::getCol(int node)
 {
-    return node % screenData.col();
+    return node % screenData.getCol();
 }
 
 void Snake::setDirection(int node)
@@ -267,8 +267,8 @@ void Snake::reset()
         pop();
     }
 
-    int row = screenData.row();
-    int col = screenData.col();
+    int row = screenData.getRow();
+    int col = screenData.getCol();
 
     push(row / 2, col / 2 - 1, Node_snake_body);       //snake end
     push(row / 2, col / 2, Node_snake_head, true);     //snake head

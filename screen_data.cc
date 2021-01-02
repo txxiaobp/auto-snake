@@ -21,7 +21,7 @@ void ScreenData::reset(int newRow, int newCol)
 
 void ScreenData::set_wall()
 {
-	int r = row(), c = col();
+    int r = getRow(), c = getCol();
 	for (int i = 0; i < r; i++)
 	{
 		for (int j = 0; j < c; j++)
@@ -38,38 +38,38 @@ void ScreenData::set_wall()
 	}
 }
 
-int ScreenData::row()
+int ScreenData::getRow()
 {
 	return data.size();
 }
 	
-int ScreenData::col()
+int ScreenData::getCol()
 {
 	return data[0].size();
 }
 	
 Node_t ScreenData::getType(int r, int c)
 {
-	assert(r >= 0 && r < row());
-	assert(c >= 0 && c < col());
+    assert(r >= 0 && r < getRow());
+    assert(c >= 0 && c < getCol());
 	
     return data[r][c];
 }
 
 Node_t ScreenData::getType(int node)
 {
-    int r = node / col();
-    int c = node % col();
-    assert(r >= 0 && r < row());
-    assert(c >= 0 && c < col());
+    int r = node / getCol();
+    int c = node % getCol();
+    assert(r >= 0 && r < getRow());
+    assert(c >= 0 && c < getCol());
 
     return data[r][c];
 }
 
 void ScreenData::setType(int r, int c, Node_t node_type)
 {
-	assert(r >= 0 && r < row());
-	assert(c >= 0 && c < col());
+    assert(r >= 0 && r < getRow());
+    assert(c >= 0 && c < getCol());
 	
     data[r][c] = node_type;
 }

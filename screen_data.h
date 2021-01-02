@@ -13,7 +13,8 @@ typedef enum
     Node_snake_body,
     Node_snake_head,
     Node_wall,
-    Node_seed
+    Node_seed,
+    Node_obstacle
 } Node_t;
 
 class ScreenData
@@ -21,8 +22,8 @@ class ScreenData
 public:
 	ScreenData(int row = 10, int col = 10);
     void reset(int newRow, int newCol);
-	int row();
-	int col();
+    int getRow();
+    int getCol();
     Node_t getType(int row, int col);
     Node_t getType(int node);
 	void setType(int row, int col, Node_t node_type);
