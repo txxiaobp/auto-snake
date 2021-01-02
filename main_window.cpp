@@ -59,7 +59,7 @@ MainWindow::MainWindow(ScreenData& data,
     , startAction(gameMenu->addAction("开始 (S)"))
     , restartAction(gameMenu->addAction("重新开始 (R)"))
     , pauseAction(gameMenu->addAction("暂停 (P)"))
-    , resetObstacleAction(gameMenu->addAction("重新设置障碍物"))
+    , resetObstacleAction(gameMenu->addAction("重新设置障碍物 (O)"))
     , exitAction(gameMenu->addAction("退出 (E)"))
     , autoAction(modeMenu->addAction("自动 (A)"))
     , manualAction(modeMenu->addAction("手动 (M)"))
@@ -455,6 +455,11 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
     if(ev->key() == Qt::Key_P)
     {
         setStatusMode(GAME_PLAY_PAUSE);
+        return;
+    }
+    if(ev->key() == Qt::Key_O)
+    {
+        resetObstacle();
         return;
     }
 }

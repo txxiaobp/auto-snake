@@ -3,6 +3,7 @@
 #include <ctime>
 #include "direction.h"
 #include <QDebug>
+#include <queue>
 
 const float NUM_PERCENT = 0.05;
 const int OBSTACLE_NUM_A_TIME = 8;
@@ -11,16 +12,23 @@ const int OBSTACLE_NUM_IN_DIRECTION = 4;
 Obstacle::Obstacle(ScreenData& screenData)
     : screenData(screenData)
 {
-    clearObstacle();
-    setObstacle();
+    do
+    {
+        clearObstacle();
+        setObstacle();
+    } while (!isAllAvailableNodesConnected());
 }
 
 void Obstacle::resetObstacle()
 {
-    clearObstacle();
-    setObstacle();
+    int i = 0;
+    do
+    {
+        clearObstacle();
+        setObstacle();
+        i++;
+    } while (!isAllAvailableNodesConnected());
 }
-
 
 void Obstacle::clearObstacle()
 {
@@ -131,7 +139,59 @@ void Obstacle::getObstacleData(std::vector<int>& obstacleNode)
 }
 
 
+bool Obstacle::isAllAvailableNodesConnected()
+{
+    std::vector<bool> visited(screenData.getRow() * screenData.getCol(), false);
+    int connectNum = 0;
+    for (int row = 1; row < screenData.getRow() - 1; row++)
+    {
+        for (int col = 1; col < screenData.getCol() - 1; col++)
+        {
+            if (screenData.getType(row, col) == Node_obstacle || screenData.getType(row, col) == Node_wall)
+            {
+                continue;
+            }
+            int node = row * screenData.getCol() + col;
+            if (connectNum > 1)
+            {
+                return false;
+            }
+            else if (!visited[node])
+            {
+                connectNum++;
+                visited[node] = true;
+                std::queue<int> queue;
+                queue.push(node);
 
+                while (!queue.empty())
+                {
+                    int queueNode = queue.front();
+                    queue.pop();
+
+                    int queueRow = queueNode / screenData.getCol();
+                    int queueCol = queueNode % screenData.getCol();
+
+                    for (int i = 0; i < DIRECTION_COUNT; i++)
+                    {
+                        int nextRow = queueRow + directions[i][0];
+                        int nextCol = queueCol + directions[i][1];
+                        int nextNode = nextRow * screenData.getCol() + nextCol;
+
+                        if (screenData.inArea(nextRow, nextCol)
+                                && screenData.getType(nextNode) != Node_wall
+                                && screenData.getType(nextRow, nextCol) != Node_obstacle
+                                && !visited[nextNode])
+                        {
+                            visited[nextNode] = true;
+                            queue.push(nextNode);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return connectNum == 1;
+}
 
 
 

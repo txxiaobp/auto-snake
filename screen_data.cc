@@ -81,6 +81,11 @@ void ScreenData::setType(int r, int c, Node_t node_type)
     data[r][c] = node_type;
 }
 
+bool ScreenData::inArea(int row, int col)
+{
+    return row >= 0 && row < getRow() && col >= 0 && col < getCol();
+}
+
 
 
 

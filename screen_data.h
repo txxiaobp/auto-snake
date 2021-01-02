@@ -28,6 +28,7 @@ public:
     Node_t getType(int node);
     void setType(int node, Node_t node_type);
 	void setType(int row, int col, Node_t node_type);
+    bool inArea(int row, int col);
 	
 	friend class Snake;
 	friend class Seed;

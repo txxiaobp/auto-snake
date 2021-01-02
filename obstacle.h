@@ -16,6 +16,7 @@ public:
 private:
     void setObstacle();
     std::pair<int,int> randSetObstacle();
+    bool isAllAvailableNodesConnected();
 
 private:
     ScreenData& screenData;
