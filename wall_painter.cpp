@@ -6,9 +6,10 @@ WallPainter::WallPainter(int radius) : ScreenPainter(radius) {}
 
 void WallPainter::draw(QPainter& painter, int x, int y)
 {
-    QRect target(x - radius, y - radius, 2 * radius, 2 * radius);
-    QRect source(0.0, 0.0, 32, 25);
-    QImage image(":/res/images/wall.jpg");
+    QPen pen(Qt::gray);
+    QBrush brush(Qt::gray);
+    painter.setPen(pen);
+    painter.setBrush(brush);
 
-    painter.drawImage(target, image, source);
+    painter.drawRect(x - radius, y - radius, 2 * radius, 2 * radius);
 }
