@@ -175,6 +175,7 @@ void MainWindow::resetObstacle()
     {
         return;
     }
+    snake.reset();
     obstacle.resetObstacle();
     update();
 }

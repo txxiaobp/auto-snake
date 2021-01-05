@@ -272,6 +272,7 @@ void Snake::reset()
     push(row / 2, col / 2 - 1, NODE_SNAKE_BODY);       //snake end
     push(row / 2, col / 2, NODE_SNAKE_HEAD, true);     //snake head
     walkedCount = 0;
+    last_direction = DIRECTION_RIGHT;
 
     if (modeSelection.getMode() != MODE_REPLAY)
     {
