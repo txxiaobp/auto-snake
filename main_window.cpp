@@ -235,7 +235,19 @@ void MainWindow::startGame()
     setStatusMode(GAME_PLAY_CONTINUE);
 }
 void MainWindow::restartGame()
-{
+{ 
+    Game_Mode_e prevGameMode = statusSelection.getMode();
+    if (prevGameMode == GAME_PLAY_CONTINUE || prevGameMode == GAME_PLAY_PAUSE)
+    {
+        statusSelection.setMode(GAME_PLAY_PAUSE);
+        QMessageBox::StandardButton rb = QMessageBox::question(NULL, "是否重新开始", "是否结束本局并立即重新开始?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        if(rb == QMessageBox::No)
+        {
+            statusSelection.setMode(prevGameMode);
+            return;
+        }
+    }
+
     dataRecorder.reset();
     snake.reset();
     setStatusMode(GAME_PLAY_CONTINUE);

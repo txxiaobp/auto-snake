@@ -11,7 +11,7 @@ public:
     Obstacle(ScreenData& screenData);
     void resetObstacle();
     void clearObstacle();
-    std::vector<int> getObstacleData();
+    void getObstacleData(std::vector<int>& obstacleNodes);
 
 private:
     void setObstacle();

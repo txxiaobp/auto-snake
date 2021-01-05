@@ -49,8 +49,6 @@ int Seed::getNodeCol()
     return nodeCol;
 }
 
-
-
 void Seed::setData()
 {
     dataRecorder.pushGoalData(getNode());

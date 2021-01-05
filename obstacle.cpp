@@ -123,11 +123,20 @@ std::pair<int,int> Obstacle::randSetObstacle()
     return std::make_pair(row, col);
 }
 
-std::vector<int> Obstacle::getObstacleData()
+void Obstacle::getObstacleData(std::vector<int>& obstacleNodes)
 {
-    return obstacleNodes;
+    obstacleNodes.clear();
+    for (int row = 1; row < screenData.getRow() - 1; row++)
+    {
+        for (int col = 1; col < screenData.getCol() - 1; col++)
+        {
+            if (screenData.getType(row, col) == NODE_OBSTACLE)
+            {
+                obstacleNodes.push_back(screenData.getNode(row, col));
+            }
+        }
+    }
 }
-
 
 bool Obstacle::isAllAvailableNodesConnected()
 {

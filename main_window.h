@@ -86,7 +86,7 @@ private:
     QMenu *speedMenu;
     QAction *startAction;
     QAction *restartAction;
-    QAction *pauseAction;
+    QAction *pauseContinueAction;
     QAction *resetObstacleAction;
     QAction *exitAction;
     QAction *autoAction;

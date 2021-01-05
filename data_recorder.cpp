@@ -32,6 +32,11 @@ void DataRecorder::reset()
 {
     snakeIndex = 0;
     goalIndex = 0;
+
+    if (modeSelection.getMode() != MODE_REPLAY)
+    {
+        clearData();
+    }
 }
 
 void DataRecorder::clearData()
@@ -60,7 +65,8 @@ void DataRecorder::pushGoalData(int goal)
 
 void DataRecorder::exportToFile(const char *fileName)
 {
-    std::vector<int> obstacleNodes = obstacle.getObstacleData();
+    std::vector<int> obstacleNodes;
+    obstacle.getObstacleData(obstacleNodes);
     std::ofstream of(fileName);
     assert(of.is_open());
 
