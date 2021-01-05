@@ -94,6 +94,7 @@ private:
     QAction *manualAction;
     QAction *replayAction;
     QAction *bfsAction;
+    QAction *debfsAction;
     QAction *dijkstraAction;
     QAction *aStarAction;
     QAction *dStarAction;

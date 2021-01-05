@@ -33,7 +33,6 @@ public:
     int getHeadCol() { return headCol; }
 
 public:
-    std::vector<int> aroundNodes(int node);
     int getNum(int nodeX, int nodeY);
     int getRow(int node);
     int getCol(int node);

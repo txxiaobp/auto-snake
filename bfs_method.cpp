@@ -17,7 +17,7 @@ bool BFSMethod::findNext(std::vector<int>& from)
         int nd = s.front();
         s.pop();
 
-        std::vector<int> nodes = snake.aroundNodes(nd);
+        std::vector<int> nodes = screenData.aroundNodes(nd);
 
         for (auto node : nodes)
         {

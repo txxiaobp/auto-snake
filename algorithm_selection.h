@@ -9,6 +9,7 @@
 typedef enum
 {
     ALGORITHM_BFS = 0,
+    ALGORITHM_DEBFS,
     ALGORITHM_DIJKSTRA,
     ALGORITHM_ASTAR,
     ALGORITHM_DSTAR,
@@ -24,6 +25,7 @@ public:
     AlgorithmSelection(Algorithm_e algo = ALGORITHM_BFS) : algo(algo)
     {
         algoStringMap[ALGORITHM_BFS] = "广度优先搜索";
+        algoStringMap[ALGORITHM_DEBFS] = "双端BFS";
         algoStringMap[ALGORITHM_DIJKSTRA] = "Dijkstra";
         algoStringMap[ALGORITHM_ASTAR] = "A*";
         algoStringMap[ALGORITHM_DSTAR] = "D*";

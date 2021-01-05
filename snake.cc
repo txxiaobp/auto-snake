@@ -2,6 +2,7 @@
 #include <iostream>
 #include <QDebug>
 #include "bfs_method.h"
+#include "debfs_method.h"
 #include "dijkstra_method.h"
 #include "astar_method.h"
 #include "dstar_lite_method.h"
@@ -33,6 +34,7 @@ Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, Mod
     walkedCount = 0;
 
     method[ALGORITHM_BFS] = new BFSMethod(*this, screenData, seed);
+    method[ALGORITHM_DEBFS] = new DeBFSMethod(*this, screenData, seed);
 //    method[ALGORITHM_DIJKSTRA] = new DijkstraMethod(*this, screenData, seed);
 //    method[ALGORITHM_ASTAR] = new AStarMethod(*this, screenData, seed);
 //    method[ALGORITHM_DSTAR] = new DStarMethod(*this, screenData, seed);
@@ -76,23 +78,6 @@ void Snake::pop()
     int tail = snake.front();
 	snake.pop();
     screenData.setType(getRow(tail), getCol(tail), NODE_AVAILABLE);
-}
-
-std::vector<int> Snake::aroundNodes(int node)
-{
-    std::vector<int> ret;
-    ret.clear();
-    int nodeRow = getRow(node);
-    int nodeCol = getCol(node);
-	
-    for (int i = 0; i < DIRECTION_COUNT; i++)
-    {
-        int nextRow = nodeRow + directions[i][0];
-        int nextCol = nodeCol + directions[i][1];
-        ret.push_back(getNum(nextRow, nextCol));
-    }
-	
-	return ret;
 }
 
 bool Snake::move()

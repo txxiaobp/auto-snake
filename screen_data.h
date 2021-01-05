@@ -24,6 +24,7 @@ public:
     void reset(int newRow, int newCol);
     int getRow();
     int getCol();
+    int getTotalSize() { return getRow() * getCol(); }
     Node_t getType(int row, int col);
     Node_t getType(int node);
     void setType(int node, Node_t node_type);
@@ -31,6 +32,7 @@ public:
     bool inArea(int row, int col);
     int getNode(int nodeRow, int nodeCol);
     std::pair<int,int> getNodePair(int node);
+    std::vector<int> aroundNodes(int node);
 	
 	friend class Snake;
 	friend class Seed;

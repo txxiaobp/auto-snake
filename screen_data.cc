@@ -1,8 +1,9 @@
 #include "screen_data.h"
+#include "seed.h"
+#include "direction.h"
 #include <cstdlib>
 #include <ctime>
 #include <cassert>
-#include "seed.h"
 #include <QDebug>
 
 ScreenData::ScreenData(int r, int c) :
@@ -103,7 +104,24 @@ std::pair<int,int> ScreenData::getNodePair(int node)
     return std::make_pair(nodeRow, nodeCol);
 }
 
+std::vector<int> ScreenData::aroundNodes(int node)
+{
+    std::vector<int> ret;
+    ret.clear();
 
+    std::pair<int,int> nodePair = getNodePair(node);
+    int nodeRow = nodePair.first;
+    int nodeCol = nodePair.second;
+
+    for (int i = 0; i < DIRECTION_COUNT; i++)
+    {
+        int nextRow = nodeRow + directions[i][0];
+        int nextCol = nodeCol + directions[i][1];
+        ret.push_back(getNode(nextRow, nextCol));
+    }
+
+    return ret;
+}
 
 
 

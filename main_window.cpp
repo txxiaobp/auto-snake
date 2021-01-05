@@ -55,6 +55,7 @@ MainWindow::MainWindow(ScreenData& data,
     , manualAction(modeMenu->addAction("手动 (M)"))
     , replayAction(modeMenu->addAction("重放"))
     , bfsAction(algoMenu->addAction("广度优先搜索"))
+    , debfsAction(algoMenu->addAction("双端广度优先搜索"))
     , dijkstraAction(algoMenu->addAction("Dijkstra"))
     , aStarAction(algoMenu->addAction("A*"))
     , dStarAction(algoMenu->addAction("D*"))
@@ -153,6 +154,9 @@ void MainWindow::connectSignals()
     });
     connect(bfsAction, &QAction::triggered, [&](){
         changeAlgorithm(ALGORITHM_BFS);
+    });
+    connect(debfsAction, &QAction::triggered, [&](){
+        changeAlgorithm(ALGORITHM_DEBFS);
     });
     connect(dijkstraAction, &QAction::triggered, [&](){
         changeAlgorithm(ALGORITHM_DIJKSTRA);

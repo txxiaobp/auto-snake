@@ -19,7 +19,7 @@ bool DijkstraMethod::findNext(std::vector<int>& from)
         heap.pop();
         marked[nd] = true;
 
-        std::vector<int> nodes = snake.aroundNodes(nd);
+        std::vector<int> nodes = screenData.aroundNodes(nd);
 
         for (auto node : nodes)
         {

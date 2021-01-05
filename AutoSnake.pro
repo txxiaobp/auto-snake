@@ -14,6 +14,7 @@ SOURCES += \
     bfs_method.cpp \
     body_painter.cpp \
     data_recorder.cpp \
+    debfs_method.cpp \
     dijkstra_method.cpp \
     dstar_lite_method.cpp \
     dstar_method.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     bfs_method.h \
     body_painter.h \
     data_recorder.h \
+    debfs_method.h \
     dijkstra_method.h \
     direction.h \
     dstar_lite_method.h \
