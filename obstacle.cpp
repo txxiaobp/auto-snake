@@ -78,17 +78,17 @@ void Obstacle::setObstacle()
             if (directionCount >= OBSTACLE_NUM_IN_DIRECTION || screenData.getType(nextRow, nextCol) != NODE_AVAILABLE)
             {
                 int j;
-                for (j = 0; j < 3; j++)
+                for (j = 0; j < DIRECTION_COUNT - 1; j++)
                 {
                     nextDirection = (nextDirection + 1) % 4;
                     nextRow += directions[nextDirection][0];
                     nextCol += directions[nextDirection][1];
-                    if (screenData.getType(nextRow, nextCol) == NODE_AVAILABLE)
+                    if (screenData.inArea(nextRow, nextCol) && screenData.getType(nextRow, nextCol) == NODE_AVAILABLE)
                     {
                         break;
                     }
                 }
-                if (j == 3)
+                if (j == DIRECTION_COUNT - 1)
                 {
                     break;
                 }

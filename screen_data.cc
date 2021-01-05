@@ -50,6 +50,11 @@ int ScreenData::getCol()
 	
 Node_t ScreenData::getType(int r, int c)
 {
+    if (c == 18)
+    {
+        qDebug() << r << " " << c;
+    }
+
     assert(r >= 0 && r < getRow());
     assert(c >= 0 && c < getCol());
 	
