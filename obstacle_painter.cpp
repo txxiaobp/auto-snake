@@ -9,8 +9,8 @@ ObstaclePainter::ObstaclePainter(int radius) : ScreenPainter(radius) {}
 void ObstaclePainter::draw(QPainter& painter, int x, int y)
 {
     QRect target(x - radius, y - radius, 2 * radius, 2 * radius);
-    QRect source(0.0, 0.0, 32, 25);
-    QImage image(":/res/images/wall.jpg");
+    QRect source(0.0, 0.0, 90, 89);
+    QImage image(":/res/images/obstacle.jpg");
 
     painter.drawImage(target, image, source);
 }

@@ -21,5 +21,6 @@
         <file>res/images/seed13.jpg</file>
         <file>res/images/title.jpg</file>
         <file>res/images/wall.jpg</file>
+        <file>res/images/obstacle.jpg</file>
     </qresource>
 </RCC>
