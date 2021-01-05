@@ -12,7 +12,6 @@
 #include <string>
 
 
-
 Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, ModeSelection& modeSelection, AlgorithmSelection& algorithmSelection) :
     screenData(screenData)
     , dataRecorder(dataRecorder)
@@ -35,8 +34,8 @@ Snake::Snake(Seed& seed, ScreenData& screenData, DataRecorder& dataRecorder, Mod
 
     method[ALGORITHM_BFS] = new BFSMethod(*this, screenData, seed);
     method[ALGORITHM_DEBFS] = new DeBFSMethod(*this, screenData, seed);
-//    method[ALGORITHM_DIJKSTRA] = new DijkstraMethod(*this, screenData, seed);
-//    method[ALGORITHM_ASTAR] = new AStarMethod(*this, screenData, seed);
+    method[ALGORITHM_DIJKSTRA] = new DijkstraMethod(*this, screenData, seed);
+    method[ALGORITHM_ASTAR] = new AStarMethod(*this, screenData, seed);
 //    method[ALGORITHM_DSTAR] = new DStarMethod(*this, screenData, seed);
 //    method[ALGORITHM_DSTAR_LITE] = new DStarLiteMethod(*this, screenData, seed);
 }
