@@ -135,7 +135,7 @@ int DataRecorder::popGoalData()
     return goalData[goalIndex++];
 }
 
-bool DataRecorder::empty()
+bool DataRecorder::isDataEmpty()
 {
     return snakeIndex == int(snakeHeadData.size());
 }

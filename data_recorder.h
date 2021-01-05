@@ -20,7 +20,7 @@ public:
     void reset(const char *fileName);
     void reset();
     void clearData();
-    bool empty();
+    bool isDataEmpty();
     int getRow() { return row; };
     int getCol() { return col; };
 

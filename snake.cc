@@ -101,7 +101,7 @@ bool Snake::move()
 
     if (modeSelection.getMode() == MODE_REPLAY)
     {
-        if (!dataRecorder.empty())
+        if (!dataRecorder.isDataEmpty())
         {
             int nextNode = dataRecorder.popSnakeData();
             setDirection(nextNode);

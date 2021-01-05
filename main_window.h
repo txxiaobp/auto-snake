@@ -57,7 +57,7 @@ public slots:
 private:
     void setPainterMap(int radius);
     void connectSignals();
-    void gameEnd();
+    void gameEnd(bool manuallyEnd = false);
     void speedUp();
     void speedDown();
     void resetObstacle();
@@ -87,6 +87,7 @@ private:
     QAction *startAction;
     QAction *restartAction;
     QAction *pauseContinueAction;
+    QAction *endGameAction;
     QAction *resetObstacleAction;
     QAction *exitAction;
     QAction *autoAction;

@@ -48,6 +48,7 @@ MainWindow::MainWindow(ScreenData& data,
     , startAction(gameMenu->addAction("开始 (S)"))
     , restartAction(gameMenu->addAction("重新开始 (R)"))
     , pauseContinueAction(gameMenu->addAction("暂停|继续 (P)"))
+    , endGameAction(gameMenu->addAction("停止 (E)"))
     , resetObstacleAction(gameMenu->addAction("重新设置障碍物 (O)"))
     , exitAction(gameMenu->addAction("退出 (E)"))
     , autoAction(modeMenu->addAction("自动 (A)"))
@@ -133,6 +134,10 @@ void MainWindow::connectSignals()
     connect(resetObstacleAction, &QAction::triggered, [&](){
         resetObstacle();
     });
+    connect(endGameAction, &QAction::triggered, [&](){
+        gameEnd(true);
+    });
+
     connect(exitAction, &QAction::triggered, [&](){
         exit(0);
     });
@@ -348,16 +353,37 @@ void MainWindow::changeMode(Mode_e mode)
     update();
 }
 
-void MainWindow::gameEnd()
+void MainWindow::gameEnd(bool manuallyEnd)
 {
+    if (manuallyEnd)
+    {
+        Game_Mode_e prevGameMode = statusSelection.getMode();
+        statusSelection.setMode(GAME_PLAY_PAUSE);
+        QMessageBox::StandardButton rb = QMessageBox::question(NULL, "结束游戏", "是否结束游戏?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        statusSelection.setMode(prevGameMode);
+        if(rb == QMessageBox::No)
+        {
+            return;
+        }
+    }
+
     setStatusMode(GAME_PLAY_DEAD);
-    if (modeSelection.getMode() == MODE_REPLAY)
+    if (modeSelection.getMode() == MODE_REPLAY && manuallyEnd == false)
     {
         QMessageBox::StandardButton rb = QMessageBox::question(NULL, "播放完毕", "播放完毕，是否重放?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
         if(rb == QMessageBox::Yes)
         {
             restartGame();
         }
+        return;
+    }
+
+    if (dataRecorder.isDataEmpty())
+    {
+        return;
+    }
+    if (modeSelection.getMode() == MODE_REPLAY)
+    {
         return;
     }
 
@@ -537,6 +563,11 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
     if(ev->key() == Qt::Key_O)
     {
         resetObstacle();
+        return;
+    }
+    if(ev->key() == Qt::Key_E)
+    {
+        gameEnd(true);
         return;
     }
 }
