@@ -44,6 +44,7 @@ void Obstacle::clearObstacle()
             }
         }
     }
+    clearObstacleNode();
 }
 
 void Obstacle::setObstacle()
@@ -95,6 +96,7 @@ void Obstacle::setObstacle()
                 directionCount = 0;
             }
             screenData.setType(nextRow, nextCol, NODE_OBSTACLE);
+            setObstacleNode(nextRow, nextCol);
             nextRow += directions[nextDirection][0];
             nextCol += directions[nextDirection][1];
         }
@@ -121,21 +123,9 @@ std::pair<int,int> Obstacle::randSetObstacle()
     return std::make_pair(row, col);
 }
 
-void Obstacle::getObstacleData(std::vector<int>& obstacleNode)
+std::vector<int> Obstacle::getObstacleData()
 {
-    obstacleNode.clear();
-    int row = screenData.getRow();
-    int col = screenData.getCol();
-    for (int i = 1; i < row - 1; i++)
-    {
-        for (int j = 1; j < col - 1; j++)
-        {
-            if (screenData.getType(i, j) == NODE_OBSTACLE)
-            {
-                obstacleNode.push_back(col * i + j);
-            }
-        }
-    }
+    return obstacleNodes;
 }
 
 
@@ -193,7 +183,15 @@ bool Obstacle::isAllAvailableNodesConnected()
     return connectNum == 1;
 }
 
+void Obstacle::setObstacleNode(int nodeRow, int nodeCol)
+{
+    obstacleNodes.push_back(screenData.getNode(nodeRow, nodeCol));
+}
 
+void Obstacle::clearObstacleNode()
+{
+    obstacleNodes.clear();
+}
 
 
 

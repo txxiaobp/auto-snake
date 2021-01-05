@@ -12,8 +12,8 @@ typedef enum
 }Direction_e;
 
 
-//#define FOUR_DIRECTIONS
-#define EIGHT_DIRECTIONS
+#define FOUR_DIRECTIONS
+//#define EIGHT_DIRECTIONS
 
 
 #ifdef FOUR_DIRECTIONS

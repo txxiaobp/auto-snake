@@ -60,8 +60,7 @@ void DataRecorder::pushGoalData(int goal)
 
 void DataRecorder::exportToFile(const char *fileName)
 {
-    std::vector<int> obstacleNode;
-    obstacle.getObstacleData(obstacleNode);
+    std::vector<int> obstacleNode = obstacle.getObstacleData();
     std::ofstream of(fileName);
     assert(of.is_open());
 

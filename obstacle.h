@@ -11,15 +11,18 @@ public:
     Obstacle(ScreenData& screenData);
     void resetObstacle();
     void clearObstacle();
-    void getObstacleData(std::vector<int>& obstacleNode);
+    std::vector<int> getObstacleData();
 
 private:
     void setObstacle();
     std::pair<int,int> randSetObstacle();
     bool isAllAvailableNodesConnected();
+    void setObstacleNode(int nodeRow, int nodeCol);
+    void clearObstacleNode();
 
 private:
     ScreenData& screenData;
+    std::vector<int> obstacleNodes;
 };
 
 #endif // OBSTACLE_H

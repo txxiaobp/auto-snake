@@ -2,6 +2,7 @@
 #define SCREEN_DATA_H
 
 #include <vector>
+#include <map>
 
 class Snake;
 class Seed;
@@ -28,6 +29,8 @@ public:
     void setType(int node, Node_t node_type);
 	void setType(int row, int col, Node_t node_type);
     bool inArea(int row, int col);
+    int getNode(int nodeRow, int nodeCol);
+    std::pair<int,int> getNodePair(int node);
 	
 	friend class Snake;
 	friend class Seed;

@@ -91,7 +91,17 @@ bool ScreenData::inArea(int row, int col)
     return row >= 0 && row < getRow() && col >= 0 && col < getCol();
 }
 
+int ScreenData::getNode(int nodeRow, int nodeCol)
+{
+    return nodeRow * getCol() + nodeCol;
+}
 
+std::pair<int,int> ScreenData::getNodePair(int node)
+{
+    int nodeRow = node / getCol();
+    int nodeCol = node % getCol();
+    return std::make_pair(nodeRow, nodeCol);
+}
 
 
 
