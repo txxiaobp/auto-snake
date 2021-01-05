@@ -60,13 +60,13 @@ void DataRecorder::pushGoalData(int goal)
 
 void DataRecorder::exportToFile(const char *fileName)
 {
-    std::vector<int> obstacleNode = obstacle.getObstacleData();
+    std::vector<int> obstacleNodes = obstacle.getObstacleData();
     std::ofstream of(fileName);
     assert(of.is_open());
 
-    of << row << " " << col << " " << snakeHeadData.size() << " " << goalData.size() << " " << obstacleNode.size() << " ";
+    of << row << " " << col << " " << snakeHeadData.size() << " " << goalData.size() << " " << obstacleNodes.size() << " ";
 
-    for (int node : obstacleNode)
+    for (int node : obstacleNodes)
     {
         of << node << " ";
     }

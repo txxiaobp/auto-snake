@@ -47,7 +47,7 @@ MainWindow::MainWindow(ScreenData& data,
     , speedMenu(mBar->addMenu("速度控制"))
     , startAction(gameMenu->addAction("开始 (S)"))
     , restartAction(gameMenu->addAction("重新开始 (R)"))
-    , pauseAction(gameMenu->addAction("暂停 (P)"))
+    , pauseContinueAction(gameMenu->addAction("暂停|继续 (P)"))
     , resetObstacleAction(gameMenu->addAction("重新设置障碍物 (O)"))
     , exitAction(gameMenu->addAction("退出 (E)"))
     , autoAction(modeMenu->addAction("自动 (A)"))
@@ -127,8 +127,8 @@ void MainWindow::connectSignals()
     connect(restartAction, &QAction::triggered, [&](){
         restartGame();
     });
-    connect(pauseAction, &QAction::triggered, [&](){
-        setStatusMode(GAME_PLAY_PAUSE);
+    connect(pauseContinueAction, &QAction::triggered, [&](){
+        pauseContinueGame();
     });
     connect(resetObstacleAction, &QAction::triggered, [&](){
         resetObstacle();
@@ -167,6 +167,18 @@ void MainWindow::connectSignals()
     connect(speedDownAction, &QAction::triggered, [&](){
         speedDown();
     });
+}
+
+void MainWindow::pauseContinueGame()
+{
+    if (statusSelection.getMode() == GAME_PLAY_CONTINUE)
+    {
+        setStatusMode(GAME_PLAY_PAUSE);
+    }
+    else if (statusSelection.getMode() == GAME_PLAY_PAUSE)
+    {
+        setStatusMode(GAME_PLAY_CONTINUE);
+    }
 }
 
 void MainWindow::resetObstacle()

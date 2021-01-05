@@ -61,6 +61,7 @@ private:
     void speedUp();
     void speedDown();
     void resetObstacle();
+    void pauseContinueGame();
 
 private:
     ScreenData& data;
