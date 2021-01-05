@@ -343,7 +343,6 @@ void MainWindow::changeMode(Mode_e mode)
         {
              dataRecorder.reset(fileName.toUtf8().data());
              snake.reset();
-             seed.setFromRecorder();
         }
     }
 
@@ -425,7 +424,6 @@ void MainWindow::timerEvent(QTimerEvent*)
     }
     else
     {
-        //exit
         gameEnd();
     }
 }

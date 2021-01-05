@@ -22,6 +22,7 @@ DataRecorder::DataRecorder(ScreenData& screenData, Obstacle& obstacle, ModeSelec
 
 void DataRecorder::reset(const char *fileName)
 {
+    reset();
     snakeHeadData.clear();
     goalData.clear();
     obstacle.clearObstacle();
