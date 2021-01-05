@@ -185,8 +185,13 @@ void MainWindow::resetObstacle()
 {
     if (statusSelection.getMode() == GAME_PLAY_CONTINUE)
     {
+        statusSelection.setMode(GAME_PLAY_PAUSE);
+        QMessageBox::information(NULL, "操作错误", "正在进行游戏，无法重新设置障碍物，请结束后重试。",
+                                 QMessageBox::Yes, QMessageBox::Yes);
+        statusSelection.setMode(GAME_PLAY_CONTINUE);
         return;
     }
+
     snake.reset();
     obstacle.resetObstacle();
     update();
@@ -261,13 +266,69 @@ void MainWindow::setStatusMode(Game_Mode_e mode)
 
 void MainWindow::changeMode(Mode_e mode)
 {
-    if (statusSelection.getMode() == GAME_PLAY_CONTINUE)
+    Game_Mode_e prevGameMode = statusSelection.getMode();
+    if (prevGameMode == GAME_PLAY_CONTINUE || prevGameMode == GAME_PLAY_PAUSE)
     {
-        return;
+        statusSelection.setMode(GAME_PLAY_PAUSE);
+        if (modeSelection.getMode() == MODE_AUTO && mode == MODE_MANUAL)
+        {
+            QMessageBox::StandardButton rb = QMessageBox::question(NULL, "切换模式", "是否切换为手动模式?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            if(rb == QMessageBox::Yes)
+            {
+                modeSelection.setMode(MODE_MANUAL);
+            }
+            else
+            {
+                statusSelection.setMode(prevGameMode);
+                return;
+            }
+        }
+        else if (modeSelection.getMode() == MODE_MANUAL && mode == MODE_AUTO)
+        {
+            QMessageBox::StandardButton rb = QMessageBox::question(NULL, "切换模式", "是否切换为自动模式?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            if(rb == QMessageBox::Yes)
+            {
+                modeSelection.setMode(MODE_AUTO);
+            }
+            else
+            {
+                statusSelection.setMode(prevGameMode);
+                return;
+            }
+        }
+        else if (modeSelection.getMode() == MODE_REPLAY)
+        {
+            if (mode == MODE_AUTO)
+            {
+                QMessageBox::information(NULL, "操作错误", "正处于重放模式，无法设置为自动模式，请结束后重试。",
+                                         QMessageBox::Yes, QMessageBox::Yes);
+                statusSelection.setMode(prevGameMode);
+                return;
+            }
+            else if (mode == MODE_MANUAL)
+            {
+                QMessageBox::information(NULL, "操作错误", "正处于重放模式，无法设置为手动模式，请结束后重试。",
+                                         QMessageBox::Yes, QMessageBox::Yes);
+                statusSelection.setMode(prevGameMode);
+                return;
+            }
+        }
     }
 
-    if (mode == MODE_REPLAY)
+    if (modeSelection.getMode() != MODE_REPLAY && mode == MODE_REPLAY)
     {
+        if (prevGameMode == GAME_PLAY_CONTINUE || prevGameMode == GAME_PLAY_PAUSE)
+        {
+            statusSelection.setMode(GAME_PLAY_PAUSE);
+            QMessageBox::StandardButton rb = QMessageBox::question(NULL, "切换模式", "游戏进行中，是否切换为重放模式并选择存档文件?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            if(rb == QMessageBox::No)
+            {
+                statusSelection.setMode(prevGameMode);
+                return;
+            }
+        }
+        modeSelection.setMode(MODE_REPLAY);
+
         QString fileName = QFileDialog::getOpenFileName(this,
                 tr("请选择要读取的数据文件"),
                 "",
@@ -280,6 +341,8 @@ void MainWindow::changeMode(Mode_e mode)
              seed.setFromRecorder();
         }
     }
+
+    statusSelection.setMode(prevGameMode);
     modeSelection.setMode(mode);
     gameModeLabel->setText("模式: " + modeSelection.getModeString());
     update();
