@@ -16,6 +16,7 @@ SOURCES += \
     data_recorder.cpp \
     debfs_method.cpp \
     dijkstra_method.cpp \
+    direction.cpp \
     dstar_lite_method.cpp \
     dstar_method.cpp \
     head_painter.cpp \

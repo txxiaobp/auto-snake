@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     const int row = 25;
     const int col = 30;
     const int radius = 16;
+    const bool hasMovableObstacles = true;
 
     QApplication a(argc, argv);
     ModeSelection modeSelection;
@@ -22,7 +23,7 @@ int main(int argc, char *argv[])
     SpeedSelection speedSelection(modeSelection);
     StatusSelection statusSelection;
     ScreenData screenData(row, col);
-    Obstacle obstacle(screenData);
+    Obstacle obstacle(screenData, hasMovableObstacles);
     DataRecorder dataRecorder(screenData, obstacle, modeSelection);
     Seed seed(screenData, dataRecorder, modeSelection);
     Snake snake(seed, screenData, dataRecorder, modeSelection, algorithmSelection);

@@ -85,7 +85,6 @@ bool RouteMethod::getNext(int& nextNode)
         isInit = false;
     }
 
-
     while (true)
     {
         mutex.lock();

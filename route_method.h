@@ -11,7 +11,6 @@
 #define FIND_NEXT_SINGLE_THREAD
 
 
-
 class Snake;
 class ScreenData;
 class Seed;

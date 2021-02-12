@@ -61,6 +61,12 @@ Node_t ScreenData::getType(int node)
 {
     int r = node / getCol();
     int c = node % getCol();
+
+    if (r < 0 || r >= getRow() || c < 0 || c >= getCol())
+    {
+        return NODE_MAX;
+    }
+
     assert(r >= 0 && r < getRow());
     assert(c >= 0 && c < getCol());
 
@@ -108,7 +114,7 @@ std::vector<int> ScreenData::aroundNodes(int node)
     int nodeRow = nodePair.first;
     int nodeCol = nodePair.second;
 
-    for (int i = 0; i < DIRECTION_COUNT; i++)
+    for (int i = 0; i < ROUTE_METHOD_DIRECTION_COUNT; i++)
     {
         int nextRow = nodeRow + directions[i][0];
         int nextCol = nodeCol + directions[i][1];

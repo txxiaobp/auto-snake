@@ -14,7 +14,8 @@ typedef enum
     NODE_SNAKE_HEAD,
     NODE_WALL,
     NODE_SEED,
-    NODE_OBSTACLE
+    NODE_OBSTACLE,
+    NODE_MAX,
 } Node_t;
 
 class ScreenData

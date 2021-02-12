@@ -9,14 +9,17 @@ const float NUM_PERCENT = 0.05;
 const int OBSTACLE_NUM_A_TIME = 8;
 const int OBSTACLE_NUM_IN_DIRECTION = 4;
 
-Obstacle::Obstacle(ScreenData& screenData)
+Obstacle::Obstacle(ScreenData& screenData, bool isMovable)
     : screenData(screenData)
+    , isMovable(isMovable)
 {
     do
     {
         clearObstacle();
         setObstacle();
     } while (!isAllAvailableNodesConnected());
+
+    setMovable(isMovable);
 }
 
 void Obstacle::resetObstacle()
@@ -28,6 +31,7 @@ void Obstacle::resetObstacle()
         setObstacle();
         i++;
     } while (!isAllAvailableNodesConnected());
+    setMovable(isMovable);
 }
 
 void Obstacle::clearObstacle()
@@ -108,14 +112,14 @@ void Obstacle::setObstacle()
 std::pair<int,int> Obstacle::randSetObstacle()
 {
     srand(time(NULL));
-    int row_bound = screenData.getRow();
-    int col_bound = screenData.getCol();
+    int rowBound = screenData.getRow();
+    int colBound = screenData.getCol();
 
     int row, col;
     do
     {
-        row = rand() % row_bound;
-        col = rand() % col_bound;
+        row = rand() % rowBound;
+        col = rand() % colBound;
     } while(screenData.getType(row, col) != NODE_AVAILABLE);
 
 
@@ -202,8 +206,109 @@ void Obstacle::clearObstacleNode()
     obstacleNodes.clear();
 }
 
+void Obstacle::setMovable(bool isMovable)
+{
+    const int rowBound = screenData.getRow();
+    const int colBound = screenData.getCol();
+    this->isMovable = isMovable;
+    if (isMovable)
+    {
+        int obstacleNum = std::min(screenData.getRow(), screenData.getCol()) / 4;
 
+        srand(time(NULL));
+        movableObstacle.clear();
+        for (int i = 0; i < obstacleNum; i++)
+        {
+            int row, col;
+            do
+            {
+                row = rand() % rowBound;
+                col = rand() % colBound;
+            } while(screenData.getType(row, col) != NODE_AVAILABLE);
 
+            movableObstacle.push_back( std::make_pair(screenData.getNode(row, col), Direction_e(rand() % DIRECTION_MAX)) );
+            screenData.setType(row, col, NODE_OBSTACLE);
+        }
+    }
+    else
+    {
+        for (auto p : movableObstacle)
+        {
+            screenData.setType(p.first, NODE_AVAILABLE);
+        }
+        movableObstacle.clear();
+    }
+}
+
+std::pair<int,Direction_e> Obstacle::getNextNode(int node, Direction_e direction)
+{
+    std::pair<int,int> currNodePair = screenData.getNodePair(node);
+
+    int currRow = currNodePair.first;
+    int currCol = currNodePair.second;
+
+    int nextRow = currRow + directions[int(direction)][0];
+    int nextCol = currCol + directions[int(direction)][1];
+    return std::make_pair(screenData.getNode(nextRow, nextCol), direction);
+}
+
+std::pair<int,Direction_e> Obstacle::getNextNodeRefraction(const std::pair<int,Direction_e> &nodePair)
+{
+    Direction_e nextDirection = getRefractionDirection(nodePair.second);
+    return getNextNode(nodePair.first, nextDirection);
+}
+
+std::pair<int,Direction_e> Obstacle::getNextNodeRreflect(const std::pair<int,Direction_e> &nodePair)
+{
+    Direction_e nextDirection = getReflectDirection(nodePair.second);
+    return getNextNode(nodePair.first, nextDirection);
+}
+
+void Obstacle::setNodePair(std::pair<int,Direction_e> &currPair, std::pair<int,Direction_e> &nextPair)
+{
+    screenData.setType(currPair.first, NODE_AVAILABLE);
+    currPair.first = nextPair.first;
+    currPair.second = nextPair.second;
+    screenData.setType(currPair.first, NODE_OBSTACLE);
+
+    qDebug() << currPair.first << "  " << currPair.second;
+}
+
+void Obstacle::singleNodeMoveNext(std::pair<int,Direction_e> &nodeDirectionPair)
+{
+    std::pair<int,Direction_e> nextNodePair = getNextNode(nodeDirectionPair.first, nodeDirectionPair.second);
+
+    if (screenData.getType(nextNodePair.first) != NODE_AVAILABLE)
+    {
+        std::pair<int,Direction_e> nextRefractionNodePair = getNextNodeRefraction(nextNodePair);
+        if (screenData.getType(nextRefractionNodePair.first) != NODE_AVAILABLE)
+        {
+            std::pair<int,Direction_e> nextReflectNodePair = getNextNodeRreflect(nextNodePair);
+            setNodePair(nodeDirectionPair, nextReflectNodePair);
+        }
+        else
+        {
+            setNodePair(nodeDirectionPair, nextRefractionNodePair);
+        }
+    }
+    else
+    {
+        setNodePair(nodeDirectionPair, nextNodePair);
+    }
+}
+
+void Obstacle::move()
+{
+    if (!isMovable)
+    {
+        return;
+    }
+
+    for (auto &p : movableObstacle)
+    {
+        singleNodeMoveNext(p);
+    }
+}
 
 
 

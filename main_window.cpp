@@ -503,6 +503,7 @@ void MainWindow::timerEvent(QTimerEvent*)
 
     if (snake.move())
     {
+        obstacle.move();
         update();
     }
     else
