@@ -60,7 +60,8 @@ private:
     void gameEnd(bool manuallyEnd = false);
     void speedUp();
     void speedDown();
-    void resetObstacle();
+    void setObstacleMode(bool isSet);
+    bool resetObstacle();
     void pauseContinueGame();
 
 private:
@@ -77,22 +78,25 @@ private:
     SpeedSelection& speedSelection;
     StatusSelection& statusSelection;
     int timerId;
+    bool containObstacle;
 
 private:
     QMenuBar * mBar;
     QMenu *gameMenu;
     QMenu *modeMenu;
+    QMenu *obstacleMenu;
     QMenu *algoMenu;
     QMenu *speedMenu;
     QAction *startAction;
     QAction *restartAction;
     QAction *pauseContinueAction;
     QAction *endGameAction;
-    QAction *resetObstacleAction;
     QAction *exitAction;
     QAction *autoAction;
     QAction *manualAction;
     QAction *replayAction;
+    QAction *obstacleModeAction;
+    QAction *resetObstacleAction;
     QAction *bfsAction;
     QAction *debfsAction;
     QAction *dijkstraAction;
