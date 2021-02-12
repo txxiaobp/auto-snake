@@ -51,9 +51,11 @@ int ScreenData::getCol()
 	
 Node_t ScreenData::getType(int r, int c)
 {
-    assert(r >= 0 && r < getRow());
-    assert(c >= 0 && c < getCol());
-	
+    if (r < 0 || r >= getRow() || c < 0 || c >= getCol())
+    {
+        return NODE_MAX;
+    }
+
     return data[r][c];
 }
 

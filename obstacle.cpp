@@ -254,8 +254,21 @@ std::pair<int,Direction_e> Obstacle::getNextNode(int node, Direction_e direction
 
 std::pair<int,Direction_e> Obstacle::getNextNodeRefraction(const std::pair<int,Direction_e> &nodePair)
 {
-    Direction_e nextDirection = getRefractionDirection(nodePair.second);
-    return getNextNode(nodePair.first, nextDirection);
+    std::pair<int,Direction_e> nextNodePair = getNextNode(nodePair.first, nodePair.second);
+    assert(screenData.getType(nextNodePair.first) != NODE_AVAILABLE);
+
+    //获取折射方向
+    Direction_e nextDirection = getRefractionDirection(nextNodePair.second);
+
+    //根据折射方向，获取下一点的位置
+    std::pair<int,Direction_e> nextRefractionNodePair = std::make_pair(nextNodePair.first, nextDirection);
+
+    if (!checkRefractionNode(nextRefractionNodePair, nodePair))
+    {
+        nextDirection = getReflectDirection(nextDirection);
+        return getNextNode(nextNodePair.first, nextDirection);
+    }
+    return getNextNode(nextNodePair.first, nextDirection);
 }
 
 std::pair<int,Direction_e> Obstacle::getNextNodeRreflect(const std::pair<int,Direction_e> &nodePair)
@@ -274,13 +287,35 @@ void Obstacle::setNodePair(std::pair<int,Direction_e> &currPair, std::pair<int,D
     qDebug() << currPair.first << "  " << currPair.second;
 }
 
+bool Obstacle::checkRefractionNode(std::pair<int,Direction_e> &nextRefractionNodePair, const std::pair<int,Direction_e> &nodeDirectionPair)
+{
+    std::pair<int,int> nextNodePair = screenData.getNodePair(nextRefractionNodePair.first);
+    std::pair<int,int> currNodePair = screenData.getNodePair(nodeDirectionPair.first);
+
+    int nextRow = nextNodePair.first;
+    int nextCol = nextNodePair.second;
+
+    int currRow = currNodePair.first;
+    int currCol = currNodePair.second;
+
+    int midRow = (currRow + nextRow) / 2;
+    int midCol = (currCol + nextCol) / 2;
+
+    if (screenData.getType(midRow, midCol) != NODE_AVAILABLE)
+    {
+        return false;
+    }
+    return true;
+}
+
 void Obstacle::singleNodeMoveNext(std::pair<int,Direction_e> &nodeDirectionPair)
 {
     std::pair<int,Direction_e> nextNodePair = getNextNode(nodeDirectionPair.first, nodeDirectionPair.second);
 
     if (screenData.getType(nextNodePair.first) != NODE_AVAILABLE)
     {
-        std::pair<int,Direction_e> nextRefractionNodePair = getNextNodeRefraction(nextNodePair);
+        std::pair<int,Direction_e> nextRefractionNodePair = getNextNodeRefraction(nodeDirectionPair);
+
         if (screenData.getType(nextRefractionNodePair.first) != NODE_AVAILABLE)
         {
             std::pair<int,Direction_e> nextReflectNodePair = getNextNodeRreflect(nextNodePair);

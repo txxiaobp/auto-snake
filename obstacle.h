@@ -27,6 +27,7 @@ private:
     std::pair<int,Direction_e> getNextNodeRefraction(const std::pair<int,Direction_e> &nodePair);
     std::pair<int,Direction_e> getNextNodeRreflect(const std::pair<int,Direction_e> &nodePair);
     void setNodePair(std::pair<int,Direction_e> &currPair, std::pair<int,Direction_e> &nextPair);
+    bool checkRefractionNode(std::pair<int,Direction_e> &nextRefractionNodePair, const std::pair<int,Direction_e> &nodeDirectionPair);
 
 private:
     ScreenData& screenData;
