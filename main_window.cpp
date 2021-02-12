@@ -16,10 +16,11 @@
 
 static const int BAR_HEIGHT = 30;
 static const int SNAKE_LENGTH_LABEL = 100;
-static const int SNAKE_WALKED_LABEL = 110;
+static const int SNAKE_WALKED_LABEL = 130;
 static const int GAME_MODE_LABEL = 85;
 static const int GAME_STATUS = 95;
-static const int ALGORITHM_LABEL = 170;
+static const int OBSTACLE_MODE = 90;
+static const int ALGORITHM_LABEL = 210;
 static const int SPEED_LABEL = 80;
 
 MainWindow::MainWindow(ScreenData& data,
@@ -76,6 +77,7 @@ MainWindow::MainWindow(ScreenData& data,
     , snakeWalkedLabel(new QLabel("走过的距离: 0"))
     , gameModeLabel(new QLabel("模式: " + modeSelection.getModeString()))
     , gameStatusLabel(new QLabel("状态: " + statusSelection.getStatusString()))
+    , obstacleLabel(new QLabel("障碍物: 有"))
     , algorithmLabel(new QLabel("寻路算法: " + algorithmSelection.getAlgoString()))
     , speedLabel(new QLabel("速度: " + speedSelection.getSpeedString()))
 {
@@ -92,6 +94,7 @@ MainWindow::MainWindow(ScreenData& data,
     sBar->addWidget(snakeWalkedLabel);
     sBar->addWidget(gameModeLabel);
     sBar->addWidget(gameStatusLabel);
+    sBar->addWidget(obstacleLabel);
     sBar->addWidget(algorithmLabel);
     sBar->addWidget(speedLabel);
 
@@ -99,6 +102,7 @@ MainWindow::MainWindow(ScreenData& data,
     snakeWalkedLabel->setFixedSize(SNAKE_WALKED_LABEL, BAR_HEIGHT);
     gameModeLabel->setFixedSize(GAME_MODE_LABEL, BAR_HEIGHT);
     gameStatusLabel->setFixedSize(GAME_STATUS, BAR_HEIGHT);
+    obstacleLabel->setFixedSize(OBSTACLE_MODE, BAR_HEIGHT);
     algorithmLabel->setFixedSize(ALGORITHM_LABEL, BAR_HEIGHT);
     speedLabel->setFixedSize(SPEED_LABEL, BAR_HEIGHT);
 
@@ -132,22 +136,22 @@ void MainWindow::connectSignals()
     connect(&snake, walkedIncrease, this, walkedCount);
 
 
-    connect(startAction, &QAction::triggered, [&](){
+    connect(startAction, &QAction::triggered, this, [&](){
         startGame();
     });
-    connect(restartAction, &QAction::triggered, [&](){
+    connect(restartAction, &QAction::triggered, this, [&](){
         restartGame();
     });
-    connect(pauseContinueAction, &QAction::triggered, [&](){
+    connect(pauseContinueAction, &QAction::triggered, this, [&](){
         pauseContinueGame();
     });
-    connect(obstacleModeAction, &QAction::triggered, [&](){
+    connect(obstacleModeAction, &QAction::triggered, this, [&](){
         setObstacleMode(!containObstacle);
     });
-    connect(resetObstacleAction, &QAction::triggered, [&](){
+    connect(resetObstacleAction, &QAction::triggered, this, [&](){
         resetObstacle();
     });
-    connect(endGameAction, &QAction::triggered, [&](){
+    connect(endGameAction, &QAction::triggered, this, [&](){
         gameEnd(true);
     });
 
@@ -155,37 +159,37 @@ void MainWindow::connectSignals()
         exit(0);
     });
 
-    connect(autoAction, &QAction::triggered, [&](){
+    connect(autoAction, &QAction::triggered, this, [&](){
         changeMode(MODE_AUTO);
     });
-    connect(manualAction, &QAction::triggered, [&](){
+    connect(manualAction, &QAction::triggered, this, [&](){
         changeMode(MODE_MANUAL);
     });
-    connect(replayAction, &QAction::triggered, [&](){
+    connect(replayAction, &QAction::triggered, this, [&](){
         changeMode(MODE_REPLAY);
     });
-    connect(bfsAction, &QAction::triggered, [&](){
+    connect(bfsAction, &QAction::triggered, this, [&](){
         changeAlgorithm(ALGORITHM_BFS);
     });
-    connect(debfsAction, &QAction::triggered, [&](){
+    connect(debfsAction, &QAction::triggered, this, [&](){
         changeAlgorithm(ALGORITHM_DEBFS);
     });
-    connect(dijkstraAction, &QAction::triggered, [&](){
+    connect(dijkstraAction, &QAction::triggered, this, [&](){
         changeAlgorithm(ALGORITHM_DIJKSTRA);
     });
-    connect(aStarAction, &QAction::triggered, [&](){
+    connect(aStarAction, &QAction::triggered, this, [&](){
         changeAlgorithm(ALGORITHM_ASTAR);
     }); 
-//    connect(dStarAction, &QAction::triggered, [&](){
+//    connect(dStarAction, &QAction::triggered, this, [&](){
 //        changeAlgorithm(ALGORITHM_DSTAR);
 //    });
-//    connect(dStarLiteAction, &QAction::triggered, [&](){
+//    connect(dStarLiteAction, &QAction::triggered, this, [&](){
 //        changeAlgorithm(ALGORITHM_DSTAR_LITE);
 //    });
-    connect(speedUpAction, &QAction::triggered, [&](){
+    connect(speedUpAction, &QAction::triggered, this, [&](){
         speedUp();
     });
-    connect(speedDownAction, &QAction::triggered, [&](){
+    connect(speedDownAction, &QAction::triggered, this, [&](){
         speedDown();
     });
 }
@@ -204,9 +208,11 @@ void MainWindow::pauseContinueGame()
 
 void MainWindow::setObstacleMode(bool isSet)
 {
+    assert (isSet != containObstacle);
+
     if (isSet)
     {
-        if (statusSelection.getMode() == GAME_PLAY_CONTINUE)
+        if (statusSelection.getMode() == GAME_PLAY_CONTINUE || statusSelection.getMode() == GAME_PLAY_PAUSE)
         {
             Game_Mode_e prevGameMode = statusSelection.getMode();
             statusSelection.setMode(GAME_PLAY_PAUSE);
@@ -219,31 +225,35 @@ void MainWindow::setObstacleMode(bool isSet)
             snake.reset();
             obstacle.resetObstacle();
             update();
+            containObstacle = true;
         }
     }
     else
     {
-        if (statusSelection.getMode() == GAME_PLAY_CONTINUE)
+        if (statusSelection.getMode() == GAME_PLAY_CONTINUE || statusSelection.getMode() == GAME_PLAY_PAUSE)
         {
             Game_Mode_e prevGameMode = statusSelection.getMode();
             statusSelection.setMode(GAME_PLAY_PAUSE);
             QMessageBox::information(NULL, "操作错误", "正在进行游戏，无法关闭障碍物，请结束后重试。",
                                      QMessageBox::Yes, QMessageBox::Yes);
             statusSelection.setMode(prevGameMode);
-            return;
         }
-
-        snake.reset();
-        obstacle.clearObstacle();
-        update();
-        containObstacle = false;
+        else
+        {
+            snake.reset();
+            obstacle.clearObstacle();
+            update();
+            containObstacle = false;
+        }
     }
     if (containObstacle)
     {
+        obstacleLabel->setText("障碍物: 有");
         obstacleModeAction->setText("关闭障碍物");
     }
     else
     {
+        obstacleLabel->setText("障碍物: 无");
         obstacleModeAction->setText("启用障碍物");
     }
 }
@@ -259,7 +269,7 @@ bool MainWindow::resetObstacle()
         statusSelection.setMode(prevGameMode);
         return containObstacle;
     }
-    if (statusSelection.getMode() == GAME_PLAY_CONTINUE)
+    if (statusSelection.getMode() == GAME_PLAY_CONTINUE || statusSelection.getMode() == GAME_PLAY_PAUSE)
     {
         Game_Mode_e prevGameMode = statusSelection.getMode();
         statusSelection.setMode(GAME_PLAY_PAUSE);

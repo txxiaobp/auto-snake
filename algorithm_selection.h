@@ -25,7 +25,7 @@ public:
     AlgorithmSelection(Algorithm_e algo = ALGORITHM_BFS) : algo(algo)
     {
         algoStringMap[ALGORITHM_BFS] = "广度优先搜索";
-        algoStringMap[ALGORITHM_DEBFS] = "双端BFS";
+        algoStringMap[ALGORITHM_DEBFS] = "双端广度优先搜索";
         algoStringMap[ALGORITHM_DIJKSTRA] = "Dijkstra";
         algoStringMap[ALGORITHM_ASTAR] = "A*";
         algoStringMap[ALGORITHM_DSTAR] = "D*";

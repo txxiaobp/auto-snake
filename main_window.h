@@ -110,6 +110,7 @@ private:
     QLabel * snakeWalkedLabel;
     QLabel * gameModeLabel;
     QLabel * gameStatusLabel;
+    QLabel * obstacleLabel;
     QLabel * algorithmLabel;
     QLabel * speedLabel;
 };

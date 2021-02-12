@@ -12,9 +12,9 @@
 
 int main(int argc, char *argv[])
 {
-    int row = 25;
-    int col = 25;
-    int radius = 16;
+    const int row = 25;
+    const int col = 30;
+    const int radius = 16;
 
     QApplication a(argc, argv);
     ModeSelection modeSelection;
