@@ -60,6 +60,8 @@ private:
     void gameEnd(bool manuallyEnd = false);
     void speedUp();
     void speedDown();
+    void setObstacleModeLabel();
+    void setMovableObstacleMode(bool isSet);
     void setObstacleMode(bool isSet);
     bool resetObstacle();
     void pauseContinueGame();
@@ -79,6 +81,7 @@ private:
     StatusSelection& statusSelection;
     int timerId;
     bool containObstacle;
+    bool containMovableObstacle;
 
 private:
     QMenuBar * mBar;
@@ -96,6 +99,7 @@ private:
     QAction *manualAction;
     QAction *replayAction;
     QAction *obstacleModeAction;
+    QAction *movableObstacleAction;
     QAction *resetObstacleAction;
     QAction *bfsAction;
     QAction *debfsAction;

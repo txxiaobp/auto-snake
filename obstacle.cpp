@@ -36,6 +36,7 @@ void Obstacle::resetObstacle()
 
 void Obstacle::clearObstacle()
 {
+    setMovable(false);
     int row = screenData.getRow();
     int col = screenData.getCol();
     for (int i = 1; i < row - 1; i++)

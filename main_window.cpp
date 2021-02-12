@@ -46,6 +46,7 @@ MainWindow::MainWindow(ScreenData& data,
     , speedSelection(speedSelection)
     , statusSelection(statusSelection)
     , containObstacle(true)
+    , containMovableObstacle(true)
 
     , mBar(menuBar())
     , gameMenu(mBar->addMenu("游戏"))
@@ -63,6 +64,7 @@ MainWindow::MainWindow(ScreenData& data,
     , manualAction(modeMenu->addAction("手动 (M)"))
     , replayAction(modeMenu->addAction("重放"))
     , obstacleModeAction(obstacleMenu->addAction("关闭障碍物"))
+    , movableObstacleAction(obstacleMenu->addAction("关闭移动障碍物"))
     , resetObstacleAction(obstacleMenu->addAction("重新设置障碍物 (O)"))
     , bfsAction(algoMenu->addAction("广度优先搜索"))
     , debfsAction(algoMenu->addAction("双端广度优先搜索"))
@@ -148,6 +150,9 @@ void MainWindow::connectSignals()
     connect(obstacleModeAction, &QAction::triggered, this, [&](){
         setObstacleMode(!containObstacle);
     });
+    connect(movableObstacleAction, &QAction::triggered, this, [&](){
+        setMovableObstacleMode(!containMovableObstacle);
+    });
     connect(resetObstacleAction, &QAction::triggered, this, [&](){
         resetObstacle();
     });
@@ -206,6 +211,80 @@ void MainWindow::pauseContinueGame()
     }
 }
 
+void MainWindow::setObstacleModeLabel()
+{
+    QString string = "障碍物: ";
+    if (containObstacle)
+    {
+        string += "有 ";
+        obstacleModeAction->setText("关闭障碍物");
+    }
+    else
+    {
+        string += "无 ";
+        obstacleModeAction->setText("启用障碍物");
+    }
+    string += "可移动障碍物： ";
+
+    if (containMovableObstacle)
+    {
+        string += "是 ";
+        movableObstacleAction->setText("关闭移动障碍物");
+    }
+    else
+    {
+        string += "否 ";
+        movableObstacleAction->setText("启用移动障碍物");
+    }
+    obstacleLabel->setText(string);
+}
+
+void MainWindow::setMovableObstacleMode(bool isSet)
+{
+    if (isSet)
+    {
+        if (statusSelection.getMode() == GAME_PLAY_CONTINUE || statusSelection.getMode() == GAME_PLAY_PAUSE)
+        {
+            Game_Mode_e prevGameMode = statusSelection.getMode();
+            statusSelection.setMode(GAME_PLAY_PAUSE);
+            QMessageBox::information(NULL, "操作错误", "正在进行游戏，无法启用移动障碍物，请结束后重试。",
+                                     QMessageBox::Yes, QMessageBox::Yes);
+            statusSelection.setMode(prevGameMode);
+        }
+        else if (!containObstacle)
+        {
+            Game_Mode_e prevGameMode = statusSelection.getMode();
+            statusSelection.setMode(GAME_PLAY_PAUSE);
+            QMessageBox::information(NULL, "操作错误", "请先启用障碍物。",
+                                     QMessageBox::Yes, QMessageBox::Yes);
+            statusSelection.setMode(prevGameMode);
+        }
+        else
+        {
+            obstacle.setMovable(true);
+            containMovableObstacle = true;
+        }
+    }
+    else
+    {
+        if (statusSelection.getMode() == GAME_PLAY_CONTINUE || statusSelection.getMode() == GAME_PLAY_PAUSE)
+        {
+            Game_Mode_e prevGameMode = statusSelection.getMode();
+            statusSelection.setMode(GAME_PLAY_PAUSE);
+            QMessageBox::information(NULL, "操作错误", "正在进行游戏，无法关闭移动障碍物，请结束后重试。",
+                                     QMessageBox::Yes, QMessageBox::Yes);
+            statusSelection.setMode(prevGameMode);
+        }
+        else
+        {
+            obstacle.setMovable(false);
+            containMovableObstacle = false;
+        }
+    }
+    setObstacleModeLabel();
+    update();
+}
+
 void MainWindow::setObstacleMode(bool isSet)
 {
     assert (isSet != containObstacle);
@@ -224,7 +303,6 @@ void MainWindow::setObstacleMode(bool isSet)
         {
             snake.reset();
             obstacle.resetObstacle();
-            update();
             containObstacle = true;
         }
     }
@@ -240,22 +318,14 @@ void MainWindow::setObstacleMode(bool isSet)
         }
         else
         {
+            setMovableObstacleMode(false);
             snake.reset();
             obstacle.clearObstacle();
-            update();
             containObstacle = false;
         }
     }
-    if (containObstacle)
-    {
-        obstacleLabel->setText("障碍物: 有");
-        obstacleModeAction->setText("关闭障碍物");
-    }
-    else
-    {
-        obstacleLabel->setText("障碍物: 无");
-        obstacleModeAction->setText("启用障碍物");
-    }
+    setObstacleModeLabel();
+    update();
 }
 
 bool MainWindow::resetObstacle()
@@ -281,6 +351,7 @@ bool MainWindow::resetObstacle()
 
     snake.reset();
     obstacle.resetObstacle();
+    obstacle.setMovable(containMovableObstacle);
     update();
     return true;
 }
