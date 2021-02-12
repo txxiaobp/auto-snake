@@ -22,5 +22,6 @@
         <file>res/images/title.jpg</file>
         <file>res/images/obstacle.jpg</file>
         <file>res/images/wall.jpg</file>
+        <file>res/images/movable_obstacle.jpg</file>
     </qresource>
 </RCC>

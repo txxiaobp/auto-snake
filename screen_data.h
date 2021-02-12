@@ -15,6 +15,7 @@ typedef enum
     NODE_WALL,
     NODE_SEED,
     NODE_OBSTACLE,
+    NODE_MOVABLE_OBSTACLE,
     NODE_MAX,
 } Node_t;
 

@@ -22,6 +22,7 @@ SOURCES += \
     head_painter.cpp \
     main.cpp \
     main_window.cpp \
+    movable_obstacle_painter.cpp \
     obstacle.cpp \
     obstacle_painter.cpp \
     route_method.cpp \
@@ -48,6 +49,7 @@ HEADERS += \
     index_heap.h \
     main_window.h \
     mode_selection.h \
+    movable_obstacle_painter.h \
     obstacle.h \
     obstacle_painter.h \
     route_method.h \

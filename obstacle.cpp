@@ -228,7 +228,7 @@ void Obstacle::setMovable(bool isMovable)
             } while(screenData.getType(row, col) != NODE_AVAILABLE);
 
             movableObstacle.push_back( std::make_pair(screenData.getNode(row, col), Direction_e(rand() % DIRECTION_MAX)) );
-            screenData.setType(row, col, NODE_OBSTACLE);
+            screenData.setType(row, col, NODE_MOVABLE_OBSTACLE);
         }
     }
     else
@@ -283,9 +283,7 @@ void Obstacle::setNodePair(std::pair<int,Direction_e> &currPair, std::pair<int,D
     screenData.setType(currPair.first, NODE_AVAILABLE);
     currPair.first = nextPair.first;
     currPair.second = nextPair.second;
-    screenData.setType(currPair.first, NODE_OBSTACLE);
-
-    qDebug() << currPair.first << "  " << currPair.second;
+    screenData.setType(currPair.first, NODE_MOVABLE_OBSTACLE);
 }
 
 bool Obstacle::checkRefractionNode(std::pair<int,Direction_e> &nextRefractionNodePair, const std::pair<int,Direction_e> &nodeDirectionPair)

@@ -12,6 +12,7 @@
 #include "data_recorder.h"
 #include "back_painter.h"
 #include "obstacle_painter.h"
+#include "movable_obstacle_painter.h"
 
 
 static const int BAR_HEIGHT = 30;
@@ -121,10 +122,15 @@ MainWindow::MainWindow(ScreenData& data,
 MainWindow::~MainWindow()
 {
     delete painter;
-    delete painterMap[NODE_SNAKE_BODY];
-    delete painterMap[NODE_SNAKE_HEAD];
-    delete painterMap[NODE_WALL];
-    delete painterMap[NODE_SEED];
+
+    for (auto &p : painterMap)
+    {
+        if (p.second)
+        {
+            delete p.second;
+            p.second = nullptr;
+        }
+    }
 }
 
 void MainWindow::connectSignals()
@@ -136,7 +142,6 @@ void MainWindow::connectSignals()
     void (Snake:: *walkedIncrease)(int) = &Snake::snakeWalkedIncrease;
     void (MainWindow:: *walkedCount)(int) = &MainWindow::setSnakeWalkedCount;
     connect(&snake, walkedIncrease, this, walkedCount);
-
 
     connect(startAction, &QAction::triggered, this, [&](){
         startGame();
@@ -563,6 +568,7 @@ void MainWindow::setPainterMap(int radius)
     painterMap[NODE_WALL] = new WallPainter(radius);
     painterMap[NODE_SEED] = new SeedPainter(radius);
     painterMap[NODE_OBSTACLE] = new ObstaclePainter(radius);
+    painterMap[NODE_MOVABLE_OBSTACLE] = new MovableObstaclePainter(radius);
 }
 
 void MainWindow::timerEvent(QTimerEvent*)
