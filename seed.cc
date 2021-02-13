@@ -39,12 +39,12 @@ int Seed::getNode()
     return nodeRow * data.getCol() + nodeCol;
 }
 
-int Seed::getNodeRow()
+int Seed::getRow()
 {
     return nodeRow;
 }
 
-int Seed::getNodeCol()
+int Seed::getCol()
 {
     return nodeCol;
 }

@@ -64,15 +64,16 @@ bool DijkstraMethod::findNext(std::vector<int>& from)
 
 int DijkstraMethod::calDistance(int nextNode, int curNode)
 {
-    int seedNode = seed.getNode();
-    int seedRow = snake.getRow(seedNode);
-    int seedCol = snake.getCol(seedNode);
+    int seedRow = seed.getRow();
+    int seedCol = seed.getCol();
 
-    int nextRow = snake.getRow(nextNode);
-    int nextCol = snake.getCol(nextNode);
+    auto nextPair = screenData.getNodePair(nextNode);
+    int nextRow = nextPair.first;
+    int nextCol = nextPair.second;
 
-    int curRow = snake.getRow(curNode);
-    int curCol = snake.getCol(curNode);
+    auto curPair = screenData.getNodePair(curNode);
+    int curRow = curPair.first;
+    int curCol = curPair.second;
 
     int nextDis = std::abs(seedRow - nextRow) + std::abs(seedCol - nextCol);
     int curDis = std::abs(seedRow - curRow) + std::abs(seedCol - curCol);

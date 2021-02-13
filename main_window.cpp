@@ -71,7 +71,7 @@ MainWindow::MainWindow(ScreenData& data,
     , debfsAction(algoMenu->addAction("双端广度优先搜索"))
     , dijkstraAction(algoMenu->addAction("Dijkstra"))
     , aStarAction(algoMenu->addAction("A*"))
-//    , dStarAction(algoMenu->addAction("D*"))
+    , dStarAction(algoMenu->addAction("D*"))
 //    , dStarLiteAction(algoMenu->addAction("D* Lite"))
     , speedUpAction(speedMenu->addAction("加速"))
     , speedDownAction(speedMenu->addAction("减速"))
@@ -190,9 +190,9 @@ void MainWindow::connectSignals()
     connect(aStarAction, &QAction::triggered, this, [&](){
         changeAlgorithm(ALGORITHM_ASTAR);
     }); 
-//    connect(dStarAction, &QAction::triggered, this, [&](){
-//        changeAlgorithm(ALGORITHM_DSTAR);
-//    });
+    connect(dStarAction, &QAction::triggered, this, [&](){
+        changeAlgorithm(ALGORITHM_DSTAR);
+    });
 //    connect(dStarLiteAction, &QAction::triggered, this, [&](){
 //        changeAlgorithm(ALGORITHM_DSTAR_LITE);
 //    });
