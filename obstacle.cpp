@@ -241,7 +241,7 @@ void Obstacle::setMovable(bool isMovable)
     }
 }
 
-std::pair<int,Direction_e> Obstacle::getNextNode(int node, Direction_e direction)
+int Obstacle::getNextNode(int node, Direction_e direction)
 {
     std::pair<int,int> currNodePair = screenData.getNodePair(node);
 
@@ -250,85 +250,50 @@ std::pair<int,Direction_e> Obstacle::getNextNode(int node, Direction_e direction
 
     int nextRow = currRow + directions[int(direction)][0];
     int nextCol = currCol + directions[int(direction)][1];
-    return std::make_pair(screenData.getNode(nextRow, nextCol), direction);
+    return screenData.getNode(nextRow, nextCol);
 }
 
-std::pair<int,Direction_e> Obstacle::getNextNodeRefraction(const std::pair<int,Direction_e> &nodePair)
-{
-    std::pair<int,Direction_e> nextNodePair = getNextNode(nodePair.first, nodePair.second);
-    assert(screenData.getType(nextNodePair.first) != NODE_AVAILABLE);
-
-    //获取折射方向
-    Direction_e nextDirection = getRefractionDirection(nextNodePair.second);
-
-    //根据折射方向，获取下一点的位置
-    std::pair<int,Direction_e> nextRefractionNodePair = std::make_pair(nextNodePair.first, nextDirection);
-
-    if (!checkRefractionNode(nextRefractionNodePair, nodePair))
-    {
-        nextDirection = getReflectDirection(nextDirection);
-        return getNextNode(nextNodePair.first, nextDirection);
-    }
-    return getNextNode(nextNodePair.first, nextDirection);
-}
-
-std::pair<int,Direction_e> Obstacle::getNextNodeRreflect(const std::pair<int,Direction_e> &nodePair)
-{
-    Direction_e nextDirection = getReflectDirection(nodePair.second);
-    return getNextNode(nodePair.first, nextDirection);
-}
-
-void Obstacle::setNodePair(std::pair<int,Direction_e> &currPair, std::pair<int,Direction_e> &nextPair)
-{
-    screenData.setType(currPair.first, NODE_AVAILABLE);
-    currPair.first = nextPair.first;
-    currPair.second = nextPair.second;
-    screenData.setType(currPair.first, NODE_MOVABLE_OBSTACLE);
-}
-
-bool Obstacle::checkRefractionNode(std::pair<int,Direction_e> &nextRefractionNodePair, const std::pair<int,Direction_e> &nodeDirectionPair)
-{
-    std::pair<int,int> nextNodePair = screenData.getNodePair(nextRefractionNodePair.first);
-    std::pair<int,int> currNodePair = screenData.getNodePair(nodeDirectionPair.first);
-
-    int nextRow = nextNodePair.first;
-    int nextCol = nextNodePair.second;
-
-    int currRow = currNodePair.first;
-    int currCol = currNodePair.second;
-
-    int midRow = (currRow + nextRow) / 2;
-    int midCol = (currCol + nextCol) / 2;
-
-    if (screenData.getType(midRow, midCol) != NODE_AVAILABLE)
-    {
-        return false;
-    }
-    return true;
-}
 
 void Obstacle::singleNodeMoveNext(std::pair<int,Direction_e> &nodeDirectionPair)
 {
-    std::pair<int,Direction_e> nextNodePair = getNextNode(nodeDirectionPair.first, nodeDirectionPair.second);
+    screenData.setType(nodeDirectionPair.first, NODE_AVAILABLE);
 
-    if (screenData.getType(nextNodePair.first) != NODE_AVAILABLE)
+    int nextNode = getNextNode(nodeDirectionPair.first, nodeDirectionPair.second);
+
+    if (screenData.getType(nextNode) != NODE_AVAILABLE)
     {
-        std::pair<int,Direction_e> nextRefractionNodePair = getNextNodeRefraction(nodeDirectionPair);
+        //若下一点不是空白，需要反弹
+        //折射方向
+        Direction_e refraction = getRefractionDirection(nodeDirectionPair.second);
+        //折射方向的下一点
+        int nextNodeRefraction = getNextNode(nodeDirectionPair.first, refraction);
 
-        if (screenData.getType(nextRefractionNodePair.first) != NODE_AVAILABLE)
+        if (screenData.getType(nextNodeRefraction) != NODE_AVAILABLE)
         {
-            std::pair<int,Direction_e> nextReflectNodePair = getNextNodeRreflect(nextNodePair);
-            setNodePair(nodeDirectionPair, nextReflectNodePair);
+            //折射方向的下一点不可到达，判断折射方向的反方向
+            Direction_e refractionReflect = getReflectDirection(refraction);
+            int nextNodeRefractionReflect = getNextNode(nodeDirectionPair.first, refractionReflect);
+
+            if (screenData.getType(nextNodeRefractionReflect) != NODE_AVAILABLE)
+            {
+                //折射方向反方向的下一点也不可到达，原路反弹
+                nodeDirectionPair.second = getReflectDirection(nodeDirectionPair.second);
+            }
+            else
+            {
+                nodeDirectionPair.second = refractionReflect;
+            }
         }
         else
         {
-            setNodePair(nodeDirectionPair, nextRefractionNodePair);
+            nodeDirectionPair.second = refraction;
         }
     }
     else
     {
-        setNodePair(nodeDirectionPair, nextNodePair);
+        nodeDirectionPair.first = nextNode;
     }
+    screenData.setType(nodeDirectionPair.first, NODE_MOVABLE_OBSTACLE);
 }
 
 void Obstacle::move()

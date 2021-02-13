@@ -23,11 +23,7 @@ private:
     void setObstacleNode(int nodeRow, int nodeCol);
     void clearObstacleNode();
     void singleNodeMoveNext(std::pair<int,Direction_e> &nodeDirectionPair);
-    std::pair<int,Direction_e> getNextNode(int node, Direction_e direction);
-    std::pair<int,Direction_e> getNextNodeRefraction(const std::pair<int,Direction_e> &nodePair);
-    std::pair<int,Direction_e> getNextNodeRreflect(const std::pair<int,Direction_e> &nodePair);
-    void setNodePair(std::pair<int,Direction_e> &currPair, std::pair<int,Direction_e> &nextPair);
-    bool checkRefractionNode(std::pair<int,Direction_e> &nextRefractionNodePair, const std::pair<int,Direction_e> &nodeDirectionPair);
+    int getNextNode(int node, Direction_e direction);
 
 private:
     ScreenData& screenData;
