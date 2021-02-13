@@ -33,6 +33,7 @@ void DataRecorder::reset()
 {
     snakeIndex = 0;
     goalIndex = 0;
+    obstacle.resetMovableObstacle();
 
     if (modeSelection.getMode() != MODE_REPLAY)
     {
@@ -68,14 +69,26 @@ void DataRecorder::exportToFile(const char *fileName)
 {
     std::vector<int> obstacleNodes;
     obstacle.getObstacleData(obstacleNodes);
+
+    std::vector<std::pair<int,Direction_e>> movableObstacleNodes;
+    obstacle.getInitMovableObstacle(movableObstacleNodes);
+
     std::ofstream of(fileName);
     assert(of.is_open());
 
-    of << row << " " << col << " " << snakeHeadData.size() << " " << goalData.size() << " " << obstacleNodes.size() << " ";
+    of << row << " " << col << " " << snakeHeadData.size() << " "
+       << goalData.size() << " "
+       << obstacleNodes.size() << " "
+       << movableObstacleNodes.size() << " ";
 
     for (int node : obstacleNodes)
     {
         of << node << " ";
+    }
+
+    for (std::pair<int,Direction_e> &node : movableObstacleNodes)
+    {
+        of << node.first << " " << node.second << " ";
     }
 
     for (int d : snakeHeadData)
@@ -91,20 +104,30 @@ void DataRecorder::exportToFile(const char *fileName)
 
 void DataRecorder::importFromFile(const char *fileName)
 {
+    std::vector<std::pair<int,Direction_e>> movableObstacleNodes;
     snakeIndex = 0;
     goalIndex = 0;
     std::ifstream inf(fileName);
     assert(inf.is_open());
 
-    int snakeDataSize = 0, goalDataSize = 0, obstacleCount = 0;
-    inf >> row >> col >> snakeDataSize >> goalDataSize >> obstacleCount;
+    int snakeDataSize = 0, goalDataSize = 0, obstacleCount = 0, movableObstacleCount = 0;
+    inf >> row >> col >> snakeDataSize >> goalDataSize >> obstacleCount >> movableObstacleCount;
 
     int val = 0;
+    int direction;
     for (int i = 0; i < obstacleCount; i++)
     {
         inf >> val;
         screenData.setType(val, NODE_OBSTACLE);
     }
+
+    for (int i = 0; i < movableObstacleCount; i++)
+    {
+        inf >> val >> direction;
+        movableObstacleNodes.push_back(std::make_pair(val, Direction_e(direction)));
+        screenData.setType(val, NODE_OBSTACLE);
+    }
+    obstacle.setMovableObstacle(movableObstacleNodes);
 
     for (int i = 0; i < snakeDataSize; i++)
     {

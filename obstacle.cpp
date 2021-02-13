@@ -143,6 +143,40 @@ void Obstacle::getObstacleData(std::vector<int>& obstacleNodes)
     }
 }
 
+void Obstacle::getInitMovableObstacle(std::vector<std::pair<int,Direction_e>> &movableObstacleNodes)
+{
+    movableObstacleNodes.clear();
+    movableObstacleNodes = this->initMovableObstacles;
+}
+
+void Obstacle::setMovableObstacle(std::vector<std::pair<int,Direction_e>> &movableObstacleNodes)
+{
+    setMovable(false);
+
+    this->isMovable = (movableObstacleNodes.empty()) ? false : true;
+    this->initMovableObstacles = movableObstacleNodes;
+    this->movableObstacles = movableObstacleNodes;
+
+    for (std::pair<int,Direction_e> &p : movableObstacles)
+    {
+        screenData.setType(p.first, NODE_MOVABLE_OBSTACLE);
+    }
+}
+
+void Obstacle::resetMovableObstacle()
+{
+    for (std::pair<int,Direction_e> &p : this->movableObstacles)
+    {
+        screenData.setType(p.first, NODE_AVAILABLE);
+    }
+
+    this->movableObstacles = this->initMovableObstacles;
+    for (std::pair<int,Direction_e> &p : this->movableObstacles)
+    {
+        screenData.setType(p.first, NODE_MOVABLE_OBSTACLE);
+    }
+}
+
 bool Obstacle::isAllAvailableNodesConnected()
 {
     std::vector<bool> visited(screenData.getRow() * screenData.getCol(), false);
@@ -217,7 +251,7 @@ void Obstacle::setMovable(bool isMovable)
         int obstacleNum = std::min(screenData.getRow(), screenData.getCol()) / 4;
 
         srand(time(NULL));
-        movableObstacle.clear();
+        movableObstacles.clear();
         for (int i = 0; i < obstacleNum; i++)
         {
             int row, col;
@@ -227,18 +261,21 @@ void Obstacle::setMovable(bool isMovable)
                 col = rand() % colBound;
             } while(screenData.getType(row, col) != NODE_AVAILABLE);
 
-            movableObstacle.push_back( std::make_pair(screenData.getNode(row, col), Direction_e(rand() % DIRECTION_MAX)) );
+            movableObstacles.push_back( std::make_pair(screenData.getNode(row, col), Direction_e(rand() % DIRECTION_MAX)) );
             screenData.setType(row, col, NODE_MOVABLE_OBSTACLE);
         }
     }
     else
     {
-        for (auto p : movableObstacle)
+        for (auto p : movableObstacles)
         {
             screenData.setType(p.first, NODE_AVAILABLE);
         }
-        movableObstacle.clear();
+        movableObstacles.clear();
     }
+
+    //记录移动障碍物的初始位置，用于数据存档
+    initMovableObstacles = movableObstacles;
 }
 
 int Obstacle::getNextNode(int node, Direction_e direction)
@@ -303,7 +340,7 @@ void Obstacle::move()
         return;
     }
 
-    for (auto &p : movableObstacle)
+    for (auto &p : movableObstacles)
     {
         singleNodeMoveNext(p);
     }

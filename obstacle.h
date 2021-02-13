@@ -13,8 +13,11 @@ public:
     void resetObstacle();
     void clearObstacle();
     void getObstacleData(std::vector<int>& obstacleNodes);
+    void getInitMovableObstacle(std::vector<std::pair<int,Direction_e>> &movableObstacleNodes);
+    void setMovableObstacle(std::vector<std::pair<int,Direction_e>> &movableObstacleNodes);
     void move();
     void setMovable(bool isMovable);
+    void resetMovableObstacle();
 
 private:
     void setObstacle();
@@ -29,7 +32,8 @@ private:
     ScreenData& screenData;
     std::vector<int> obstacleNodes;
     bool isMovable;
-    std::vector<std::pair<int,Direction_e>> movableObstacle;
+    std::vector<std::pair<int,Direction_e>> movableObstacles;
+    std::vector<std::pair<int,Direction_e>> initMovableObstacles;
 };
 
 #endif // OBSTACLE_H
