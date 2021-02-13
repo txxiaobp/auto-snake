@@ -5,6 +5,7 @@
 #include <vector>
 #include <cassert>
 #include <stdlib.h>
+#include <cstring>
 #include <ctime>
 
 const int DEFAULT_LENGTH = 10;
@@ -14,25 +15,11 @@ const int INVALID_INDEX = -1;
 template <typename T>
 class IndexHeap
 {
-private:
-    T *data;
-    int *indexes;  // map from heap to data
-    int *reverse;  // map from data to heap
-    int sz;
-    int capacity;
-
-private:
-    void shift_up(int index);
-    void shift_down(int index);
-    int parent(int index);
-    int left_child(int index);
-    int right_child(int index);
-    void swap(int index1, int index2);
-
 public:
     IndexHeap(int capacity = DEFAULT_LENGTH);
     ~IndexHeap();
 
+    void operator=(const IndexHeap<T> &heap);
     int size();
     bool empty();
 
@@ -43,6 +30,21 @@ public:
     T top();
     int top_index();
     void pop();
+
+private:
+    void shift_up(int index);
+    void shift_down(int index);
+    int parent(int index);
+    int left_child(int index);
+    int right_child(int index);
+    void swap(int index1, int index2);
+
+private:
+    T *data;
+    int *indexes;  // map from heap to data
+    int *reverse;  // map from data to heap
+    int sz;
+    int capacity;
 };
 
 
@@ -55,12 +57,12 @@ namespace IndexHeapTest
 
 
 template <typename T>
-IndexHeap<T>::IndexHeap(int capacity) :
-    data(new T[capacity]),
-    indexes(new int[capacity]),
-    reverse(new int[capacity]),
-     sz(0),
-    capacity(capacity)
+IndexHeap<T>::IndexHeap(int capacity)
+    : data(new T[capacity])
+    , indexes(new int[capacity])
+    , reverse(new int[capacity])
+    , sz(0)
+    , capacity(capacity)
 {
     assert(capacity > 0);
     for (int i = 0; i < capacity; i++)
@@ -76,6 +78,25 @@ IndexHeap<T>::~IndexHeap()
     delete[] data;
     delete[] indexes;
     delete[] reverse;
+}
+
+template <typename T>
+void IndexHeap<T>::operator=(const IndexHeap<T> &heap)
+{
+    delete[] data;
+    delete[] indexes;
+    delete[] reverse;
+
+    sz = heap.sz;
+    capacity = heap.capacity;
+
+    data = new T[capacity];
+    indexes = new T[capacity];
+    reverse = new T[capacity];
+
+    memcpy(data, heap.data, sizeof(T) * capacity);
+    memcpy(indexes, heap.indexes, sizeof(T) * capacity);
+    memcpy(reverse, heap.reverse, sizeof(T) * capacity);
 }
 
 template <typename T>

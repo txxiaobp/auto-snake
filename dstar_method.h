@@ -13,9 +13,9 @@ public:
 private:
     bool findNext(std::vector<int>& from);
     void replan();
-    int calDistance(int nextNode, int curNode);
     int lastSeedNode;
-    std::vector<int> reverseFrom;
+    std::vector<int> disToSeed;
+    std::vector<bool> pastNodes;
 };
 
 #endif // DSTARMETHOD_H
