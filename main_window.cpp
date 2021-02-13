@@ -88,7 +88,7 @@ MainWindow::MainWindow(ScreenData& data,
     int width = data.getCol() * 2 * radius;
     resize(width, height + 2 * BAR_HEIGHT);
 
-    this->setWindowTitle("贪吃蛇");
+    this->setWindowTitle("RunSnakeRun!");
     this->setWindowIcon(QIcon(":/res/images/title.jpg"));
 
     setMenuBar(mBar);
