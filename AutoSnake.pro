@@ -13,6 +13,7 @@ SOURCES += \
     back_painter.cpp \
     bfs_method.cpp \
     body_painter.cpp \
+    config.cpp \
     data_recorder.cpp \
     debfs_method.cpp \
     dijkstra_method.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     back_painter.h \
     bfs_method.h \
     body_painter.h \
+    config.h \
     data_recorder.h \
     debfs_method.h \
     dijkstra_method.h \

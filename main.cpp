@@ -8,14 +8,16 @@
 #include "obstacle.h"
 #include "game_control.h"
 #include "main_window.h"
+#include "config.h"
 #include <QApplication>
+#include <QDebug>
+
 
 int main(int argc, char *argv[])
 {
-    const int row = 20;
-    const int col = 30;
-    const int radius = 20;
-    const bool hasMovableObstacles = true;
+    int row, col, radius;
+    bool hasMovableObstacles;
+    Config::loadConfigFile(row, col, radius, hasMovableObstacles);
 
     QApplication a(argc, argv);
     ModeSelection modeSelection;
