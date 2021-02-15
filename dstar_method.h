@@ -3,7 +3,9 @@
 
 
 #include "route_method.h"
+#include "direction.h"
 #include <vector>
+#include <unordered_map>
 
 class DStarMethod : public RouteMethod
 {
@@ -16,6 +18,7 @@ private:
     int lastSeedNode;
     std::vector<int> disToSeed;
     std::vector<bool> pastNodes;
+    std::unordered_map<int,Direction_e> walkedNodes;
 };
 
 #endif // DSTARMETHOD_H

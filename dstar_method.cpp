@@ -7,7 +7,6 @@ DStarMethod::DStarMethod(Snake& snake, ScreenData& data, Seed& seed)
     : RouteMethod(snake, data, seed)
     , lastSeedNode(-1)
 {
-    replan();
 }
 
 void DStarMethod::replan()
@@ -88,8 +87,8 @@ bool DStarMethod::findNext(std::vector<int>& from)
 int snakeHead = snake.getHead();
     if (disToSeed[snakeHead] < 0)
     {
-        int d = disToSeed[snakeHead];
-        return false;
+        lastSeedNode = -1;
+        replan();
     }
 
     IndexHeap<int> heap(disToSeed.size());
@@ -106,6 +105,7 @@ int snakeHead = snake.getHead();
 const int RETRY_TIMES = 3;
         for (int i = 0; i < RETRY_TIMES && heap.empty(); i++)
         {
+            lastSeedNode = -1;
             replan();
             heap = IndexHeap<int>(disToSeed.size());
             for (int node : nodes)
@@ -115,7 +115,6 @@ const int RETRY_TIMES = 3;
                     heap.push(node, disToSeed[node]);
                 }
             }
-            qDebug() << i;
         }
 
         if (heap.empty())

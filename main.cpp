@@ -12,9 +12,9 @@
 
 int main(int argc, char *argv[])
 {
-    const int row = 25;
+    const int row = 20;
     const int col = 30;
-    const int radius = 16;
+    const int radius = 20;
     const bool hasMovableObstacles = true;
 
     QApplication a(argc, argv);

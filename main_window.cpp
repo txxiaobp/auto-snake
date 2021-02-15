@@ -578,9 +578,9 @@ void MainWindow::timerEvent(QTimerEvent*)
         return;
     }
 
+    obstacle.move();
     if (snake.move())
     {
-        obstacle.move();
         update();
     }
     else
@@ -729,5 +729,11 @@ void MainWindow::keyPressEvent(QKeyEvent *ev)
         gameEnd(true);
         return;
     }
+    if(ev->key() == Qt::Key_Space)
+    {
+        pauseContinueGame();
+        return;
+    }
+
 }
 
