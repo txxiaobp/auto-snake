@@ -104,3 +104,13 @@ int Config::getMaxRadius()
 {
     return Config::MAX_RADIUS;
 }
+
+void Config::resetConfig()
+{
+    row = Config::defaultRow;
+    col = Config::defaultCol;
+    radius = Config::defaultRadius;
+    algorithm = Config::defaultAlgorithm;
+    hasObstacles = Config::defaultHasObstacles;
+    hasMovableObstacles = Config::defaultHasMovableObstacles;
+}

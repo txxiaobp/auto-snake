@@ -22,6 +22,7 @@ public:
     void setHasMovableObstacle(bool hasMovableObstacles) { this->hasMovableObstacles = hasMovableObstacles; }
     void setAlgorithm(Algorithm_e algorithm) { this->algorithm = algorithm; }
     void outputConfig();
+    void resetConfig();
 
     static void outputDefaultConfig();
     static int getMaxRow();

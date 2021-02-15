@@ -7,6 +7,7 @@
 #include <QFormLayout>
 #include <QSpinBox>
 #include <QDialogButtonBox>
+#include <QPushButton>
 #include <QFileDialog>
 #include <cassert>
 #include "body_painter.h"
@@ -23,8 +24,8 @@ static const int BAR_HEIGHT = 30;
 static const int SNAKE_LENGTH_LABEL = 100;
 static const int SNAKE_WALKED_LABEL = 130;
 static const int GAME_MODE_LABEL = 85;
-static const int GAME_STATUS = 95;
-static const int OBSTACLE_MODE = 90;
+static const int GAME_STATUS_LABEL = 95;
+static const int OBSTACLE_MODE_LABEL = 130;
 static const int ALGORITHM_LABEL = 210;
 static const int SPEED_LABEL = 80;
 
@@ -52,8 +53,8 @@ MainWindow::MainWindow(ScreenData& data,
     , speedSelection(speedSelection)
     , statusSelection(statusSelection)
     , config(config)
-    , containObstacle(true)
-    , containMovableObstacle(true)
+    , containObstacle(config.getHasObstacles())
+    , containMovableObstacle(config.getHasMovableObstacles())
 
     , mBar(menuBar())
     , gameMenu(mBar->addMenu("游戏"))
@@ -66,6 +67,7 @@ MainWindow::MainWindow(ScreenData& data,
     , pauseContinueAction(gameMenu->addAction("暂停|继续 (P)"))
     , windowAction(gameMenu->addAction("窗口设置"))
     , endGameAction(gameMenu->addAction("停止 (E)"))
+    , resetDefaultAction(gameMenu->addAction("恢复默认设置"))
     , exitAction(gameMenu->addAction("退出 (E)"))
     , autoAction(modeMenu->addAction("自动 (A)"))
     , manualAction(modeMenu->addAction("手动 (M)"))
@@ -86,7 +88,7 @@ MainWindow::MainWindow(ScreenData& data,
     , snakeWalkedLabel(new QLabel("走过的距离: 0"))
     , gameModeLabel(new QLabel("模式: " + modeSelection.getModeString()))
     , gameStatusLabel(new QLabel("状态: " + statusSelection.getStatusString()))
-    , obstacleLabel(new QLabel("障碍物: 有"))
+    , obstacleLabel( config.getHasObstacles() ? new QLabel("障碍物: 有") : new QLabel("障碍物: 无"))
     , algorithmLabel(new QLabel("寻路算法: " + algorithmSelection.getAlgoString()))
     , speedLabel(new QLabel("速度: " + speedSelection.getSpeedString()))
 {
@@ -110,8 +112,8 @@ MainWindow::MainWindow(ScreenData& data,
     snakeLengthLabel->setFixedSize(SNAKE_LENGTH_LABEL, BAR_HEIGHT);
     snakeWalkedLabel->setFixedSize(SNAKE_WALKED_LABEL, BAR_HEIGHT);
     gameModeLabel->setFixedSize(GAME_MODE_LABEL, BAR_HEIGHT);
-    gameStatusLabel->setFixedSize(GAME_STATUS, BAR_HEIGHT);
-    obstacleLabel->setFixedSize(OBSTACLE_MODE, BAR_HEIGHT);
+    gameStatusLabel->setFixedSize(GAME_STATUS_LABEL, BAR_HEIGHT);
+    obstacleLabel->setFixedSize(OBSTACLE_MODE_LABEL, BAR_HEIGHT);
     algorithmLabel->setFixedSize(ALGORITHM_LABEL, BAR_HEIGHT);
     speedLabel->setFixedSize(SPEED_LABEL, BAR_HEIGHT);
 
@@ -120,6 +122,7 @@ MainWindow::MainWindow(ScreenData& data,
     painter = new QPainter(this);
     painter->setRenderHint(QPainter::HighQualityAntialiasing);
     setPainterMap(radius);
+    setObstacleModeLabel();
 
     timerId = startTimer(speedSelection.getSpeed());
 }
@@ -169,6 +172,9 @@ void MainWindow::connectSignals()
     });
     connect(windowAction, &QAction::triggered, this, [&](){
         setWindowSize();
+    });
+    connect(resetDefaultAction, &QAction::triggered, this, [&](){
+        resetDefault();
     });
     connect(endGameAction, &QAction::triggered, this, [&](){
         gameEnd(true);
@@ -303,8 +309,6 @@ void MainWindow::setMovableObstacleMode(bool isSet)
 
 void MainWindow::setObstacleMode(bool isSet)
 {
-    assert (isSet != containObstacle);
-
     if (isSet)
     {
         if (statusSelection.getMode() == GAME_PLAY_CONTINUE || statusSelection.getMode() == GAME_PLAY_PAUSE)
@@ -552,12 +556,6 @@ void MainWindow::setWindowSize()
     cellSpinBox->setMaximum(Config::getMaxRadius());
     form.addRow(cellValue, cellSpinBox);
 
-    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
-        Qt::Horizontal, &dialog);
-    form.addRow(&buttonBox);
-    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
-    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
-
     if (dialog.exec() == QDialog::Accepted)
     {
         assert(config.setRow(rowSpinBox->value()));
@@ -567,6 +565,23 @@ void MainWindow::setWindowSize()
         QMessageBox::information(this, "设置成功", "设置将在程序下次运行时生效。",
                                  QMessageBox::Yes, QMessageBox::Yes);
     }
+}
+
+void MainWindow::resetDefault()
+{
+    if (statusSelection.getMode() == GAME_PLAY_CONTINUE || statusSelection.getMode() == GAME_PLAY_PAUSE)
+    {
+        Game_Mode_e prevGameMode = statusSelection.getMode();
+        statusSelection.setMode(GAME_PLAY_PAUSE);
+        QMessageBox::information(this, "操作错误", "正在进行游戏，无法恢复默认设置，请结束后重试。",
+                                 QMessageBox::Yes, QMessageBox::Yes);
+        statusSelection.setMode(prevGameMode);
+        return;
+    }
+
+    config.resetConfig();
+    QMessageBox::information(this, "设置成功", "设置将在程序下次运行时生效。",
+                             QMessageBox::Yes, QMessageBox::Yes);
 }
 
 void MainWindow::gameEnd(bool manuallyEnd)

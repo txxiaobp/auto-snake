@@ -9,15 +9,19 @@ const float NUM_PERCENT = 0.05;
 const int OBSTACLE_NUM_A_TIME = 8;
 const int OBSTACLE_NUM_IN_DIRECTION = 4;
 
-Obstacle::Obstacle(ScreenData& screenData, bool isMovable)
+Obstacle::Obstacle(ScreenData& screenData, Config& config)
     : screenData(screenData)
-    , isMovable(isMovable)
+    , config(config)
+    , isMovable(config.getHasMovableObstacles())
 {
-    do
+    if (config.getHasObstacles())
     {
-        clearObstacle();
-        setObstacle();
-    } while (!isAllAvailableNodesConnected());
+        do
+        {
+            clearObstacle();
+            setObstacle();
+        } while (!isAllAvailableNodesConnected());
+    }
 
     setMovable(isMovable);
 }

@@ -5,11 +5,12 @@
 #include "direction.h"
 #include <map>
 #include <vector>
+#include "config.h"
 
 class Obstacle
 {
 public:
-    Obstacle(ScreenData& screenData, bool isMovable = false);
+    Obstacle(ScreenData& screenData, Config& config);
     void resetObstacle();
     void clearObstacle();
     void getObstacleData(std::vector<int>& obstacleNodes);
@@ -30,6 +31,7 @@ private:
 
 private:
     ScreenData& screenData;
+    Config& config;
     std::vector<int> obstacleNodes;
     bool isMovable;
     std::vector<std::pair<int,Direction_e>> movableObstacles;

@@ -20,8 +20,6 @@ int main(int argc, char *argv[])
     int row = config.getRow();
     int col = config.getCol();
     int radius = config.getRadius();
-    bool hasMovableObstacles = config.getHasMovableObstacles();
-
 
     QApplication a(argc, argv);
     ModeSelection modeSelection;
@@ -29,7 +27,7 @@ int main(int argc, char *argv[])
     SpeedSelection speedSelection(modeSelection);
     StatusSelection statusSelection;
     ScreenData screenData(row, col);
-    Obstacle obstacle(screenData, hasMovableObstacles);
+    Obstacle obstacle(screenData, config);
     DataRecorder dataRecorder(screenData, obstacle, modeSelection);
     Seed seed(screenData, dataRecorder, modeSelection);
     Snake snake(seed, screenData, dataRecorder, modeSelection, algorithmSelection);
