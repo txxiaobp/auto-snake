@@ -18,6 +18,7 @@
 #include "mode_selection.h"
 #include "speed_selection.h"
 #include "game_control.h"
+#include "config.h"
 
 class DataRecorder;
 
@@ -36,6 +37,7 @@ public:
                AlgorithmSelection& algorithmSelection,
                SpeedSelection& speedSelection,
                StatusSelection& statusSelection,
+               Config& config,
                QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -79,6 +81,7 @@ private:
     AlgorithmSelection& algorithmSelection;
     SpeedSelection& speedSelection;
     StatusSelection& statusSelection;
+    Config& config;
     int timerId;
     bool containObstacle;
     bool containMovableObstacle;

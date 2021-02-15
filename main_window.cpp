@@ -34,6 +34,7 @@ MainWindow::MainWindow(ScreenData& data,
                        AlgorithmSelection& algorithmSelection,
                        SpeedSelection& speedSelection,
                        StatusSelection& statusSelection,
+                       Config& config,
                        QWidget *parent)
     : QMainWindow(parent)
     , data(data)
@@ -46,6 +47,7 @@ MainWindow::MainWindow(ScreenData& data,
     , algorithmSelection(algorithmSelection)
     , speedSelection(speedSelection)
     , statusSelection(statusSelection)
+    , config(config)
     , containObstacle(true)
     , containMovableObstacle(true)
 
@@ -64,8 +66,8 @@ MainWindow::MainWindow(ScreenData& data,
     , autoAction(modeMenu->addAction("自动 (A)"))
     , manualAction(modeMenu->addAction("手动 (M)"))
     , replayAction(modeMenu->addAction("重放"))
-    , obstacleModeAction(obstacleMenu->addAction("关闭障碍物"))
-    , movableObstacleAction(obstacleMenu->addAction("关闭移动障碍物"))
+    , obstacleModeAction( config.getHasObstacles() ? obstacleMenu->addAction("关闭障碍物") : obstacleMenu->addAction("开启障碍物"))
+    , movableObstacleAction( config.getHasMovableObstacles() ? obstacleMenu->addAction("关闭移动障碍物") : obstacleMenu->addAction("开启移动障碍物"))
     , resetObstacleAction(obstacleMenu->addAction("重新设置障碍物 (O)"))
     , bfsAction(algoMenu->addAction("广度优先搜索"))
     , debfsAction(algoMenu->addAction("双端广度优先搜索"))
@@ -166,6 +168,7 @@ void MainWindow::connectSignals()
     });
 
     connect(exitAction, &QAction::triggered, [&](){
+        config.outputConfig();
         exit(0);
     });
 
@@ -286,6 +289,7 @@ void MainWindow::setMovableObstacleMode(bool isSet)
             containMovableObstacle = false;
         }
     }
+    config.setHasMovableObstacle(containMovableObstacle);
     setObstacleModeLabel();
     update();
 }
@@ -329,6 +333,7 @@ void MainWindow::setObstacleMode(bool isSet)
             containObstacle = false;
         }
     }
+    config.setHasObstacles(containObstacle);
     setObstacleModeLabel();
     update();
 }

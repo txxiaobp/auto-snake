@@ -1,46 +1,30 @@
 #ifndef ALGORITHM_SELECTION_H
 #define ALGORITHM_SELECTION_H
 
+#include "pub_include.h"
+#include "config.h"
 #include <QString>
 #include <QObject>
 #include <vector>
 #include <map>
-
-typedef enum
-{
-    ALGORITHM_BFS = 0,
-    ALGORITHM_DEBFS,
-    ALGORITHM_DIJKSTRA,
-    ALGORITHM_ASTAR,
-    ALGORITHM_DSTAR,
-    ALGORITHM_DSTAR_LITE,
-    ALGORITHM_MAX
-}Algorithm_e;
 
 
 class AlgorithmSelection : public QObject
 {
     Q_OBJECT
 public:
-    AlgorithmSelection(Algorithm_e algo = ALGORITHM_BFS) : algo(algo)
-    {
-        algoStringMap[ALGORITHM_BFS] = "广度优先搜索";
-        algoStringMap[ALGORITHM_DEBFS] = "双端广度优先搜索";
-        algoStringMap[ALGORITHM_DIJKSTRA] = "Dijkstra";
-        algoStringMap[ALGORITHM_ASTAR] = "A*";
-        algoStringMap[ALGORITHM_DSTAR] = "D*";
-        algoStringMap[ALGORITHM_DSTAR_LITE] = "D* Lite";
-    }
+    AlgorithmSelection(Config &config);
 
     Algorithm_e getAlgo() { return algo; }
     QString getAlgoString() { return algoStringMap[algo]; }
-    void setAlgo(Algorithm_e algo) { this->algo = algo; emit changeAlgorithm(); }
+    void setAlgo(Algorithm_e algo);
     std::map<Algorithm_e, QString> getAlgoStringMap() { return algoStringMap; }
 
 signals:
     void changeAlgorithm();
 
 private:
+    Config& config;
     Algorithm_e algo;
     std::map<Algorithm_e, QString> algoStringMap;
 };

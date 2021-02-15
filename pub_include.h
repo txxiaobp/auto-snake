@@ -1,0 +1,16 @@
+#ifndef PUB_INCLUDE_H
+#define PUB_INCLUDE_H
+
+typedef enum
+{
+    ALGORITHM_BFS = 0,
+    ALGORITHM_DEBFS,
+    ALGORITHM_DIJKSTRA,
+    ALGORITHM_ASTAR,
+    ALGORITHM_DSTAR,
+    ALGORITHM_DSTAR_LITE,
+    ALGORITHM_MAX
+}Algorithm_e;
+
+
+#endif // PUB_INCLUDE_H

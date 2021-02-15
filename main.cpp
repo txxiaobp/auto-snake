@@ -15,13 +15,17 @@
 
 int main(int argc, char *argv[])
 {
-    int row, col, radius;
-    bool hasMovableObstacles;
-    Config::loadConfigFile(row, col, radius, hasMovableObstacles);
+    Config config;
+
+    int row = config.getRow();
+    int col = config.getCol();
+    int radius = config.getRadius();
+    bool hasMovableObstacles = config.getHasMovableObstacles();
+
 
     QApplication a(argc, argv);
     ModeSelection modeSelection;
-    AlgorithmSelection algorithmSelection;
+    AlgorithmSelection algorithmSelection(config);
     SpeedSelection speedSelection(modeSelection);
     StatusSelection statusSelection;
     ScreenData screenData(row, col);
@@ -30,7 +34,7 @@ int main(int argc, char *argv[])
     Seed seed(screenData, dataRecorder, modeSelection);
     Snake snake(seed, screenData, dataRecorder, modeSelection, algorithmSelection);
 
-    MainWindow mainWindow(screenData, snake, seed, radius, dataRecorder, obstacle, modeSelection, algorithmSelection, speedSelection, statusSelection);
+    MainWindow mainWindow(screenData, snake, seed, radius, dataRecorder, obstacle, modeSelection, algorithmSelection, speedSelection, statusSelection, config);
 
     mainWindow.show();
     return a.exec();

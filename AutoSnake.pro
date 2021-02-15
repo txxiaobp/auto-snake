@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    algorithm_selection.cpp \
     astar_method.cpp \
     back_painter.cpp \
     bfs_method.cpp \
@@ -54,6 +55,7 @@ HEADERS += \
     movable_obstacle_painter.h \
     obstacle.h \
     obstacle_painter.h \
+    pub_include.h \
     route_method.h \
     screen_data.h \
     screen_painter.h \
