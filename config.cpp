@@ -1,7 +1,9 @@
 #include "config.h"
 #include <fstream>
 
-
+const int Config::MAX_ROW = 30;
+const int Config::MAX_COL = 30;
+const int Config::MAX_RADIUS = 20;
 const char *Config::configFile = "config.cfg";
 const int Config::defaultRow = 20;
 const int Config::defaultCol = 30;
@@ -55,4 +57,50 @@ void Config::outputConfig()
             << tmpAlgo;
 
     outFile.close();
+}
+
+bool Config::setRow(int row)
+{
+    if (row <= 0 || row > Config::MAX_ROW)
+    {
+        return false;
+    }
+    this->row = row;
+    return true;
+}
+
+
+bool Config::setCol(int col)
+{
+    if (col <= 0 || col > Config::MAX_COL)
+    {
+        return false;
+    }
+    this->col = col;
+    return true;
+}
+
+bool Config::setRadius(int radius)
+{
+    if (radius <= 0 || radius > Config::MAX_RADIUS)
+    {
+        return false;
+    }
+    this->radius = radius;
+    return true;
+}
+
+int Config::getMaxRow()
+{
+    return Config::MAX_ROW;
+}
+
+int Config::getMaxCol()
+{
+    return Config::MAX_COL;
+}
+
+int Config::getMaxRadius()
+{
+    return Config::MAX_RADIUS;
 }

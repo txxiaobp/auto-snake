@@ -4,7 +4,11 @@
 #include <QWheelEvent>
 #include <QString>
 #include <QMessageBox>
+#include <QFormLayout>
+#include <QSpinBox>
+#include <QDialogButtonBox>
 #include <QFileDialog>
+#include <cassert>
 #include "body_painter.h"
 #include "head_painter.h"
 #include "wall_painter.h"
@@ -60,8 +64,8 @@ MainWindow::MainWindow(ScreenData& data,
     , startAction(gameMenu->addAction("开始 (S)"))
     , restartAction(gameMenu->addAction("重新开始 (R)"))
     , pauseContinueAction(gameMenu->addAction("暂停|继续 (P)"))
+    , windowAction(gameMenu->addAction("窗口设置"))
     , endGameAction(gameMenu->addAction("停止 (E)"))
-
     , exitAction(gameMenu->addAction("退出 (E)"))
     , autoAction(modeMenu->addAction("自动 (A)"))
     , manualAction(modeMenu->addAction("手动 (M)"))
@@ -163,6 +167,9 @@ void MainWindow::connectSignals()
     connect(resetObstacleAction, &QAction::triggered, this, [&](){
         resetObstacle();
     });
+    connect(windowAction, &QAction::triggered, this, [&](){
+        setWindowSize();
+    });
     connect(endGameAction, &QAction::triggered, this, [&](){
         gameEnd(true);
     });
@@ -255,7 +262,7 @@ void MainWindow::setMovableObstacleMode(bool isSet)
         {
             Game_Mode_e prevGameMode = statusSelection.getMode();
             statusSelection.setMode(GAME_PLAY_PAUSE);
-            QMessageBox::information(NULL, "操作错误", "正在进行游戏，无法启用移动障碍物，请结束后重试。",
+            QMessageBox::information(this, "操作错误", "正在进行游戏，无法启用移动障碍物，请结束后重试。",
                                      QMessageBox::Yes, QMessageBox::Yes);
             statusSelection.setMode(prevGameMode);
         }
@@ -263,7 +270,7 @@ void MainWindow::setMovableObstacleMode(bool isSet)
         {
             Game_Mode_e prevGameMode = statusSelection.getMode();
             statusSelection.setMode(GAME_PLAY_PAUSE);
-            QMessageBox::information(NULL, "操作错误", "请先启用障碍物。",
+            QMessageBox::information(this, "操作错误", "请先启用障碍物。",
                                      QMessageBox::Yes, QMessageBox::Yes);
             statusSelection.setMode(prevGameMode);
         }
@@ -279,7 +286,7 @@ void MainWindow::setMovableObstacleMode(bool isSet)
         {
             Game_Mode_e prevGameMode = statusSelection.getMode();
             statusSelection.setMode(GAME_PLAY_PAUSE);
-            QMessageBox::information(NULL, "操作错误", "正在进行游戏，无法关闭移动障碍物，请结束后重试。",
+            QMessageBox::information(this, "操作错误", "正在进行游戏，无法关闭移动障碍物，请结束后重试。",
                                      QMessageBox::Yes, QMessageBox::Yes);
             statusSelection.setMode(prevGameMode);
         }
@@ -304,7 +311,7 @@ void MainWindow::setObstacleMode(bool isSet)
         {
             Game_Mode_e prevGameMode = statusSelection.getMode();
             statusSelection.setMode(GAME_PLAY_PAUSE);
-            QMessageBox::information(NULL, "操作错误", "正在进行游戏，无法启用障碍物，请结束后重试。",
+            QMessageBox::information(this, "操作错误", "正在进行游戏，无法启用障碍物，请结束后重试。",
                                      QMessageBox::Yes, QMessageBox::Yes);
             statusSelection.setMode(prevGameMode);
         }
@@ -321,7 +328,7 @@ void MainWindow::setObstacleMode(bool isSet)
         {
             Game_Mode_e prevGameMode = statusSelection.getMode();
             statusSelection.setMode(GAME_PLAY_PAUSE);
-            QMessageBox::information(NULL, "操作错误", "正在进行游戏，无法关闭障碍物，请结束后重试。",
+            QMessageBox::information(this, "操作错误", "正在进行游戏，无法关闭障碍物，请结束后重试。",
                                      QMessageBox::Yes, QMessageBox::Yes);
             statusSelection.setMode(prevGameMode);
         }
@@ -344,7 +351,7 @@ bool MainWindow::resetObstacle()
     {
         Game_Mode_e prevGameMode = statusSelection.getMode();
         statusSelection.setMode(GAME_PLAY_PAUSE);
-        QMessageBox::information(NULL, "操作错误", "未启用障碍物，无法重新设置，请启用障碍物后重试。",
+        QMessageBox::information(this, "操作错误", "未启用障碍物，无法重新设置，请启用障碍物后重试。",
                                  QMessageBox::Yes, QMessageBox::Yes);
         statusSelection.setMode(prevGameMode);
         return containObstacle;
@@ -353,7 +360,7 @@ bool MainWindow::resetObstacle()
     {
         Game_Mode_e prevGameMode = statusSelection.getMode();
         statusSelection.setMode(GAME_PLAY_PAUSE);
-        QMessageBox::information(NULL, "操作错误", "正在进行游戏，无法重新设置障碍物，请结束后重试。",
+        QMessageBox::information(this, "操作错误", "正在进行游戏，无法重新设置障碍物，请结束后重试。",
                                  QMessageBox::Yes, QMessageBox::Yes);
         statusSelection.setMode(prevGameMode);
         return containObstacle;
@@ -414,7 +421,7 @@ void MainWindow::restartGame()
     if (prevGameMode == GAME_PLAY_CONTINUE || prevGameMode == GAME_PLAY_PAUSE)
     {
         statusSelection.setMode(GAME_PLAY_PAUSE);
-        QMessageBox::StandardButton rb = QMessageBox::question(NULL, "是否重新开始", "是否结束本局并立即重新开始?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        QMessageBox::StandardButton rb = QMessageBox::question(this, "是否重新开始", "是否结束本局并立即重新开始?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
         if(rb == QMessageBox::No)
         {
             statusSelection.setMode(prevGameMode);
@@ -441,7 +448,7 @@ void MainWindow::changeMode(Mode_e mode)
         statusSelection.setMode(GAME_PLAY_PAUSE);
         if (modeSelection.getMode() == MODE_AUTO && mode == MODE_MANUAL)
         {
-            QMessageBox::StandardButton rb = QMessageBox::question(NULL, "切换模式", "是否切换为手动模式?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            QMessageBox::StandardButton rb = QMessageBox::question(this, "切换模式", "是否切换为手动模式?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
             if(rb == QMessageBox::Yes)
             {
                 modeSelection.setMode(MODE_MANUAL);
@@ -454,7 +461,7 @@ void MainWindow::changeMode(Mode_e mode)
         }
         else if (modeSelection.getMode() == MODE_MANUAL && mode == MODE_AUTO)
         {
-            QMessageBox::StandardButton rb = QMessageBox::question(NULL, "切换模式", "是否切换为自动模式?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            QMessageBox::StandardButton rb = QMessageBox::question(this, "切换模式", "是否切换为自动模式?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
             if(rb == QMessageBox::Yes)
             {
                 modeSelection.setMode(MODE_AUTO);
@@ -469,14 +476,14 @@ void MainWindow::changeMode(Mode_e mode)
         {
             if (mode == MODE_AUTO)
             {
-                QMessageBox::information(NULL, "操作错误", "正处于重放模式，无法设置为自动模式，请结束后重试。",
+                QMessageBox::information(this, "操作错误", "正处于重放模式，无法设置为自动模式，请结束后重试。",
                                          QMessageBox::Yes, QMessageBox::Yes);
                 statusSelection.setMode(prevGameMode);
                 return;
             }
             else if (mode == MODE_MANUAL)
             {
-                QMessageBox::information(NULL, "操作错误", "正处于重放模式，无法设置为手动模式，请结束后重试。",
+                QMessageBox::information(this, "操作错误", "正处于重放模式，无法设置为手动模式，请结束后重试。",
                                          QMessageBox::Yes, QMessageBox::Yes);
                 statusSelection.setMode(prevGameMode);
                 return;
@@ -489,7 +496,7 @@ void MainWindow::changeMode(Mode_e mode)
         if (prevGameMode == GAME_PLAY_CONTINUE || prevGameMode == GAME_PLAY_PAUSE)
         {
             statusSelection.setMode(GAME_PLAY_PAUSE);
-            QMessageBox::StandardButton rb = QMessageBox::question(NULL, "切换模式", "游戏进行中，是否切换为重放模式并选择存档文件?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+            QMessageBox::StandardButton rb = QMessageBox::question(this, "切换模式", "游戏进行中，是否切换为重放模式并选择存档文件?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
             if(rb == QMessageBox::No)
             {
                 statusSelection.setMode(prevGameMode);
@@ -516,13 +523,64 @@ void MainWindow::changeMode(Mode_e mode)
     update();
 }
 
+void MainWindow::setWindowSize()
+{
+    QDialog dialog(this);
+    QFormLayout form(&dialog);
+
+    // 行数
+    QString rowValue = QString("行数: ");
+    QSpinBox *rowSpinBox = new QSpinBox(&dialog);
+    rowSpinBox->setValue(config.getRow());
+    rowSpinBox->setMinimum(0);
+    rowSpinBox->setMaximum(Config::getMaxRow());
+    form.addRow(rowValue, rowSpinBox);
+
+    // 列数
+    QString colValue = QString("列数: ");
+    QSpinBox *colSpinBox = new QSpinBox(&dialog);
+    colSpinBox->setValue(config.getCol());
+    colSpinBox->setMinimum(0);
+    colSpinBox->setMaximum(Config::getMaxCol());
+    form.addRow(colValue, colSpinBox);
+
+    // 单元格尺寸
+    QString cellValue = QString("单元格尺寸: ");
+    QSpinBox *cellSpinBox = new QSpinBox(&dialog);
+    cellSpinBox->setValue(config.getRadius());
+    cellSpinBox->setMinimum(0);
+    cellSpinBox->setMaximum(Config::getMaxRadius());
+    form.addRow(cellValue, cellSpinBox);
+
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+        Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        assert(config.setRow(rowSpinBox->value()));
+        assert(config.setCol(colSpinBox->value()));
+        assert(config.setRadius(cellSpinBox->value()));
+
+        QMessageBox::information(this, "设置成功", "设置将在程序下次运行时生效。",
+                                 QMessageBox::Yes, QMessageBox::Yes);
+    }
+}
+
 void MainWindow::gameEnd(bool manuallyEnd)
 {
+    if (statusSelection.getMode() != GAME_PLAY_CONTINUE && statusSelection.getMode() != GAME_PLAY_PAUSE)
+    {
+        return;
+    }
+
     if (manuallyEnd)
     {
         Game_Mode_e prevGameMode = statusSelection.getMode();
         statusSelection.setMode(GAME_PLAY_PAUSE);
-        QMessageBox::StandardButton rb = QMessageBox::question(NULL, "结束游戏", "是否结束游戏?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        QMessageBox::StandardButton rb = QMessageBox::question(this, "结束游戏", "是否结束游戏?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
         statusSelection.setMode(prevGameMode);
         if(rb == QMessageBox::No)
         {
@@ -533,7 +591,7 @@ void MainWindow::gameEnd(bool manuallyEnd)
     setStatusMode(GAME_PLAY_DEAD);
     if (modeSelection.getMode() == MODE_REPLAY && manuallyEnd == false)
     {
-        QMessageBox::StandardButton rb = QMessageBox::question(NULL, "播放完毕", "播放完毕，是否重放?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+        QMessageBox::StandardButton rb = QMessageBox::question(this, "播放完毕", "播放完毕，是否重放?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
         if(rb == QMessageBox::Yes)
         {
             restartGame();
@@ -550,7 +608,7 @@ void MainWindow::gameEnd(bool manuallyEnd)
         return;
     }
 
-    QMessageBox::StandardButton rb = QMessageBox::question(NULL, "本局结束", "你想保存本局的数据吗?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    QMessageBox::StandardButton rb = QMessageBox::question(this, "本局结束", "你想保存本局的数据吗?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
     if(rb == QMessageBox::Yes)
     {
         QString fileName = QFileDialog::getSaveFileName(this,
