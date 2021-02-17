@@ -556,6 +556,12 @@ void MainWindow::setWindowSize()
     cellSpinBox->setMaximum(Config::getMaxRadius());
     form.addRow(cellValue, cellSpinBox);
 
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+        Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
     if (dialog.exec() == QDialog::Accepted)
     {
         assert(config.setRow(rowSpinBox->value()));
