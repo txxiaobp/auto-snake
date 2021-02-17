@@ -25,7 +25,7 @@ static const int SNAKE_LENGTH_LABEL = 100;
 static const int SNAKE_WALKED_LABEL = 130;
 static const int GAME_MODE_LABEL = 85;
 static const int GAME_STATUS_LABEL = 95;
-static const int OBSTACLE_MODE_LABEL = 130;
+static const int OBSTACLE_MODE_LABEL = 220;
 static const int ALGORITHM_LABEL = 210;
 static const int SPEED_LABEL = 80;
 

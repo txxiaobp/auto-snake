@@ -1,8 +1,8 @@
 #include "config.h"
 #include <fstream>
 
-const int Config::MAX_ROW = 30;
-const int Config::MAX_COL = 30;
+const int Config::MAX_ROW = 40;
+const int Config::MAX_COL = 50;
 const int Config::MAX_RADIUS = 20;
 const char *Config::configFile = "config.cfg";
 const int Config::defaultRow = 20;

@@ -23,6 +23,7 @@ Obstacle::Obstacle(ScreenData& screenData, Config& config)
         } while (!isAllAvailableNodesConnected());
     }
 
+    isMovable = config.getHasMovableObstacles();
     setMovable(isMovable);
 }
 
